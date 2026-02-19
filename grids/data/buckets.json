@@ -1,0 +1,511 @@
+{
+  "buckets": [
+    {
+      "id": "FOUNDATIONS",
+      "name": "Foundation Courses",
+      "credits_required": 9,
+      "description": "Core foundation courses required for all degrees",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all foundation courses",
+          "list": ["FOUN 1101", "FOUN 1105", "FOUN 1301"]
+        }
+      ]
+    },
+    {
+      "id": "CS_GEN_LEVEL1_CORE",
+      "name": "Computer Science Level 1 Core",
+      "credits_required": 12,
+      "description": "Core Level 1 Computer Science courses",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level 1 CS core courses",
+          "list": ["COMP 1600", "COMP 1601", "COMP 1602", "COMP 1603"]
+        }
+      ]
+    },
+    {
+      "id": "CS_GEN_MATH_1115_ELECTIVE",
+      "name": "Mathematics 1115 Elective",
+      "credits_required": 3,
+      "description": "Mathematics 1115 elective course",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete MATH 1115",
+          "list": ["MATH 1115"]
+        }
+      ]
+    },
+    {
+      "id": "CS_GEN_LEVEL1_ELECTIVES",
+      "name": "Computer Science Level 1 Electives",
+      "credits_required": 9,
+      "description": "Level 1 elective courses (excluding foundations and specific exceptions)",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 9,
+          "description": "Any Level 1 courses excluding foundations",
+          "filter": {
+            "min_level": 1,
+            "max_level": 1,
+            "exclude_codes": ["COMP 1011", "FOUN 1101", "FOUN 1105", "FOUN 1301"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "CS_GEN_ADVANCED_COMP_CORE",
+      "name": "Computer Science Advanced Core",
+      "credits_required": 18,
+      "description": "Advanced core COMP courses",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all advanced CS core courses",
+          "list": ["COMP 2601", "COMP 2602", "COMP 2603", "COMP 2604", "COMP 2605", "COMP 2611"]
+        }
+      ]
+    },
+    {
+      "id": "CS_GEN_COMP_INFO_MATH_ELECTIVES",
+      "name": "COMP/INFO/MATH Advanced Electives",
+      "credits_required": 12,
+      "description": "Advanced electives in COMP, INFO, or MATH",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 12,
+          "description": "Advanced COMP, INFO, or MATH courses",
+          "filter": {
+            "subjects": ["COMP", "INFO", "MATH"],
+            "min_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "CS_GEN_OTHER_ADVANCED_ELECTIVES",
+      "name": "Other Advanced Electives",
+      "credits_required": 30,
+      "description": "Any other advanced level courses",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 30,
+          "description": "Any advanced level courses",
+          "filter": {
+            "min_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "CS_SPEC_LEVEL1_CORE",
+      "name": "Computer Science Special Level 1 Core",
+      "credits_required": 21,
+      "description": "Specialized Level 1 Computer Science core courses",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level 1 CS Special core courses",
+          "list": ["COMP 1600", "COMP 1601", "COMP 1602", "COMP 1603", "COMP 1604", "INFO 1600", "INFO 1601"]
+        }
+      ]
+    },
+    {
+      "id": "CS_SPEC_MATH_1115",
+      "name": "Computer Science Special Math 1115",
+      "credits_required": 3,
+      "description": "Mathematics 1115 for CS Special",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete MATH 1115",
+          "list": ["MATH 1115"]
+        }
+      ]
+    },
+    {
+      "id": "CS_SPEC_ADVANCED_CORE",
+      "name": "Computer Science Special Advanced Core",
+      "credits_required": 45,
+      "description": "Extensive advanced core for CS Special",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all advanced CS Special core courses",
+          "list": ["COMP 2601", "COMP 2602", "COMP 2603", "COMP 2604", "COMP 2605", "COMP 2606", "COMP 2611", "INFO 2602", "INFO 2604", "COMP 3601", "COMP 3602", "COMP 3603", "INFO 3604", "COMP 3613", "MATH 2250"]
+        }
+      ]
+    },
+    {
+      "id": "CS_SPEC_ADVANCED_ELECTIVES",
+      "name": "Computer Science Special Advanced Electives",
+      "credits_required": 15,
+      "description": "Advanced COMP or INFO electives",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 15,
+          "description": "Advanced COMP or INFO courses",
+          "filter": {
+            "subjects": ["COMP", "INFO"],
+            "min_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "CS_MGMT_LEVEL1_CORE",
+      "name": "Computer Science with Management Level 1 Core",
+      "credits_required": 24,
+      "description": "Level 1 core combining CS, Accounting, and Economics",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level 1 core courses for CS with Management",
+          "list": ["ACCT 1002", "COMP 1600", "COMP 1601", "ECON 1001", "ACCT 1003", "COMP 1602", "COMP 1603", "ECON 1002"]
+        }
+      ]
+    },
+    {
+      "id": "CS_MGMT_ADVANCED_CORE",
+      "name": "Computer Science with Management Advanced Core",
+      "credits_required": 30,
+      "description": "Advanced core courses in COMP, MGMT, ACCT, and MKTG",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all advanced core courses",
+          "list": ["COMP 2601", "COMP 2602", "COMP 2605", "COMP 2611", "MGMT 2021", "COMP 2603", "COMP 2604", "MGMT 2008", "MGMT 2032", "MKTG 2001"]
+        }
+      ]
+    },
+    {
+      "id": "CS_MGMT_ADVANCED_CORE_ANY_3",
+      "name": "Computer Science with Management Advanced Core (Any 3)",
+      "credits_required": 3,
+      "description": "Any 3 credits from MGMT, ACCT, or MKTG advanced courses",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 3,
+          "description": "Select from specified management courses",
+          "list": ["ACCT 2017", "MGMT 2012", "MGMT 2023", "MKTG 3000"]
+        }
+      ]
+    },
+    {
+      "id": "CS_MGMT_COMP_ELECTIVES",
+      "name": "Computer Science with Management COMP Electives",
+      "credits_required": 12,
+      "description": "Advanced COMP or INFO elective courses",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 12,
+          "description": "Select from specified COMP/INFO courses",
+          "list": ["COMP 3602", "COMP 3603", "COMP 3605", "COMP 3606", "COMP 3607", "COMP 3612", "INFO 2602", "INFO 2604", "INFO 3606", "INFO 3607", "INFO 3611", "INFO 3609", "INFO 3610"]
+        }
+      ]
+    },
+    {
+      "id": "CS_MGMT_OTHER_ELECTIVES",
+      "name": "Computer Science with Management Other Electives",
+      "credits_required": 15,
+      "description": "Other advanced elective courses",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 15,
+          "description": "Advanced courses in specified subjects",
+          "filter": {
+            "subjects": ["COMP", "ECON", "INFO", "MATH", "MGMT"],
+            "min_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "IT_GEN_LEVEL1_CORE",
+      "name": "Information Technology Level 1 Core",
+      "credits_required": 12,
+      "description": "Core Level 1 Information Technology courses",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level 1 IT core courses",
+          "list": ["COMP 1601", "COMP 1602", "INFO 1600", "INFO 1601"]
+        }
+      ]
+    },
+    {
+      "id": "IT_GEN_MATH_1115_ELECTIVE",
+      "name": "Information Technology Math 1115 Elective",
+      "credits_required": 3,
+      "description": "Mathematics 1115 elective for IT",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete MATH 1115",
+          "list": ["MATH 1115"]
+        }
+      ]
+    },
+    {
+      "id": "IT_GEN_LEVEL1_ELECTIVES",
+      "name": "Information Technology Level 1 Electives",
+      "credits_required": 9,
+      "description": "Level 1 elective courses for IT",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 9,
+          "description": "Any Level 1 courses excluding foundations",
+          "filter": {
+            "min_level": 1,
+            "max_level": 1,
+            "exclude_codes": ["COMP 1011", "FOUN 1101", "FOUN 1105", "FOUN 1301"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "IT_GEN_ADVANCED_INFO_CORE",
+      "name": "Information Technology Advanced Core",
+      "credits_required": 18,
+      "description": "Advanced core INFO courses",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all advanced IT core courses",
+          "list": ["COMP 2605", "INFO 2600", "INFO 2601", "INFO 2602", "INFO 2603", "INFO 2604"]
+        }
+      ]
+    },
+    {
+      "id": "IT_GEN_COMP_INFO_MATH_ELECTIVES",
+      "name": "Information Technology COMP/INFO/MATH Electives",
+      "credits_required": 12,
+      "description": "Advanced electives in COMP, INFO, or MATH",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 12,
+          "description": "Advanced COMP, INFO, or MATH courses",
+          "filter": {
+            "subjects": ["COMP", "INFO", "MATH"],
+            "min_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "IT_GEN_OTHER_ADVANCED_ELECTIVES",
+      "name": "Information Technology Other Advanced Electives",
+      "credits_required": 30,
+      "description": "Any other advanced level courses",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 30,
+          "description": "Any advanced level courses",
+          "filter": {
+            "min_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "IT_SPEC_LEVEL1_CORE",
+      "name": "Information Technology Special Level 1 Core",
+      "credits_required": 21,
+      "description": "Specialized Level 1 Information Technology core courses",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level 1 IT Special core courses",
+          "list": ["COMP 1600", "COMP 1601", "COMP 1602", "COMP 1603", "COMP 1604", "INFO 1600", "INFO 1601"]
+        }
+      ]
+    },
+    {
+      "id": "IT_SPEC_MATH_1115",
+      "name": "Information Technology Special Math 1115",
+      "credits_required": 3,
+      "description": "Mathematics 1115 for IT Special",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete MATH 1115",
+          "list": ["MATH 1115"]
+        }
+      ]
+    },
+    {
+      "id": "IT_SPEC_ADVANCED_CORE",
+      "name": "Information Technology Special Advanced Core",
+      "credits_required": 45,
+      "description": "Extensive advanced core for IT Special",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all advanced IT Special core courses",
+          "list": ["COMP 2603", "COMP 2605", "COMP 2606", "COMP 3603", "INFO 2600", "INFO 2601", "INFO 2602", "INFO 2603", "INFO 2604", "INFO 2605", "INFO 3600", "INFO 3601", "INFO 3602", "INFO 3604", "MATH 2250"]
+        }
+      ]
+    },
+    {
+      "id": "IT_SPEC_ADVANCED_ELECTIVES",
+      "name": "Information Technology Special Advanced Electives",
+      "credits_required": 15,
+      "description": "Advanced COMP or INFO electives",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 15,
+          "description": "Advanced COMP or INFO courses",
+          "filter": {
+            "subjects": ["COMP", "INFO"],
+            "min_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "MATH_LEVEL1_CORE",
+      "name": "Mathematics Level 1 Core",
+      "credits_required": 13,
+      "description": "Core Level 1 Mathematics courses (excluding MATH 1115)",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level 1 Math core courses",
+          "list": ["MATH 1142", "MATH 1152", "MATH 1194", "MATH 1141", "MATH 1151"]
+        }
+      ]
+    },
+    {
+      "id": "MATH_LEVEL1_ELECTIVES",
+      "name": "Mathematics Level 1 Electives",
+      "credits_required": 11,
+      "description": "Level 1 elective courses (excluding foundations)",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 11,
+          "description": "Any Level 1 courses excluding foundations",
+          "filter": {
+            "min_level": 1,
+            "max_level": 1,
+            "exclude_codes": ["FOUN 1101", "FOUN 1105", "FOUN 1301"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "MATH_ADVANCED_CORE",
+      "name": "Mathematics Advanced Core",
+      "credits_required": 24,
+      "description": "Advanced core MATH courses",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all advanced Math core courses",
+          "list": ["MATH 2270", "MATH 2273", "MATH 2274", "MATH 2276", "MATH 2271", "MATH 2272", "MATH 2275", "MATH 2277"]
+        }
+      ]
+    },
+    {
+      "id": "MATH_ADVANCED_LEVEL3_CORE",
+      "name": "Mathematics Advanced Level 3 Core",
+      "credits_required": 6,
+      "description": "Any MATH 3000-level courses",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 6,
+          "description": "Any Level 3 MATH courses",
+          "filter": {
+            "subjects": ["MATH"],
+            "min_level": 3,
+            "max_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "MATH_OTHER_ADVANCED_ELECTIVES",
+      "name": "Mathematics Other Advanced Electives",
+      "credits_required": 30,
+      "description": "Any other advanced level courses",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 30,
+          "description": "Any advanced level courses",
+          "filter": {
+            "min_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "DS_SEM1_CORE",
+      "name": "Data Science Semester 1 Core",
+      "credits_required": 9,
+      "description": "Core courses for Semester 1 of Data Science program",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Semester 1 core courses",
+          "list": ["COMP 6501", "COMP 6925", "STAT 6105"]
+        }
+      ]
+    },
+    {
+      "id": "DS_SEM2_CORE",
+      "name": "Data Science Semester 2 Core",
+      "credits_required": 9,
+      "description": "Core courses for Semester 2 of Data Science program",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Semester 2 core courses",
+          "list": ["STAT 6106", "COMP 6930", "COMP 6940"]
+        }
+      ]
+    },
+    {
+      "id": "DS_ELECTIVES",
+      "name": "Data Science Electives",
+      "credits_required": 12,
+      "description": "Elective courses for Data Science program",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 12,
+          "description": "Select from specified Data Science electives",
+          "list": ["COMP 6300", "COMP 6401", "COMP 6802", "COMP 6905", "STAT 6160", "STAT 6170", "STAT 6181", "STAT 6182"]
+        }
+      ]
+    },
+    {
+      "id": "DS_PROJECT",
+      "name": "Data Science Project",
+      "credits_required": 9,
+      "description": "Required project course for Data Science program",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete the Data Science project",
+          "list": ["STAT 6005"]
+        }
+      ]
+    }
+  ]
+}
