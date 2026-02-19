@@ -409,6 +409,60 @@ def test_doc_type_identification():
         print(f"   Error: {e}")
         return False
 
+def test_course_equivalencies(): # ADDED
+    """Test that the Rule Engine respects legacy course equivalencies."""
+    print("\n" + "=" * 60)
+    print("8. Testing Course Equivalencies...")
+    print("=" * 60)
+
+    from grids import StudentData, ProgrammeData, TermData, StudentCourse, Bucket, Major, Degree
+    from grids.evaluation import RequirementEvaluator
+
+    # Create a student who took the LEGACY course (COMP 1400)
+    student = StudentData(
+        name="Legacy Student",
+        student_number="816000001",
+        programme=ProgrammeData(major="Computer Science"),
+        terms=[
+            TermData(
+                term_name="2015/2016 Semester I",
+                courses=[
+                    StudentCourse(subject="COMP", number=1401, title="Legacy Intro", credits=4.0, grade="A", points=16.0),
+                ],
+                gpa=4.0
+            ),
+        ]
+    )
+
+    # Create a bucket that requires the NEW course (COMP 1600)
+    test_bucket = Bucket(
+        id="new_core",
+        name="Modern Core",
+        credits_required=3.0, # The modern rule wants 3 credits
+        rules=[{
+            "type": "all_credits_from",
+            "list": ["COMP 1600"],
+            "description": "Must take modern COMP 1600"
+        }]
+    )
+
+    degree = Degree(total_credits=93, majors=[Major(id="test", name="CS", total_credits=93, buckets=[test_bucket])])
+
+    evaluator = RequirementEvaluator(courses=[])
+    result = evaluator.evaluate_degree(student, degree)
+
+    # The bucket should pass because COMP 1401 maps to COMP 1600!
+    bucket_result = result.major_results[0].bucket_results[0]
+    
+    print(f"   Required: COMP 1600")
+    print(f"   Student took: COMP 1401")
+    print(f"   Bucket Is Met: {bucket_result.is_met}")
+    print(f"   Courses Used by Rule: {bucket_result.rule_results[0].courses_used}")
+    
+    assert bucket_result.is_met == True, "Equivalency failed: Engine did not map COMP 1401 to COMP 1600."
+    
+    print("   Equivalency logic works!")
+    return True
 
 def run_all_tests():
     """Run all validation tests."""
@@ -425,7 +479,7 @@ def run_all_tests():
     results.append(("Degree/Bucket models", test_degree_and_buckets()))
     results.append(("RequirementEvaluator", test_requirement_evaluator()))
     results.append(("Document type identification", test_doc_type_identification()))
-
+    results.append(("Course Equivalencies", test_course_equivalencies()))
     print("\n" + "=" * 60)
     print("SUMMARY")
     print("=" * 60)
