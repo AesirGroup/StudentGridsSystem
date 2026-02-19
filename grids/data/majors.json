@@ -1,0 +1,115 @@
+{
+  "majors": [
+    {
+      "id": "MAJOR_COMP_SCI_SPECIAL",
+      "name": "Computer Science (Special)",
+      "total_credits": 93,
+      "description": "Specialized computer science program with advanced coursework in software, systems, and theory",
+      "bucket_ids": [
+        "CS_SPEC_LEVEL1_CORE",
+        "CS_SPEC_MATH_1115",
+        "FOUNDATIONS",
+        "CS_SPEC_ADVANCED_CORE",
+        "CS_SPEC_ADVANCED_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MAJOR_COMP_SCI_GENERAL",
+      "name": "Computer Science",
+      "total_credits": 93,
+      "description": "General computer science major focusing on core programming, algorithms, and computing principles",
+      "bucket_ids": [
+        "CS_GEN_LEVEL1_CORE",
+        "CS_GEN_MATH_1115_ELECTIVE",
+        "CS_GEN_LEVEL1_ELECTIVES",
+        "FOUNDATIONS",
+        "CS_GEN_ADVANCED_COMP_CORE",
+        "CS_GEN_COMP_INFO_MATH_ELECTIVES",
+        "CS_GEN_OTHER_ADVANCED_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MAJOR_COMP_SCI_GENERAL_ALT",
+      "name": "Computer Science General",
+      "total_credits": 93,
+      "description": "General computer science major focusing on core programming, algorithms, and computing principles",
+      "bucket_ids": [
+        "CS_GEN_LEVEL1_CORE",
+        "CS_GEN_MATH_1115_ELECTIVE",
+        "CS_GEN_LEVEL1_ELECTIVES",
+        "FOUNDATIONS",
+        "CS_GEN_ADVANCED_COMP_CORE",
+        "CS_GEN_COMP_INFO_MATH_ELECTIVES",
+        "CS_GEN_OTHER_ADVANCED_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MAJOR_COMP_SCI_MANAGEMENT",
+      "name": "Computer Science with Management",
+      "total_credits": 93,
+      "description": "Interdisciplinary program combining computer science with business management principles",
+      "bucket_ids": [
+        "CS_MGMT_LEVEL1_CORE",
+        "FOUNDATIONS",
+        "CS_MGMT_ADVANCED_CORE",
+        "CS_MGMT_ADVANCED_CORE_ANY_3",
+        "CS_MGMT_COMP_ELECTIVES",
+        "CS_MGMT_OTHER_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MAJOR_INFO_TECH_SPECIAL",
+      "name": "Information Technology (Special)",
+      "total_credits": 93,
+      "description": "Specialized information technology program with focus on systems, networks, and information management",
+      "bucket_ids": [
+        "IT_SPEC_LEVEL1_CORE",
+        "IT_SPEC_MATH_1115",
+        "FOUNDATIONS",
+        "IT_SPEC_ADVANCED_CORE",
+        "IT_SPEC_ADVANCED_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MAJOR_INFO_TECH_GENERAL",
+      "name": "Information Technology",
+      "total_credits": 93,
+      "description": "General information technology major covering systems administration, networking, and IT management",
+      "bucket_ids": [
+        "IT_GEN_LEVEL1_CORE",
+        "IT_GEN_MATH_1115_ELECTIVE",
+        "IT_GEN_LEVEL1_ELECTIVES",
+        "FOUNDATIONS",
+        "IT_GEN_ADVANCED_INFO_CORE",
+        "IT_GEN_COMP_INFO_MATH_ELECTIVES",
+        "IT_GEN_OTHER_ADVANCED_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MAJOR_MATHEMATICS",
+      "name": "Mathematics",
+      "total_credits": 93,
+      "description": "Comprehensive mathematics program covering pure and applied mathematics",
+      "bucket_ids": [
+        "MATH_LEVEL1_CORE",
+        "MATH_LEVEL1_ELECTIVES",
+        "FOUNDATIONS",
+        "MATH_ADVANCED_CORE",
+        "MATH_ADVANCED_LEVEL3_CORE",
+        "MATH_OTHER_ADVANCED_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MAJOR_DATA_SCIENCE",
+      "name": "Data Science",
+      "total_credits": 39,
+      "description": "Graduate program in data science combining statistics, computing, and domain expertise",
+      "bucket_ids": [
+        "DS_SEM1_CORE",
+        "DS_SEM2_CORE",
+        "DS_ELECTIVES",
+        "DS_PROJECT"
+      ]
+    }
+  ]
+}
