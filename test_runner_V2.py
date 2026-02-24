@@ -14,12 +14,14 @@ except ImportError:
     sys.exit(1)
 
 def main():
+
+    # KAREEM - I changed to read from raw_lines_2.txt that has both INFO and INFT redacted info merged
     try:
-        with open("raw_lines.txt", "r") as f:
+        with open("raw_lines_2.txt", "r") as f:
             raw_lines = f.read()
-        print(f"--- Step 1.5: Read raw_lines.txt ({len(raw_lines)} chars) ---")
+        print(f"--- Step 1.5: Read raw_lines_2.txt ({len(raw_lines)} chars) ---")
     except FileNotFoundError:
-        print("Error: File 'raw_lines.txt' not found.")
+        print("Error: File 'raw_lines_2.txt' not found.")
         return
 
     # --- GLUE CODE STARTS HERE ---
@@ -38,10 +40,12 @@ def main():
             print(f"Student #{i+1}:")
             print(f"  Name: {student.name}")
             print(f"  Number: {student.student_number}")
+            print(f"  Campus: {student.campus}")
             print(f"  Programme: {student.programme.programme if student.programme else 'Unknown'}")
             print(f"  Major: {student.programme.major if student.programme else 'Unknown'}")
             print(f"  GPA: {student.overall_gpa}")
             print(f"  Terms Found: {len(student.terms)}")
+
             
             if student.terms:
                 last_term = student.terms[-1]

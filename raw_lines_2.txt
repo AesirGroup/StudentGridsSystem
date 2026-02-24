@@ -1,0 +1,1584 @@
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:42:55 AM
+Page # : 1 Page #: 1 / 7
+St Augustine Science & Technology
+Information Technology BSC S-INFO-BSC_S-F 202510 - 2025/2026 Semester I
+Student Number: 816040029
+Record of: Waiton Me
+Cumulative GPA: 1.75
+Admit Term: 2015/2016 Semester I
+Student Type: Continuing
+DEGREES AWARDED
+Degree Awarded Date Awarded Major Honours Dg GPA
+No Degrees
+Awarded
+CURRENT CURRICULUM
+CURRENT PROGRAMME
+Admit Term: 2015/2016 Semester I
+Programme Level: Undergraduate
+Degree: Bachelor of Science
+Programme: Information Technology BSC S
+Faculty: Science & Technology
+Campus: St Augustine
+Department: Computing & Information Tech
+Major: Information Technology
+Degree GPA: 1.53
+DEGREE GPA TOTALS
+Attempt Passed Quality Cumm. GPA
+Hours Hours Points GPA
+64.00 30.00 97.80 1.75 1.53
+Class of Degree: No Class Defined
+Institution Credit:
+2015/2016 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Undergraduate
+03
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+FOUN 1101 6.00 /40 39.00 /60 45 F1 3.00 5.10 PO
+INFO 1500 25.00 /40 39.00 64 B- 3.00 8.10
+INFO 1501 27 F3 3.00 0.00
+INFO 1502 29.00 /40 42.00 71 B+ 3.00 9.90
+INFO 1503 29.00 /40 37.00 66 B 3.00 9.00
+Term Credits 9.00 /15.00
+Term GPA 2.14
+2015/2016 Semester II
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+FOUN 1101 17.00 /40 27.00 /60 44 F2 3.00 3.90 R1
+FOUN 1105 22.50 /50 29.00 /50 52 F1 3.00 5.10
+INFO 1504 19.00 /40 19.00 38 F3 3.00 0.00
+INFO 1505 17.00 /40 25.00 42 F2 3.00 3.90
+INFO 1506 16.00 /40 28.00 44 F2 3.00 3.90
+INFO 1507 21.00 /40 25.00 46 F1 3.00 5.10 PO
+Term Credits 0.00 /18.00
+Term GPA 1.22
+2016/2017 Semester I
+Faculty:Science & Technology
+Major: Information Technology
+Compulsory Leave
+Term Credits 0.00 /0.00
+Term GPA 0.00
+2016/2017 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+FOUN 1101 46 F1 3.00 5.10 PO R2
+FOUN 1105 27.00 /50 28.00 /50 55 C+ 3.00 6.90 R1
+INFO 1601 59.00 /100 59 C+ 3.00 6.90
+Term Credits 6.00 /9.00
+Term GPA 2.10
+2017/2018 Semester I
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1601 23.00 /50 28.00 51 C 3.00 6.00
+COMP 1602 16.00 30 F2 3.00 3.90
+FOUN 1301 52.00 /100 52 C 3.00 6.00
+MATH 2250 0.00 /40 13.00 13 F3 3.00 0.00 Y
+Term Credits 6.00 /12.00
+Term GPA 1.33
+2017/2018 Semester II
+Academic Standing: Required to Withdraw
+Student Session: Full-time
+Sum17/18 GPA rolled to SemII17/18:GPA 1.62 to 2.09
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:42:55 AM
+Page # : 2 Page #: 2 / 7
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1602 36.00 /50 40.00 76 A- 3.00 11.10 R1
+COMP 1603 17.00 /50 24.00 41 F1 3.00 5.10
+INFO 2405 6.00 /40 9.00 15 F3 4.00 0.00 Y
+Term Credits 3.00 /10.00
+Term GPA 1.62
+2017/2018 Summer
+Academic Standing: Required to Withdraw
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1603 43.00 /50 35.00 78 A- 3.00 11.10 R1
+Term Credits 3.00 /3.00
+Term GPA 3.70
+2018/2019 Semester I
+Academic Standing: Required to Withdraw
+Student Session: Full-time
+Sum17/18 GPA rolled to SemII 17/18:GPA 1.62 to 2.9
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 15.00 /50 28.00 43 F1 3.00 5.10
+COMP 2605 19.00 /50 21.00 40 F1 3.00 5.10 Y
+COMP 2611 16.00 /50 18.00 34 F2 3.00 3.90 Y
+MATH 2250 15.00 /40 8.10 23 F3 3.00 0.00 Y R1
+Term Credits 0.00 /12.00
+Term GPA 1.18
+2018/2019 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 2602 33.00 /50 26.00 59 C+ 3.00 6.90 Y
+INFO 2604 30.00 /60 10.00 40 F1 3.00 5.10 Y
+Term Credits 3.00 /6.00
+Term GPA 2.00
+2018/2019 Summer
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2605 36.00 /50 35.00 71 B+ 3.00 9.90 Y R1
+COMP 2611 21.00 /50 35.00 56 C+ 3.00 6.90 Y R1
+Term Credits 6.00 /6.00
+Term GPA 2.80
+2019/2020 Semester I
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 2601 5.00 /50 7.00 12 F3 3.00 0.00 Y
+JAPA 1003 88.80 /100 89 A 2.00 8.00
+MATH 1115 0 EX 3.00 0.00
+MATH 2250 19.30 /40 30.30 50 C 3.00 6.00 Y R2
+Term Credits 5.00 /8.00
+Term GPA 1.75
+2019/2020 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2603 31.00 /50 9.00 40 FMP 3.00 0.00
+INFO 3602 53.00 /100 53 C 3.00 6.00 Y
+Term Credits 3.00 /6.00
+Term GPA 2.00
+In Progress Courses:
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+JAPA 1004 /100 2.00
+2020/2021 Semester I
+Faculty:Science & Technology
+Major: Information Technology
+Compulsory Leave
+Term Credits 0.00 /0.00
+Term GPA 0.00
+2020/2021 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2603 54.00 /100 54 C 3.00 6.00 Y R1
+COMP 2606 62.00 /100 62 B- 3.00 8.10 Y
+Term Credits 6.00 /6.00
+Term GPA 2.35
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:42:55 AM
+Page # : 3 Page #: 3 / 7
+2021/2022 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 67.00 /100 67 B 3.00 9.00 R1
+Term Credits 3.00 /3.00
+Term GPA 3.00
+2021/2022 Semester II
+Faculty:Science & Technology
+Major: Information Technology
+Compulsory Leave
+Term Credits 0.00 /0.00
+Term GPA 0.00
+2022/2023 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2601 17.00 /50 10.00 27 FMP 3.00 0.00
+COMP 2602 25.00 /50 15.00 40 FMP 3.00 0.00
+Term Credits 0.00 /6.00
+Term GPA 0.00
+2022/2023 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2604 0.00 /50 0.00 0 AB 3.00 0.00
+INFO 2604 22.00 /50 0.00 22 AB 3.00 0.00 R1
+JAPA 1007 54.00 /100 54 C 3.00 6.00
+Term Credits 3.00 /9.00
+Term GPA 2.00
+2023/2024 Semester I
+Faculty:Science & Technology
+Major: Information Technology
+Compulsory Leave
+Term Credits 0.00 /0.00
+Term GPA 0.00
+2023/2024 Semester II
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2604 0.00 /50 0.00 0 F3 3.00 0.00 Y R1
+INFO 2604 27.00 /50 13.00 40 F1 3.00 5.10 Y R2
+Term Credits 0.00 /6.00
+Term GPA 0.85
+2024/2025 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 3607 44.00 /100 44 F1 3.00 5.10 Y
+INFO 2603 59.00 /100 59 C+ 3.00 6.90 Y
+Term Credits 3.00 /6.00
+Term GPA 2.00
+2024/2025 Semester II
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 3604 24.00 /100 24 F3 3.00 0.00 Y
+INFO 3608 73.00 /100 73 B+ 3.00 9.90 Y
+Term Credits 3.00 /6.00
+Term GPA 1.65
+2025/2026 Semester I
+Academic Standing: Required to Withdraw
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 3607 56.00 /100 56 C+ 3.00 6.90 Y R1
+FOUN 1101 0.00 /35 0 F3 3.00 0.00 R3
+Term Credits 3.00 /6.00
+Term GPA 1.15
+In Progress Courses:
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 2601 33.00 /50 3.00 R1
+Programme Summary:
+Summary 2026-01-10 14:50:29
+1 FOUN Courses-FSA 6/9
+10 Information Tech Sp Lev 1 Core 15/24
+20 Information Tech Sp Adv Core 0/48
+30 Info Technology Sp Electives 0/12
+Programme Overall
+INFO-BSC_S-F 21/105
+INCOMPLETE
+RECOMMENDATIONS / COMMENTS:
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:42:55 AM
+Page # : 4 Page #: 4 / 7
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:42:55 AM
+Page # : 5 Page #: 5 / 7
+Student Number: 816040070
+Record of: Sloane Steady
+Cumulative GPA: 1.46
+Admit Term: 2013/2014 Semester I
+Student Type: Continuing
+DEGREES AWARDED
+Degree Awarded Date Awarded Major Honours Dg GPA
+No Degrees
+Awarded
+CURRENT CURRICULUM
+CURRENT PROGRAMME
+Admit Term: 2013/2014 Semester I
+Programme Level: Undergraduate
+Degree: Bachelor of Science
+Programme: Information Technology BSC S
+Faculty: Science & Technology
+Campus: St Augustine
+Department: Computing & Information Tech
+Major: Information Technology
+Degree GPA: 1.95
+DEGREE GPA TOTALS
+Attempt Passed Quality Cumm. GPA
+Hours Hours Points GPA
+54.00 34.00 105.50 1.46 1.95
+Class of Degree: No Class Defined
+Institution Credit:
+2013/2014 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 1500 21.00 /40 30.00 51 C 3.00 6.00
+INFO 1501 82 A 3.00 12.00
+INFO 1502 26.00 /40 42.00 68 A- 3.00 11.10
+INFO 1503 27.00 /40 27.00 54 C+ 3.00 6.90
+Term Credits 12.0 /12.00
+Term GPA 3.00
+2013/2014 Semester II
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 1504 16.00 /40 22.00 38 F 3.00 0.00
+INFO 1505 29.00 /40 20.00 49 F 3.00 0.00
+INFO 1506 24.00 /40 22.00 46 F 3.00 0.00
+INFO 1507 23.00 /40 27.00 50 C 3.00 6.00
+Term Credits 3.00 /12.00
+Term GPA 0.50
+2014/2015 Semester I
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+FOUN 1301 33.00 /100 33 F3 3.00 0.00
+INFO 2405 30.00 /40 26.00 56 C+ 4.00 9.20 Y
+2014/2015 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 1504 31.00 /40 30.00 61 B- 3.00 8.10 R1
+INFO 1505 27.00 /40 30.00 57 C+ 3.00 6.90 R1
+INFO 1506 30.00 /40 32.00 62 B- 3.00 8.10 R1
+2015/2016 Semester I
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 2420 5.00 /40 4.00 9 F3 4.00 0.00 Y
+INFO 2430 17.00 /40 16.00 /60 33 F3 4.00 0.00 Y
+2015/2016 Semester II
+Academic Standing:
+Student Session: Full-time
+In Progress Courses:
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 2420 /40 4.00 R1
+2016/2017 Semester I
+Faculty:Science & Technology
+Major: Information Technology
+Leave of Absence
+2016/2017 Semester II
+Faculty:Science & Technology
+Major: Information Technology
+Leave of Absence
+2017/2018 Semester I
+Faculty:Science & Technology
+Major: Information Technology
+Leave of Absence
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:42:55 AM
+Page # : 6 Page #: 6 / 7
+2017/2018 Semester II
+Faculty:Science & Technology
+Major: Information Technology
+Leave of Absence
+2018/2019 Semester I
+Academic Standing: Good Standing
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 2603 18.00 /25 45 F1 3.00 5.10 Y PO
+INFO 2605 12.00 /30 60 B- 3.00 8.10 Y
+2018/2019 Semester II
+Academic Standing: Warning
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 2600 31.00 /50 19.00 50 C 3.00 6.00 Y
+INFO 2602 9.00 /50 10.00 19 F3 3.00 0.00 Y
+2019/2020 Semester I
+Academic Standing: Good Standing
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2605 33.00 /50 27.00 60 B- 3.00 8.10 Y
+FOUN 1101 0 EC 3.00 0.00 R1
+INFO 2603 18.00 /25 77 A- 3.00 11.10 Y R1
+2019/2020 Semester II
+Faculty:Science & Technology
+Major: Information Technology
+Leave of Absence
+2020/2021 Semester I
+Faculty:Science & Technology
+Major: Information Technology
+Leave of Absence
+2020/2021 Semester II
+Academic Standing: Good Standing
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 2602 27.00 /50 16.00 43 F1 3.00 5.10 Y R1
+INFO 2604 60.00 /100 60 B- 3.00 8.10 Y
+2021/2022 Semester I
+Academic Standing: Good Standing
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 2601 50.00 /100 50 C 3.00 6.00 Y
+2021/2022 Semester II
+Academic Standing: Warning
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 2602 31.00 /50 0.00 31 F2 3.00 3.90 Y R2
+2022/2023 Semester I
+Faculty:Science & Technology
+Major: Information Technology
+Leave of Absence
+2022/2023 Semester II
+Academic Standing: Good Standing
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 2602 19.00 /50 36.00 55 C+ 3.00 6.90 Y R3
+2023/2024 Semester I
+Academic Standing: Good Standing
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 3600 22.00 /50 28.00 50 C 3.00 6.00 Y
+2023/2024 Semester II
+Academic Standing: Warning
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+FOUN 1301 28.00 /40 18.00 46 F1 3.00 5.10 PO R1
+2024/2025 Semester I
+Academic Standing: Good Standing
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+FOUN 1210 29.00 60 B- 3.00 8.10
+2024/2025 Semester II
+Academic Standing: Good Standing
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:42:55 AM
+Page # : 7 Page #: 7 / 7
+INFO 3611 86.00 /100 86 A 3.00 12.00 Y
+2025/2026 Semester I
+Academic Standing: Good Standing
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+AGEX 3004 72.70 /100 73 B+ 3.00 9.90 Y
+Programme Summary:
+Summary 2026-01-10 14:50:32
+1 FOUN Courses-FSA 3/9
+10 Information Tech Sp Lev 1 Core 0/24
+20 Information Tech Sp Adv Core 4/48
+30 Info Technology Sp Electives 0/12
+Programme Overall
+INFO-BSC_S-F 7/105
+INCOMPLETE
+RECOMMENDATIONS / COMMENTS:
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:23 AM
+Page # : 1 Page #: 1 /
+St Augustine Science & Technology
+Info Technology (Special) BSC-INFT-BSC-S-F 202510 - 2025/2026 Semester I
+Student Number: 816040001
+Record of: John Doe1
+Cumulative GPA: 2.36
+Admit Term: 2024/2025 Semester I
+Student Type: Continuing
+DEGREES AWARDED
+Degree Awarded Date Awarded Major Honours Dg GPA
+No Degrees
+Awarded
+CURRENT CURRICULUM
+CURRENT PROGRAMME
+Admit Term: 2024/2025 Semester I
+Programme Level: Undergraduate
+Degree: Bachelor of Science
+Programme: Info Technology (Special) BSC
+Faculty: Science & Technology
+Campus: St Augustine
+Department: Computing & Information Tech
+Major: Information Technology (Spec)
+Degree GPA: 2.35
+DEGREE GPA TOTALS
+Attempt Passed Quality Cumm. GPA
+Hours Hours Points GPA
+39.00 30.00 91.50 2.36 2.35
+Class of Degree: P
+Institution Credit:
+2024/2025 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Undergraduate
+03
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1601 0 EC 3.00 0.00
+COMP 2605 42.00 /50 8.00 50 C 3.00 6.00 Y
+INFO 1600 0 EC 3.00 0.00
+INFO 2601 28.00 /50 9.00 37 F2 3.00 3.90 Y
+INFO 2603 51.00 /100 51 C 3.00 6.00 Y
+INFO 2605 75.00 /100 75 A- 3.00 11.10 Y
+MATH 1115 22.00 /40 29.00 51 C 3.00 6.00
+Term Credits 18.0 /21.00
+Term GPA 2.20
+2024/2025 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 0 EC 3.00 0.00
+COMP 1602 0 EC 3.00 0.00
+COMP 1603 0 EC 3.00 0.00
+COMP 1604 0 EC 3.00 0.00
+COMP 2603 21.00 /50 25.00 46 F1 3.00 5.10 Y PO
+COMP 2606 33.00 /50 37.00 70 B+ 3.00 9.90 Y
+INFO 1601 0 EC 3.00 0.00
+INFO 2600 31.00 /50 24.00 55 C+ 3.00 6.90 Y
+INFO 2602 31.00 /100 31 F2 3.00 3.90 Y
+INFO 2604 27.00 /50 26.00 53 C 3.00 6.00 Y
+Term Credits 24.0 /30.00
+Term GPA 2.12
+2024/2025 Summer
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+FOUN 1105 33.30 /50 62 B- 3.00 8.10
+FOUN 1301 29.00 /40 22.00 51 C 3.00 6.00
+SPAN 1007 67 B 3.00 9.00
+Term Credits 9.00 /9.00
+Term GPA 2.57
+2025/2026 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 3603 70.00 /100 70 B+ 3.00 9.90 Y
+INFO 2601 42.00 /50 30.00 72 B+ 3.00 9.90 Y R1
+INFO 3600 23.00 /50 30.00 53 C 3.00 6.00 Y
+MATH 2250 17.00 /40 38.00 55 C+ 3.00 6.90 Y
+Term Credits 12.0 /12.00
+Term GPA 2.73
+Programme Summary:
+Summary 2026-01-10 14:50:35
+1 FOUN Courses-FSA 6/9
+1 Foreign Language Requirement 3/3
+10 Information Tech Sp Lev 1 Core 24/24
+20 Information Tech Sp Adv Core 30/45
+30 Info Technology Sp Electives 0/15
+Programme Overall
+INFT-BSC-S-F 63/93
+INCOMPLETE
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:23 AM
+Page # : 2 Page #: 2 /
+RECOMMENDATIONS / COMMENTS:
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:23 AM
+Page # : 3 Page #: 3 /
+Student Number: 816040002
+Record of: John Doe2
+Cumulative GPA: 3.06
+Admit Term: 2023/2024 Semester I
+Student Type: Continuing
+DEGREES AWARDED
+Degree Awarded Date Awarded Major Honours Dg GPA
+No Degrees
+Awarded
+CURRENT CURRICULUM
+CURRENT PROGRAMME
+Admit Term: 2023/2024 Semester I
+Programme Level: Undergraduate
+Degree: Bachelor of Science
+Programme: Info Technology (Special) BSC
+Faculty: Science & Technology
+Campus: St Augustine
+Department: Computing & Information Tech
+Major: Information Technology (Spec)
+Degree GPA: 3.14
+DEGREE GPA TOTALS
+Attempt Passed Quality Cumm. GPA
+Hours Hours Points GPA
+42.00 42.00 132.00 3.06 3.14
+Class of Degree: SU
+Institution Credit:
+2023/2024 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 68.00 /100 68 B 3.00 9.00
+COMP 1601 40.00 /50 35.00 75 A- 3.00 11.10
+FOUN 1101 25.00 /35 65 B 3.00 9.00
+INFO 1600 32.00 /50 35.00 67 B 3.00 9.00
+MATH 1115 34.00 /40 33.00 67 B 3.00 9.00
+Term Credits 15.0 /15.00
+Term GPA 3.14
+2023/2024 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1602 38.00 /50 38.00 76 A- 3.00 11.10
+COMP 1603 24.00 /50 27.00 51 C 3.00 6.00
+COMP 1604 36.00 /50 20.00 56 C+ 3.00 6.90
+FOUN 1105 38.30 /50 65 B 3.00 9.00
+INFO 1601 75.00 /100 75 A- 3.00 11.10
+Term Credits 15.0 /15.00
+Term GPA 2.94
+2024/2025 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2605 43.00 /50 25.00 68 B 3.00 9.00 Y
+INFO 2601 40.00 /50 33.00 73 B+ 3.00 9.90 Y
+INFO 2603 75.00 /100 75 A- 3.00 11.10 Y
+INFO 2605 75.00 /100 75 A- 3.00 11.10 Y
+MATH 2250 23.00 /40 34.00 57 C+ 3.00 6.90 Y
+Term Credits 15.0 /15.00
+Term GPA 3.20
+2024/2025 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2603 37.00 /50 30.00 67 B 3.00 9.00 Y
+COMP 2606 36.00 /50 30.00 66 B 3.00 9.00 Y
+FOUN 1301 28.00 /40 25.00 53 C 3.00 6.00
+INFO 2602 72.00 /100 72 B+ 3.00 9.90 Y
+INFO 2604 41.00 /50 23.00 64 B- 3.00 8.10 Y
+Term Credits 15.0 /15.00
+Term GPA 2.80
+2025/2026 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 3603 80.00 /100 80 A 3.00 12.00 Y
+COMP 3605 28.00 /50 43.00 71 B+ 3.00 9.90 Y
+COMP 3607 64.00 /100 64 B- 3.00 8.10 Y
+INFO 3600 31.00 /50 32.00 63 B- 3.00 8.10 Y
+INFO 3601 72.00 /100 72 B+ 3.00 9.90 Y
+Term Credits 15.0 /15.00
+Term GPA 3.20
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:23 AM
+Page # : 4 Page #: 4 /
+Programme Summary:
+Summary 2026-01-10 14:50:38
+1 FOUN Courses-FSA 6/9
+1 Foreign Language Requirement 0/3
+10 Information Tech Sp Lev 1 Core 24/24
+20 Information Tech Sp Adv Core 39/45
+30 Info Technology Sp Electives 3/15
+Programme Overall
+INFT-BSC-S-F 72/93
+INCOMPLETE
+RECOMMENDATIONS / COMMENTS:
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:23 AM
+Page # : 5 Page #: 5 /
+Student Number: 816040003
+Record of: John Doe3
+Cumulative GPA: 1.76
+Admit Term: 2023/2024 Semester I
+Student Type: Continuing
+DEGREES AWARDED
+Degree Awarded Date Awarded Major Honours Dg GPA
+No Degrees
+Awarded
+CURRENT CURRICULUM
+CURRENT PROGRAMME
+Admit Term: 2023/2024 Semester I
+Programme Level: Undergraduate
+Degree: Bachelor of Science
+Programme: Info Technology (Special) BSC
+Faculty: Science & Technology
+Campus: St Augustine
+Department: Computing & Information Tech
+Major: Information Technology (Spec)
+Degree GPA: 1.71
+DEGREE GPA TOTALS
+Attempt Passed Quality Cumm. GPA
+Hours Hours Points GPA
+45.00 18.00 77.10 1.76 1.71
+Class of Degree: No Class Defined
+Institution Credit:
+2023/2024 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1601 0 EC 3.00 0.00 R1
+COMP 1602 26.00 /50 24.00 50 C 3.00 6.00 R1
+COMP 2601 12.00 /50 6.00 18 F3 3.00 0.00 Y
+FOUN 1101 0 EC 3.00 0.00 R1
+FOUN 1301 0 EC 3.00 0.00 R1
+INFO 2603 71.00 /100 71 B+ 3.00 9.90 Y R1
+INFO 2605 6.00 /30 60 B- 3.00 8.10 Y
+MATH 1115 0 EC 3.00 0.00 R1
+Term Credits 21.0 /24.00
+Term GPA 2.00
+2023/2024 Semester II
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 0 EC 3.00 0.00 R1
+COMP 1603 0 EC 3.00 0.00 R1
+COMP 1604 19.00 /50 7.00 26 F3 3.00 0.00 R1
+COMP 2603 17.00 /50 7.00 24 F3 3.00 0.00 Y
+INFO 1600 0 EC 3.00 0.00 R1
+INFO 1601 63.00 /100 63 B- 3.00 8.10 R1
+INFO 2600 39.00 /50 6.00 45 F1 3.00 5.10 Y PO
+Term Credits 12.0 /21.00
+Term GPA 1.10
+2024/2025 Semester I
+Academic Standing: Required to Withdraw
+Student Session: Full-time
+RTW Waived for Sem II 2024/2025
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2605 37.00 /50 1.00 38 F2 3.00 3.90 Y R1
+INFO 3601 50.00 /100 50 C 3.00 6.00 Y
+MATH 2250 17.00 /40 17.00 34 F2 3.00 3.90 Y
+Term Credits 3.00 /9.00
+Term GPA 1.53
+2024/2025 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2606 28.00 /50 22.00 50 C 3.00 6.00 Y
+INFO 2600 38.00 /50 22.00 60 B- 3.00 8.10 Y R1
+INFO 2602 43.00 /100 43 F1 3.00 5.10 Y
+Term Credits 6.00 /9.00
+Term GPA 2.13
+2024/2025 Summer
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2605 21.00 /50 12.00 33 F2 3.00 3.90 Y R2
+Term Credits 0.00 /3.00
+Term GPA 1.30
+2025/2026 Semester I
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:23 AM
+Page # : 6 Page #: 6 /
+COCR 1036 50.00 /100 50 P 3.00 0.00
+COMP 2605 27.00 /50 16.00 43 F1 3.00 5.10 Y R3
+COMP 3603 57.00 /100 57 C+ 3.00 6.90 Y
+INFO 2601 33.00 /50 10.00 43 F1 3.00 5.10 Y R1
+Term Credits 6.00 /12.00
+Term GPA 1.90
+Programme Summary:
+Summary 2026-01-10 14:50:42
+1 FOUN Courses-FSA 3/9
+1 Foreign Language Requirement 0/3
+10 Information Tech Sp Lev 1 Core 21/24
+20 Information Tech Sp Adv Core 21/45
+30 Info Technology Sp Electives 0/15
+Programme Overall
+INFT-BSC-S-F 45/93
+INCOMPLETE
+RECOMMENDATIONS / COMMENTS:
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:23 AM
+Page # : 7 Page #: 7 /
+Student Number: 816040004
+Record of: John Doe4
+Cumulative GPA: 1.91
+Admit Term: 2019/2020 Semester I
+Student Type: Continuing
+DEGREES AWARDED
+Degree Awarded Date Awarded Major Honours Dg GPA
+No Degrees
+Awarded
+CURRENT CURRICULUM
+CURRENT PROGRAMME
+Admit Term: 2019/2020 Semester I
+Programme Level: Undergraduate
+Degree: Bachelor of Science
+Programme: Info Technology (Special) BSC
+Faculty: Science & Technology
+Campus: St Augustine
+Department: Computing & Information Tech
+Major: Information Technology (Spec)
+Degree GPA: 2.01
+DEGREE GPA TOTALS
+Attempt Passed Quality Cumm. GPA
+Hours Hours Points GPA
+45.00 27.00 90.60 1.91 2.01
+Class of Degree: P
+Institution Credit:
+2019/2020 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 27.00 /50 10.00 37 F2 3.00 3.90
+COMP 1601 24.00 /50 20.00 44 F1 3.00 5.10
+FOUN 1101 24.00 /35 56 C+ 3.00 6.90
+INFO 1600 35.00 /50 24.00 59 C+ 3.00 6.90
+MATH 1115 24.00 /40 40.00 64 B- 3.00 8.10
+Term Credits 9.00 /15.00
+Term GPA 2.06
+2019/2020 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1602 6.00 /50 0.00 6 F3 3.00 0.00
+COMP 1604 17.00 /50 13.00 30 FMP 3.00 0.00
+FOUN 1105 70.00 /100 70 B+ 3.00 9.90
+FOUN 1301 28.00 /40 0.00 28 FMP 3.00 0.00
+INFO 1601 66.00 /100 66 B 3.00 9.00
+Term Credits 6.00 /15.00
+Term GPA 2.10
+2019/2020 Summer
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 25.00 /50 8.00 33 F2 3.00 3.90 R1
+COMP 1601 20.00 /50 19.00 39 F2 3.00 3.90 R1
+Term Credits 0.00 /6.00
+Term GPA 1.30
+2020/2021 Semester I
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 33.00 /100 33 F2 3.00 3.90 R2
+INFO 2601 32.00 /100 32 F2 3.00 3.90 Y
+INFO 2603 42.00 /100 42 F1 3.00 5.10 Y
+INFO 2605 17.00 /30 68 B 3.00 9.00 Y
+Term Credits 3.00 /12.00
+Term GPA 1.83
+2020/2021 Semester II
+Academic Standing: Required to Withdraw
+Student Session: Full-time
+RTW WAIVED BY DEAN FOR SEMESTER I 2021/2022
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1603 38.00 /100 38 F2 3.00 3.90
+INFO 2600 36.00 /100 36 F2 3.00 3.90 Y
+INFO 2602 17.00 /50 18.00 35 F2 3.00 3.90 Y
+Term Credits 0.00 /9.00
+Term GPA 1.30
+2021/2022 Semester I
+Academic Standing: Required to Withdraw
+Student Session: Full-time
+RTW WAIVED BY DEAN FOR SEMESTER II 2021/2022
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 45.00 /100 45 F1 3.00 5.10 PO R3
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:23 AM
+Page # : 8 Page #: 8 /
+COMP 1601 33.00 /100 33 F2 3.00 3.90 R2
+INFO 2601 60.00 /100 60 B- 3.00 8.10 Y R1
+Term Credits 3.00 /9.00
+Term GPA 1.90
+2021/2022 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+FOUN 1301 18.00 /40 51.00 69 B 3.00 9.00 R1
+INFO 2600 53.00 /100 53 C 3.00 6.00 Y R1
+INFO 2602 38.00 /50 19.00 57 C+ 3.00 6.90 Y R1
+Term Credits 9.00 /9.00
+Term GPA 2.43
+2022/2023 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 27.00 /50 25.00 52 C 3.00 6.00 R4
+COMP 1601 19.00 /50 23.00 42 FMP 3.00 0.00 R3
+INFO 2603 61.00 /100 61 B- 3.00 8.10 Y R1
+Term Credits 6.00 /9.00
+Term GPA 2.35
+2022/2023 Semester II
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1602 0.00 /50 0.00 0 F3 3.00 0.00 R1
+COMP 1604 0.00 /50 7.00 7 F3 3.00 0.00 R1
+INFO 3602 56.00 /100 56 C+ 3.00 6.90 Y
+Term Credits 3.00 /9.00
+Term GPA 0.77
+2022/2023 Summer
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1601 38.00 /50 39.00 77 A- 3.00 11.10 R4
+COMP 1602 11.00 /50 3.00 14 F3 3.00 0.00 R2
+Term Credits 3.00 /6.00
+Term GPA 1.85
+2023/2024 Semester I
+Academic Standing: Required to Withdraw
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1602 17.00 /50 33.00 50 C 3.00 6.00 R3
+COMP 2605 30.00 /50 7.00 37 F2 3.00 3.90 Y
+INFO 3601 54.00 /100 54 C 3.00 6.00 Y
+Term Credits 6.00 /9.00
+Term GPA 1.77
+2024/2025 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1604 33.00 /50 28.00 61 B- 3.00 8.10 R2
+LITS 1001 67.00 /100 67 B 3.00 9.00
+PSYC 1004 30.00 /40 36.00 66 B 3.00 9.00
+Term Credits 9.00 /9.00
+Term GPA 2.90
+2025/2026 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2601 21.00 /50 12.00 33 F2 3.00 3.90 Y
+COMP 2605 39.00 /50 16.00 55 C+ 3.00 6.90 Y R1
+INFO 3605 62.00 /100 62 B- 3.00 8.10 Y
+Term Credits 6.00 /9.00
+Term GPA 2.10
+Programme Summary:
+Summary 2026-01-10 14:50:50
+1 FOUN Courses-FSA 9/9
+10 Information Tech Sp Lev 1 Core 21/24
+20 Information Tech Sp Adv Core 27/45
+30 Info Technology Sp Electives 0/15
+Programme Overall
+INFT-BSC-S-F 57/93
+INCOMPLETE
+RECOMMENDATIONS / COMMENTS:
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:23 AM
+Page # : 9 Page #: 9 /
+Student Number: 816040005
+Record of: John Doe5
+Cumulative GPA: 2.86
+Admit Term: 2022/2023 Semester I
+Student Type: Continuing
+DEGREES AWARDED
+Degree Awarded Date Awarded Major Honours Dg GPA
+No Degrees
+Awarded
+CURRENT CURRICULUM
+CURRENT PROGRAMME
+Admit Term: 2022/2023 Semester I
+Programme Level: Undergraduate
+Degree: Bachelor of Science
+Programme: Info Technology (Special) BSC
+Faculty: Science & Technology
+Campus: St Augustine
+Department: Computing & Information Tech
+Major: Information Technology (Spec)
+Degree GPA: 2.81
+DEGREE GPA TOTALS
+Attempt Passed Quality Cumm. GPA
+Hours Hours Points GPA
+60.00 51.00 168.60 2.86 2.81
+Class of Degree: SL
+Institution Credit:
+2022/2023 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 32.00 /50 36.00 68 B 3.00 9.00
+COMP 1601 37.00 /50 34.00 71 B+ 3.00 9.90
+FOUN 1101 26.00 /35 74 B+ 3.00 9.90
+INFO 1600 43.00 /50 33.00 76 A- 3.00 11.10
+MATH 1115 30.00 /40 32.00 62 B- 3.00 8.10
+Term Credits 15.0 /15.00
+Term GPA 3.20
+2022/2023 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1602 22.00 /50 24.00 46 F1 3.00 5.10 PO
+COMP 1603 41.00 /50 19.00 60 B- 3.00 8.10
+COMP 1604 30.00 /50 21.00 51 C 3.00 6.00
+FOUN 1105 32.70 /50 62 B- 3.00 8.10
+INFO 1601 87.00 /100 87 A 3.00 12.00
+Term Credits 12.0 /15.00
+Term GPA 2.62
+2023/2024 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1602 36.00 /50 46.00 82 A 3.00 12.00 R1
+COMP 2605 43.00 /50 13.00 56 C+ 3.00 6.90 Y
+INFO 2601 30.00 /50 35.00 65 B 3.00 9.00 Y
+INFO 2603 76.00 /100 76 A- 3.00 11.10 Y
+MATH 2250 19.00 /40 31.00 50 C 3.00 6.00 Y
+Term Credits 15.0 /15.00
+Term GPA 3.00
+2023/2024 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2603 29.00 /50 25.00 54 C 3.00 6.00 Y
+COMP 2606 34.00 /50 27.00 61 B- 3.00 8.10 Y
+INFO 2600 39.00 /50 33.00 72 B+ 3.00 9.90 Y
+INFO 2602 38.00 /100 38 F2 3.00 3.90 Y
+INFO 2604 38.00 /50 20.00 58 C+ 3.00 6.90 Y
+Term Credits 12.0 /15.00
+Term GPA 2.32
+2024/2025 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 3603 82.00 /100 82 A 3.00 12.00 Y
+COMP 3605 26.00 /50 15.00 41 F1 3.00 5.10 Y
+INFO 2605 73.00 /100 73 B+ 3.00 9.90 Y
+INFO 3600 30.00 /50 26.00 56 C+ 3.00 6.90 Y
+INFO 3601 50.00 /100 50 C 3.00 6.00 Y
+Term Credits 12.0 /15.00
+Term GPA 2.66
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:23 AM
+Page # : 10 Page #: 10 /
+2024/2025 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+FOUN 1301 30.00 /40 26.00 56 C+ 3.00 6.90
+INFO 2602 50.00 /100 50 C 3.00 6.00 Y R1
+INFO 3606 93.00 /100 93 A+ 3.00 12.90 Y
+INFO 3608 88.00 /100 88 A 3.00 12.00 Y
+INFO 3611 85.00 /100 85 A 3.00 12.00 Y
+Term Credits 15.0 /15.00
+Term GPA 3.32
+2025/2026 Semester I
+Academic Standing: Good Standing
+Student Session: Part-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2611 33.00 /50 15.00 48 F1 3.00 5.10 Y PO
+INFO 3605 90.00 /100 90 A+ 3.00 12.90 Y
+Term Credits 3.00 /6.00
+Term GPA 3.00
+Programme Summary:
+Summary 2026-01-10 14:50:51
+1 FOUN Courses-FSA 9/9
+10 Information Tech Sp Lev 1 Core 24/24
+20 Information Tech Sp Adv Core 42/45
+30 Info Technology Sp Electives 6/15
+Programme Overall
+INFT-BSC-S-F 81/93
+INCOMPLETE
+RECOMMENDATIONS / COMMENTS:
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:23 AM
+Page # : 11 Page #: 11 /
+Student Number: 816040006
+Record of: John Doe6
+Cumulative GPA: 2.67
+Admit Term: 2022/2023 Semester I
+Student Type: Continuing
+DEGREES AWARDED
+Degree Awarded Date Awarded Major Honours Dg GPA
+No Degrees
+Awarded
+CURRENT CURRICULUM
+CURRENT PROGRAMME
+Admit Term: 2022/2023 Semester I
+Programme Level: Undergraduate
+Degree: Bachelor of Science
+Programme: Info Technology (Special) BSC
+Faculty: Science & Technology
+Campus: St Augustine
+Department: Computing & Information Tech
+Major: Information Technology (Spec)
+Degree GPA: 2.94
+DEGREE GPA TOTALS
+Attempt Passed Quality Cumm. GPA
+Hours Hours Points GPA
+63.00 48.00 185.10 2.67 2.94
+Class of Degree: SL
+Institution Credit:
+2022/2023 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 27.00 /50 24.00 51 C 3.00 6.00
+COMP 1601 31.00 /50 14.00 45 FMP 3.00 0.00
+FOUN 1101 30.00 /35 72 B+ 3.00 9.90
+INFO 1600 32.00 /50 30.00 62 B- 3.00 8.10
+MATH 1115 33.00 /40 40.00 73 B+ 3.00 9.90
+Term Credits 12.0 /15.00
+Term GPA 2.83
+2022/2023 Semester II
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1601 37.00 /50 17.00 54 C 3.00 6.00 R1
+COMP 1602 20.00 /50 4.00 24 F3 3.00 0.00
+COMP 1604 16.00 /50 19.00 35 F2 3.00 3.90
+INFO 1601 65.00 /100 65 B 3.00 9.00
+Term Credits 6.00 /12.00
+Term GPA 1.58
+2022/2023 Summer
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1602 34.00 /50 23.00 57 C+ 3.00 6.90 R1
+COMP 1603 33.00 /50 17.00 50 C 3.00 6.00
+COMP 1604 40.00 /50 25.00 65 B 3.00 9.00 R1
+Term Credits 9.00 /9.00
+Term GPA 2.43
+2023/2024 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2605 36.00 /50 5.00 41 F1 3.00 5.10 Y
+INFO 2601 31.00 /50 11.00 42 F1 3.00 5.10 Y
+INFO 2603 67.00 /100 67 B 3.00 9.00 Y
+Term Credits 3.00 /9.00
+Term GPA 2.13
+2023/2024 Semester II
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2603 25.00 /50 20.00 45 F1 3.00 5.10 Y PO
+COMP 2606 27.00 /50 20.00 47 F1 3.00 5.10 Y PO
+FOUN 1301 25.00 /40 17.00 42 F1 3.00 5.10
+INFO 2600 36.00 /50 27.00 63 B- 3.00 8.10 Y
+INFO 2604 35.00 /50 15.00 50 C 3.00 6.00 Y
+Term Credits 6.00 /15.00
+Term GPA 1.96
+2023/2024 Summer
+Academic Standing: Warning
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2603 30.00 /50 20.00 50 C 3.00 6.00 Y R1
+COMP 2605 35.00 /50 35.00 70 B+ 3.00 9.90 Y R1
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:24 AM
+Page # : 12 Page #: 12 /
+MATH 2250 20.10 /40 31.80 52 C 3.00 6.00 Y
+Term Credits 9.00 /9.00
+Term GPA 2.43
+2024/2025 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 2601 39.00 /50 46.00 85 A 3.00 12.00 Y R1
+INFO 3600 16.00 /50 27.00 43 F1 3.00 5.10 Y
+INFO 3601 66.00 /100 66 B 3.00 9.00 Y
+Term Credits 6.00 /9.00
+Term GPA 2.90
+2024/2025 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2606 38.00 /50 37.00 75 A- 3.00 11.10 Y R1
+INFO 2602 91.00 /100 91 A+ 3.00 12.90 Y
+INFO 3604 91.00 /100 91 A+ 3.00 12.90 Y
+INFO 3606 92.00 /100 92 A+ 3.00 12.90 Y
+Term Credits 12.0 /12.00
+Term GPA 4.15
+2024/2025 Summer
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+FOUN 1105 39.70 /50 67 B 3.00 9.00
+FOUN 1301 33.00 /40 20.00 53 C 3.00 6.00 R1
+Term Credits 6.00 /6.00
+Term GPA 2.50
+2025/2026 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 3603 70.00 /100 70 B+ 3.00 9.90 Y
+INFO 2605 80.00 /100 80 A 3.00 12.00 Y
+INFO 3600 33.00 /50 39.00 72 B+ 3.00 9.90 Y R1
+INFO 3605 84.00 /100 84 A 3.00 12.00 Y
+Term Credits 12.0 /12.00
+Term GPA 3.65
+Programme Summary:
+Summary 2026-01-10 14:51:10
+1 FOUN Courses-FSA 9/9
+10 Information Tech Sp Lev 1 Core 24/24
+20 Information Tech Sp Adv Core 45/45
+30 Info Technology Sp Electives 3/15
+Programme Overall
+INFT-BSC-S-F 81/93
+INCOMPLETE
+RECOMMENDATIONS / COMMENTS:
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:24 AM
+Page # : 13 Page #: 13 /
+Student Number: 816040007
+Record of: John Doe7
+Cumulative GPA: 3.16
+Admit Term: 2023/2024 Semester I
+Student Type: Continuing
+DEGREES AWARDED
+Degree Awarded Date Awarded Major Honours Dg GPA
+No Degrees
+Awarded
+CURRENT CURRICULUM
+CURRENT PROGRAMME
+Admit Term: 2023/2024 Semester I
+Programme Level: Undergraduate
+Degree: Bachelor of Science
+Programme: Info Technology (Special) BSC
+Faculty: Science & Technology
+Campus: St Augustine
+Department: Computing & Information Tech
+Major: Information Technology (Spec)
+Degree GPA: 3.18
+DEGREE GPA TOTALS
+Attempt Passed Quality Cumm. GPA
+Hours Hours Points GPA
+39.00 39.00 124.20 3.16 3.18
+Class of Degree: SU
+Institution Credit:
+2023/2024 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 69.00 /100 69 B 3.00 9.00
+COMP 1601 30.00 /50 27.00 57 C+ 3.00 6.90
+FOUN 1101 29.00 /35 81 A 3.00 12.00
+INFO 1600 42.00 /50 25.00 67 B 3.00 9.00
+MATH 1115 30.00 /40 29.00 59 C+ 3.00 6.90
+Term Credits 15.0 /15.00
+Term GPA 2.92
+2023/2024 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1602 36.00 /50 36.00 72 B+ 3.00 9.90
+COMP 1603 45.00 /50 35.00 80 A 3.00 12.00
+COMP 1604 33.00 /50 18.00 51 C 3.00 6.00
+FOUN 1105 36.20 /50 68 B 3.00 9.00
+INFO 1601 92.00 /100 92 A+ 3.00 12.90
+Term Credits 15.0 /15.00
+Term GPA 3.32
+2024/2025 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2605 38.00 /50 20.00 58 C+ 3.00 6.90 Y
+INFO 2601 35.00 /50 25.00 60 B- 3.00 8.10 Y
+INFO 2603 84.00 /100 84 A 3.00 12.00 Y
+INFO 2605 75.00 /100 75 A- 3.00 11.10 Y
+MATH 2250 29.00 /40 42.00 71 B+ 3.00 9.90 Y
+Term Credits 15.0 /15.00
+Term GPA 3.20
+2024/2025 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2603 34.00 /50 20.00 54 C 3.00 6.00 Y
+COMP 2606 31.00 /50 31.00 62 B- 3.00 8.10 Y
+INFO 2600 43.00 /50 24.00 67 B 3.00 9.00 Y
+INFO 2602 87.00 /100 87 A 3.00 12.00 Y
+Term Credits 12.0 /12.00
+Term GPA 2.93
+2025/2026 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 3603 76.00 /100 76 A- 3.00 11.10 Y
+INFO 3600 34.00 /50 34.00 68 B 3.00 9.00 Y
+INFO 3601 72.00 /100 72 B+ 3.00 9.90 Y
+INFO 3605 75.00 /100 75 A- 3.00 11.10 Y
+Term Credits 12.0 /12.00
+Term GPA 3.43
+Programme Summary:
+Summary 2026-01-10 14:51:26
+1 FOUN Courses-FSA 6/9
+1 Foreign Language Requirement 0/3
+10 Information Tech Sp Lev 1 Core 24/24
+20 Information Tech Sp Adv Core 39/45
+30 Info Technology Sp Electives 0/15
+Programme Overall
+INFT-BSC-S-F 69/93
+INCOMPLETE
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:24 AM
+Page # : 14 Page #: 14 /
+RECOMMENDATIONS / COMMENTS:
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:24 AM
+Page # : 15 Page #: 15 /
+Student Number: 816040008
+Record of: John Doe8
+Cumulative GPA: 2.88
+Admit Term: 2022/2023 Semester I
+Student Type: Continuing
+DEGREES AWARDED
+Degree Awarded Date Awarded Major Honours Dg GPA
+No Degrees
+Awarded
+CURRENT CURRICULUM
+CURRENT PROGRAMME
+Admit Term: 2022/2023 Semester I
+Programme Level: Undergraduate
+Degree: Bachelor of Science
+Programme: Info Technology (Special) BSC
+Faculty: Science & Technology
+Campus: St Augustine
+Department: Computing & Information Tech
+Major: Information Technology (Spec)
+Degree GPA: 2.98
+DEGREE GPA TOTALS
+Attempt Passed Quality Cumm. GPA
+Hours Hours Points GPA
+54.00 51.00 161.10 2.88 2.98
+Class of Degree: SL
+Institution Credit:
+2022/2023 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 40.00 /50 34.00 74 B+ 3.00 9.90
+COMP 1601 39.00 /50 17.00 56 C+ 3.00 6.90
+FOUN 1101 31.00 /35 72 B+ 3.00 9.90
+INFO 1600 33.00 /50 29.00 62 B- 3.00 8.10
+MATH 1115 38.00 /40 46.00 84 A 3.00 12.00
+Term Credits 15.0 /15.00
+Term GPA 3.12
+2022/2023 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1602 23.00 /50 12.00 35 F2 3.00 3.90
+COMP 1603 32.00 /50 7.00 39 F2 3.00 3.90
+COMP 1604 34.00 /50 30.00 64 B- 3.00 8.10
+FOUN 1105 38.90 /50 60 F1 3.00 5.10
+INFO 1601 85.00 /100 85 A 3.00 12.00
+Term Credits 6.00 /15.00
+Term GPA 2.20
+2022/2023 Summer
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1602 45.00 /50 35.00 80 A 3.00 12.00 R1
+COMP 1603 43.00 /50 30.00 73 B+ 3.00 9.90 R1
+Term Credits 6.00 /6.00
+Term GPA 3.65
+2023/2024 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2605 42.00 /50 8.00 50 C 3.00 6.00 Y
+INFO 2601 34.00 /50 26.00 60 B- 3.00 8.10 Y
+INFO 2603 73.00 /100 73 B+ 3.00 9.90 Y
+INFO 2605 15.00 /30 72 B+ 3.00 9.90 Y
+MATH 2250 20.00 /40 33.00 53 C 3.00 6.00 Y
+Term Credits 15.0 /15.00
+Term GPA 2.66
+2023/2024 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2603 25.00 /50 21.00 46 F1 3.00 5.10 Y PO
+COMP 2606 33.00 /50 28.00 61 B- 3.00 8.10 Y
+FOUN 1301 20.00 /40 27.00 47 F1 3.00 5.10 PO
+INFO 2600 39.00 /50 41.00 80 A 3.00 12.00 Y
+INFO 2604 34.00 /50 18.00 52 C 3.00 6.00 Y
+Term Credits 9.00 /15.00
+Term GPA 2.42
+2023/2024 Summer
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:24 AM
+Page # : 16 Page #: 16 /
+COMP 2603 27.00 /50 23.00 50 C 3.00 6.00 Y R1
+Term Credits 3.00 /3.00
+Term GPA 2.00
+2024/2025 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 3603 75.00 /100 75 A- 3.00 11.10 Y
+COMP 3605 27.00 /50 31.00 58 C+ 3.00 6.90 Y
+INFO 3600 27.00 /50 35.00 62 B- 3.00 8.10 Y
+INFO 3601 66.00 /100 66 B 3.00 9.00 Y
+Term Credits 12.0 /12.00
+Term GPA 2.93
+2024/2025 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+FOUN 1105 35.30 /50 69 B 3.00 9.00 R1
+INFO 2602 90.00 /100 90 A+ 3.00 12.90 Y
+INFO 3604 81.00 /100 81 A 3.00 12.00 Y
+INFO 3606 93.00 /100 93 A+ 3.00 12.90 Y
+Term Credits 12.0 /12.00
+Term GPA 3.90
+2025/2026 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+INFO 3605 76.00 /100 76 A- 3.00 11.10 Y
+Term Credits 3.00 /3.00
+Term GPA 3.70
+Programme Summary:
+Summary 2026-01-10 14:51:30
+1 FOUN Courses-FSA 6/9
+10 Information Tech Sp Lev 1 Core 24/24
+20 Information Tech Sp Adv Core 45/45
+30 Info Technology Sp Electives 6/15
+Programme Overall
+INFT-BSC-S-F 81/93
+INCOMPLETE
+RECOMMENDATIONS / COMMENTS:
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:24 AM
+Page # : 17 Page #: 17 /
+Student Number: 816040009
+Record of: John Doe9
+Cumulative GPA: 3.52
+Admit Term: 2023/2024 Semester I
+Student Type: Continuing
+DEGREES AWARDED
+Degree Awarded Date Awarded Major Honours Dg GPA
+No Degrees
+Awarded
+CURRENT CURRICULUM
+CURRENT PROGRAMME
+Admit Term: 2023/2024 Semester I
+Programme Level: Undergraduate
+Degree: Bachelor of Science
+Programme: Info Technology (Special) BSC
+Faculty: Science & Technology
+Campus: St Augustine
+Department: Computing & Information Tech
+Major: Information Technology (Spec)
+Degree GPA: 3.47
+DEGREE GPA TOTALS
+Attempt Passed Quality Cumm. GPA
+Hours Hours Points GPA
+45.00 42.00 156.30 3.52 3.47
+Class of Degree: SU
+Institution Credit:
+2023/2024 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1600 79.00 /100 79 A- 3.00 11.10
+COMP 1601 38.00 /50 37.00 75 A- 3.00 11.10
+FOUN 1101 31.00 /35 84 A 3.00 12.00
+INFO 1600 38.00 /50 36.00 74 B+ 3.00 9.90
+MATH 1115 28.00 /40 45.00 73 B+ 3.00 9.90
+Term Credits 15.0 /15.00
+Term GPA 3.60
+2023/2024 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 1602 38.00 /50 40.00 78 A- 3.00 11.10
+COMP 1603 37.00 /50 39.00 76 A- 3.00 11.10
+COMP 1604 36.00 /50 29.00 65 B 3.00 9.00
+FOUN 1105 /50 0 LW 3.00 0.00
+INFO 1601 87.00 /100 87 A 3.00 12.00
+Term Credits 12.0 /12.00
+Term GPA 3.60
+2024/2025 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2605 41.00 /50 29.00 70 B+ 3.00 9.90 Y
+INFO 2601 40.00 /50 37.00 77 A- 3.00 11.10 Y
+INFO 2603 84.00 /100 84 A 3.00 12.00 Y
+INFO 2605 75.00 /100 75 A- 3.00 11.10 Y
+MATH 2250 30.00 /40 41.00 71 B+ 3.00 9.90 Y
+Term Credits 15.0 /15.00
+Term GPA 3.60
+2024/2025 Semester II
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+COMP 2603 36.00 /50 29.00 65 B 3.00 9.00 Y
+COMP 2606 34.00 /50 39.00 73 B+ 3.00 9.90 Y
+INFO 2600 44.00 /50 36.00 80 A 3.00 12.00 Y
+INFO 2602 45.00 /100 45 F1 3.00 5.10 Y PO
+INFO 2604 43.00 /50 40.00 83 A 3.00 12.00 Y
+Term Credits 12.0 /15.00
+Term GPA 3.20
+2024/2025 Summer
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+FOUN 1105 40.80 /50 41 AM 3.00 0.00 R1
+FOUN 1301 34.00 /40 0.00 34 AM 3.00 0.00
+Term Credits 0.00 /6.00
+Term GPA 0.00
+2025/2026 Semester I
+Academic Standing: Good Standing
+Student Session: Full-time
+Credit Quality
+Course Cwk Exam Mark Grade Hours Points Deg Or? Rep
+THE UNIVERSITY OF THE WEST INDIES
+Report Run Date / Time : 12-Jan-26 10:41:24 AM
+Page # : 18 Page #: 18 /
+COMP 3603 76.00 /100 76 A- 3.00 11.10 Y
+COMP 3613 72.00 /100 72 B+ 3.00 9.90 Y
+INFO 3600 35.00 /50 43.00 78 A- 3.00 11.10 Y
+INFO 3601 75.00 /100 75 A- 3.00 11.10 Y
+INFO 3605 76.00 /100 76 A- 3.00 11.10 Y
+Term Credits 15.0 /15.00
+Term GPA 3.62
+Programme Summary:
+Summary 2026-01-10 14:51:46
+1 FOUN Courses-FSA 3/9
+1 Foreign Language Requirement 0/3
+10 Information Tech Sp Lev 1 Core 24/24
+20 Information Tech Sp Adv Core 39/45
+30 Info Technology Sp Electives 3/15
+Programme Overall
+INFT-BSC-S-F 69/93
+INCOMPLETE
+RECOMMENDATIONS / COMMENTS:

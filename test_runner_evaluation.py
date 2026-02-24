@@ -6,12 +6,14 @@ from grids.models import Degree, Bucket
 from grids.evaluation.rule_engine import RequirementEvaluator
 from grids.models.evaluation import MAJORS
 
+
+# KAREEM - I changed to read from raw_lines_2.txt that has both INFO and INFT redacted info merged
 def main():
     try:
-        with open("raw_lines.txt", "r", encoding="utf-8") as f:
+        with open("raw_lines_2.txt", "r", encoding="utf-8") as f:
             raw_lines = f.read()
     except FileNotFoundError:
-        print("Error: raw_lines.txt not found.")
+        print("Error: raw_lines_2.txt not found.")
         return
 
     print("--- 1. Parsing Students ---")
@@ -22,6 +24,8 @@ def main():
     evaluator = RequirementEvaluator(courses=[])
 
     print("--- 2. Running Evaluation ---")
+
+
     for student in students:
         print(f"Analyzing {student.name} ({student.student_number})...")
         
@@ -52,10 +56,13 @@ def main():
         # Show what they failed
         if result.unmet_requirements:
             print(f"   ❌ Missing Requirements: {len(result.unmet_requirements)}")
-            for req in result.unmet_requirements[:3]: # Show first 3
+            # for req in result.unmet_requirements[:3]: # Show first 3
+            for req in result.unmet_requirements:
                 print(f"      - {req}")
         else:
             print("ALL REQUIREMENTS MET!")
+
+        
             
         print("-" * 50)
 

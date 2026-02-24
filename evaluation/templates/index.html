@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Grids</title>
+    <link rel="stylesheet" href="{% static 'evaluation/style.css' %}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Student Grids</h1>
+    <p>Upload your files. Get instant evaluation.</p>
+
+    <div class="cards">
+        <!-- Card links to the upload page -->
+        <a href="{% url 'upload_grid' %}" class="card">
+            <h2>Process Grids</h2>
+            <p>Upload structured grid files for batch evaluation</p>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
