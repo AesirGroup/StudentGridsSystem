@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "evaluation" # DJANGO APPLICATION FOR STUDENT GRIDS
 ]
+
+LOGIN_URL = '/login/' # STUDENT GRIDS redirect when user trys to access page but not logged in
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
