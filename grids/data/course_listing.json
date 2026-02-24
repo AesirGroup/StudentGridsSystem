@@ -1,0 +1,60 @@
+{
+  "COMP": {
+    "level1": [
+      { "code": "COMP 1011", "title": "Introduction to Information Technology", "credits": 3 },
+      { "code": "COMP 1600", "title": "Introduction to Computing Concepts", "credits": 3 },
+      { "code": "COMP 1601", "title": "Computer Programming I", "credits": 3 },
+      { "code": "COMP 1602", "title": "Computer Programming II", "credits": 3 },
+      { "code": "COMP 1603", "title": "Computer Programming III", "credits": 3 },
+      { "code": "COMP 1604", "title": "Mathematics for Computing", "credits": 3 }
+    ],
+    "level2": [
+      { "code": "COMP 2601", "title": "Computer Architecture", "credits": 3 },
+      { "code": "COMP 2602", "title": "Computer Networks", "credits": 3 },
+      { "code": "COMP 2603", "title": "Object-Oriented Programming I", "credits": 3 },
+      { "code": "COMP 2604", "title": "Operating Systems", "credits": 3 },
+      { "code": "COMP 2605", "title": "Enterprise Database Systems", "credits": 3 },
+      { "code": "COMP 2606", "title": "Software Engineering I", "credits": 3 },
+      { "code": "COMP 2611", "title": "Data Structures", "credits": 3 }
+    ],
+    "level3": [
+      { "code": "COMP 3601", "title": "Design and Analysis of Algorithms", "credits": 3 },
+      { "code": "COMP 3602", "title": "Theory of Computing", "credits": 3 },
+      { "code": "COMP 3603", "title": "Human-Computer Interaction", "credits": 3 },
+      { "code": "COMP 3605", "title": "Introduction to Data Analytics", "credits": 3 },
+      { "code": "COMP 3606", "title": "Wireless and Mobile Programming", "credits": 3 },
+      { "code": "COMP 3607", "title": "Object-Oriented Programming II", "credits": 3 },
+      { "code": "COMP 3608", "title": "Intelligent Systems", "credits": 3 },
+      { "code": "COMP 3609", "title": "Game Programming", "credits": 3 },
+      { "code": "COMP 3610", "title": "Big Data Analytics", "credits": 3 },
+      { "code": "COMP 3613", "title": "Software Engineering II", "credits": 3 }
+    ]
+  },
+  "INFO": {
+    "level1": [
+      { "code": "INFO 1600", "title": "Introduction to Information Technology Concepts", "credits": 3 },
+      { "code": "INFO 1601", "title": "Introduction to WWW Programming", "credits": 3 }
+    ],
+    "level2": [
+      { "code": "INFO 2600", "title": "Information Systems Development", "credits": 3 },
+      { "code": "INFO 2601", "title": "Networking Technologies Fundamentals", "credits": 3 },
+      { "code": "INFO 2602", "title": "Web Programming and Technologies I", "credits": 3 },
+      { "code": "INFO 2603", "title": "Platform Technologies I", "credits": 3 },
+      { "code": "INFO 2604", "title": "Information Systems Security", "credits": 3 },
+      { "code": "INFO 2605", "title": "Professional Ethics and Law", "credits": 3 }
+    ],
+    "level3": [
+      { "code": "INFO 3600", "title": "Business Information Systems", "credits": 3 },
+      { "code": "INFO 3601", "title": "Platform Technologies II", "credits": 3 },
+      { "code": "INFO 3602", "title": "Web Programming and Technologies II", "credits": 3 },
+      { "code": "INFO 3604", "title": "Project", "credits": 3 },
+      { "code": "INFO 3605", "title": "Fundamentals of LAN Technologies", "credits": 3 },
+      { "code": "INFO 3606", "title": "Cloud Computing", "credits": 3 },
+      { "code": "INFO 3607", "title": "Fundamentals of WAN Technologies", "credits": 3 },
+      { "code": "INFO 3608", "title": "E-Commerce", "credits": 3 },
+      { "code": "INFO 3609", "title": "Internship I", "credits": 3 },
+      { "code": "INFO 3610", "title": "Internship II", "credits": 6 },
+      { "code": "INFO 3611", "title": "Database Administration", "credits": 3 }
+    ]
+  }
+}

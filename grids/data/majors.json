@@ -59,7 +59,7 @@
     },
     {
       "id": "MAJOR_INFO_TECH_SPECIAL",
-      "name": "Information Technology (Special)",
+      "name": "Information Technology (Spec)",
       "total_credits": 93,
       "description": "Specialized information technology program with focus on systems, networks, and information management",
       "bucket_ids": [

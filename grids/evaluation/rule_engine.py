@@ -1,6 +1,8 @@
 # Degree requirement evaluation engine
 # Evaluates student progress against bucket and major requirements
-from .equivalencies import get_equivalent_codes # Added
+# from .equivalencies import get_equivalent_codes # Added
+
+from grids.evaluation.equivalencies import get_equivalent_codes
 from typing import Dict, Set, Any, Optional, List
 from collections import defaultdict
 from pydantic import BaseModel, Field
@@ -38,6 +40,11 @@ class BucketResult(BaseModel):
     overall_progress: str
     # Exemption tracking (aggregated from rules)
     exemptions_without_credits: List[str] = Field(default_factory=list)
+
+    # KAREEM
+    courses: List[StudentCourse] = Field(default_factory=list)
+    courses_needed: List[str] = Field(default_factory=list)
+    is_all_required: bool = False
 
 
 class ComponentResult(BaseModel):
@@ -361,6 +368,7 @@ def _list_unmet_requirements(result: DegreeEvaluationResult) -> List[str]:
     return unmet
 
 
+
 def _suggest_next_steps(result: DegreeEvaluationResult) -> List[str]:
     """Suggest next steps for degree completion"""
     suggestions = []
@@ -382,7 +390,8 @@ def _suggest_next_steps(result: DegreeEvaluationResult) -> List[str]:
     if result.overall_gpa < 2.0:
         suggestions.append("Improve overall GPA to meet minimum 2.0 requirement")
 
-    return suggestions[:5]  # Limit to top 5 suggestions
+    # return suggestions[:5]  # Limit to top 5 suggestions
+    return suggestions
 
 
 class RequirementEvaluator:

@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRID Upload Dashboard</title>
+    <link rel="stylesheet" href="{% static 'evaluation/upload.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="title">Upload GRID File</h1>
+
+        <input type="file" id="file-input" class="file-input">
+
+        <!-- SUMMARY -->
+        <div id="summary" class="card summary-card">
+            <div>Total Students: <span id="total-students">0</span></div>
+            <div>Can Graduate: <span id="can-graduate">0</span></div>
+            <div>Cannot Graduate: <span id="cannot-graduate">0</span></div>
+        </div>
+
+        <!-- RESULTS TABLE -->
+        <div class="card">
+            <table id="results-table" class="results-table">
+                <thead>
+                    <tr>
+                        <th>Student Number</th>
+                        <th>Name</th>
+                        <th>Programme</th>
+                        <th>Major</th>
+                        <th>GPA</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="results">
+                    <!-- rows injected -->
+                </tbody>
+            </table>
+
+            <!-- PAGINATION -->
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </div>
+
+    {{ last_results|json_script:"session-results" }}
+    {{ last_summary|json_script:"session-summary" }}
+
+    <script>
+        const csrftoken = '{{ csrf_token }}';
+        const RESULTS_PER_PAGE = 5;
+
+        let currentPage = 1;
+        let allResults = JSON.parse(document.getElementById("session-results").textContent || "[]");
+        let summary = JSON.parse(document.getElementById("session-summary").textContent || "{}");
+
+        /* ---------------- SUMMARY ---------------- */
+
+        function renderSummary(summary) {
+            document.getElementById("total-students").innerText = summary.total_students || 0;
+            document.getElementById("can-graduate").innerText = summary.can_graduate || 0;
+            document.getElementById("cannot-graduate").innerText = summary.cannot_graduate || 0;
+        }
+
+        /* ---------------- TABLE ---------------- */
+
+        function renderTable() {
+            const start = (currentPage - 1) * RESULTS_PER_PAGE;
+            const end = start + RESULTS_PER_PAGE;
+            const pageResults = allResults.slice(start, end);
+
+            const tbody = document.getElementById("results");
+            tbody.innerHTML = pageResults.map(r => `
+        <tr>
+            <td>
+                <strong class="student-id"
+                        onclick="goToStudent('${r.student_number}')">
+                    ${r.student_number}
+                </strong>
+            </td>
+            <td>${r.name}</td>
+            <td>${r.programme}</td>
+            <td>${r.major}</td>
+            <td>${r.gpa}</td>
+            <td class="${r.can_graduate ? 'eligible' : 'not-eligible'}">
+                ${r.can_graduate ? 'Eligible' : 'Not Eligible'}
+            </td>
+        </tr>
+    `).join("");
+
+            renderPagination();
+        }
+
+        /* ---------------- PAGINATION ---------------- */
+
+        function renderPagination() {
+            const totalPages = Math.ceil(allResults.length / RESULTS_PER_PAGE);
+            const pagination = document.getElementById("pagination");
+
+            pagination.innerHTML = "";
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement("span");
+                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                btn.innerText = i;
+                btn.onclick = () => {
+                    currentPage = i;
+                    renderTable();
+                };
+                pagination.appendChild(btn);
+            }
+        }
+
+        /* ---------------- NAVIGATION ---------------- */
+
+        function goToStudent(studentNumber) { window.location.href = `/grid/${studentNumber}`; }
+
+        /* ---------------- FILE UPLOAD ---------------- */
+
+        document.getElementById("file-input").addEventListener("change", () => {
+            const file = document.getElementById("file-input").files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            fetch("{% url 'upload_grid' %}", {
+                method: "POST",
+                headers: { "X-CSRFToken": csrftoken },
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    allResults = data.results;
+                    summary = data.summary;
+
+                    currentPage = 1;
+                    renderSummary(summary);
+                    renderTable();
+                });
+        });
+
+        /* ---------------- INITIAL LOAD ---------------- */
+
+        if (allResults.length) {
+            renderSummary(summary);
+            renderTable();
+        }
+    </script>
+</body>
+
+</html>

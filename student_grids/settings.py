@@ -69,6 +69,8 @@ TEMPLATES = [
     },
 ]
 
+
+
 WSGI_APPLICATION = "student_grids.wsgi.application"
 
 

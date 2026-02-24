@@ -8,7 +8,14 @@ import json
 
 # 1. Open the PDF
 # Replace 'student_grids.pdf' with your actual PDF file name, keep it in the same directory for simplicity.
-with pdfplumber.open("student_grids_info_redacted.pdf") as pdf:
+
+
+# KAREEM - Reading from INFO_INFT_redacted.pdf that has both INFO and INFT merged
+# Sergios majors.json checks for "Information Technology (Special)" but in grids it is Information Technology (Spec) so I changed it
+
+
+# with pdfplumber.open("student_grids_info_redacted.pdf") as pdf:
+with pdfplumber.open("INFO_INFT_redacted.pdf") as pdf:
     
     # I'll store all clean, linearized text here
     all_text = []
@@ -70,5 +77,5 @@ full_text_blob = "\n".join(all_text)
 raw_lines = full_text_blob.splitlines()
 
 # 8. Save the raw lines to a file
-with open("raw_lines.txt", "w") as f:
+with open("raw_lines_2.txt", "w") as f:
     f.write("\n".join(raw_lines))

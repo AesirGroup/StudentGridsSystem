@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'evaluation/login.css' %}">
+</head>
+<body>
+    <div class="card">
+        <h1>Login</h1>
+
+        {% if form.non_field_errors %}
+            <div class="error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <p>
+                {{ form.email.label_tag }}
+                {{ form.email }}
+            </p>
+            <p>
+                {{ form.password.label_tag }}
+                {{ form.password }}
+            </p>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>
