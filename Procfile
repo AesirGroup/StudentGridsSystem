@@ -1,0 +1,1 @@
+web: gunicorn student_grids.wsgi:application --log-file -
