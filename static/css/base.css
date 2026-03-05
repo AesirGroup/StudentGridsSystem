@@ -101,7 +101,7 @@ body {
 
 
 
-.logout-btn, .change-pw-btn, .signup-btn {
+.logout-btn, .login-btn, .change-pw-btn, .signup-btn {
     font-weight: var(--fw-bold);
     border-radius: .5rem;
     border: 2px solid var(--clr-card-background);
@@ -109,7 +109,7 @@ body {
 }
 
 
-.logout-btn, .signup-btn {
+.logout-btn, .login-btn, .signup-btn {
     padding: .28rem 1rem;
     color: var(--clr-card-background); 
     background-color: var(--clr-primary);

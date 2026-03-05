@@ -5,20 +5,24 @@ from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import CustomUser
 
 
-# Register your models here.
-
-
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = [
-        "email",
-        "username",
-        "is_staff",
-    ]
+
+    list_display = ("username", "email", "is_staff")
+
     fieldsets = UserAdmin.fieldsets
-    add_fieldsets = UserAdmin.add_fieldsets
+
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("username", "email", "password1", "password2"),
+            },
+        ),
+    )
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
