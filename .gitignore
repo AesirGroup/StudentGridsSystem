@@ -1,3 +1,6 @@
+# VS Code settings
+.vscode/
+
 # Python-generated files
 __pycache__/
 *.py[oc]
