@@ -1,0 +1,8 @@
+{
+  "subjects": [
+    {"code": "FREN", "name": "French"},
+    {"code": "SPAN", "name": "Spanish"},
+    {"code": "GERM", "name": "German"},
+    {"code": "JAPN", "name": "Japanese"}
+  ]
+}

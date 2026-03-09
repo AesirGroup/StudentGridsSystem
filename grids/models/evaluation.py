@@ -102,17 +102,25 @@ def _load_majors(path: str) -> dict[Any, Major]:
     return {m['id']: Major(**m) for m in data['majors']}
 
 
+def _load_foreign_languages(path: str) -> set[str]:
+    with open(path, 'r', encoding="utf-8") as f:
+        data = json.load(f)
+    return {s['code'] for s in data['subjects']}
+
+
 # Define BASEDIR as the grids package data directory
 BASEDIR = Path(__file__).parent.parent / 'data'
 
-# Try to load buckets and majors, but handle missing files gracefully
+# Try to load buckets, majors, and foreign languages, but handle missing files gracefully
 try:
     BUCKETS = _load_buckets(str(BASEDIR / 'buckets.json'))
     MAJORS = _load_majors(str(BASEDIR / 'majors.json'))
+    FOREIGN_LANGUAGES = _load_foreign_languages(str(BASEDIR / 'foreign_languages.json'))
 except FileNotFoundError:
-    print("Warning: buckets.json or majors.json not found. Using empty dictionaries.")
+    print("Warning: buckets.json, majors.json, or foreign_languages.json not found. Using empty dictionaries/sets.")
     BUCKETS = {}
     MAJORS = {}
+    FOREIGN_LANGUAGES = set()
 
 
 class Degree(BaseModel):
@@ -132,6 +140,20 @@ class Degree(BaseModel):
         for major in list(MAJORS.values()):
             if programme.major == major.name:
                 majors.append(major.model_copy(deep=True))
+
+        # Add foreign language requirement
+        foreign_language_bucket = Bucket(
+            id="FOREIGN_LANGUAGE_REQUIREMENT",
+            name="Foreign Language Requirement",
+            credits_required=3,
+            description="Foreign language requirement for students admitted in 2023 or later",
+            rules=[{
+                "type": "foreign_language_requirement",
+                "description": "Complete 3 credits of foreign language courses",
+                "credits": 3.0
+            }]
+        )
+        general_requirements.append(foreign_language_bucket)
 
         total_credits = 93
 

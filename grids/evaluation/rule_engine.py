@@ -8,6 +8,7 @@ from collections import defaultdict
 from pydantic import BaseModel, Field
 
 from ..models import Bucket, Major, Degree, StudentData, StudentCourse, Course
+from ..models.evaluation import FOREIGN_LANGUAGES
 from .filters import CourseFilter
 
 
@@ -264,6 +265,94 @@ def _evaluate_x_of(student: StudentData, rule_data: Dict[str, Any], used_courses
     return result
 
 
+def _evaluate_foreign_language_requirement(student: StudentData, rule_data: Dict[str, Any], used_courses: Set[str], courses: List[Course]) -> RequirementResult:
+    """Evaluate foreign language requirement for students admitted in 2023 or later"""
+    result = RequirementResult(
+        requirement_type="foreign_language_requirement",
+        requirement_name=rule_data.get('description', 'Foreign Language Requirement'),
+        is_met=False
+    )
+
+    # Check if student was admitted in 2023 or later, otherwise ignore this requirement
+    admit_year = _get_admit_year(student)
+    if admit_year is None or admit_year < 2023:
+        result.is_met = True
+        result.details = f"Requirement does not apply (admit year: {admit_year})"
+        result.progress = "N/A"
+        return result
+
+    # Use foreign language subjects loaded from JSON, if u expand any json, expand the regex in grid_parser.py  as well ln754
+    foreign_language_subjects = FOREIGN_LANGUAGES
+
+    # Get all passed courses (including EX exemptions)
+    passed_courses = _get_effective_passed_courses(student)
+
+    # Find all foreign language courses (passed, EC, or EX)
+    foreign_language_courses = []
+    exemptions = []
+
+    for course in passed_courses:
+        subject = course.subject
+        if not subject and course.course_code:
+            subject = course.course_code.split()[0] if ' ' in course.course_code else course.course_code
+        if subject and subject in foreign_language_subjects:
+            if course.grade.upper() == "EX":
+                exemptions.append(course.course_code)
+            else:
+                foreign_language_courses.append(course.course_code)
+
+    # The requirement is met if the student has any foreign language course (passed/EC/EX)
+    has_any_foreign_language = len(foreign_language_courses) > 0 or len(exemptions) > 0
+
+    # Calculate credits from non-EX courses for progress tracking
+    total_credits = 0.0
+    courses_used = []
+
+    for course_code in foreign_language_courses:
+        if course_code not in used_courses:
+            course = _find_course(student, course_code)
+            if course:
+                total_credits += course.credits
+                courses_used.append(course_code)
+
+    # Track exemptions separately
+    result.exemptions_without_credits = exemptions
+    result.exemption_mappings = [{"course": code, "reason": "Foreign Language Exemption"} for code in exemptions]
+
+    result.is_met = has_any_foreign_language
+    result.courses_used = courses_used
+    result.credits_earned = total_credits
+    result.credits_required = rule_data.get('credits', 3.0)  # Default 3 credits
+
+    if has_any_foreign_language:
+        if exemptions:
+            result.progress = f"Exempted ({len(exemptions)} EX course(s))"
+            result.details = f"Exempted from foreign language requirement via {len(exemptions)} EX course(s)"
+        else:
+            result.progress = f"{total_credits:.1f}/{result.credits_required:.1f} credits"
+            result.details = f"Completed {len(courses_used)} foreign language course(s)"
+    else:
+        result.progress = f"0/{result.credits_required:.1f} credits"
+        result.details = "No foreign language courses completed"
+
+    return result
+
+
+def _get_admit_year(student: StudentData) -> Optional[int]:
+    """Extract the admit year from student's programme data"""
+    if not student.programme or not student.programme.admit_term:
+        return None
+
+    admit_term = student.programme.admit_term
+    # Admit term format is like "2023/2024 Semester I"
+    # Extract the first year
+    try:
+        year_str = admit_term.split('/')[0]
+        return int(year_str)
+    except (ValueError, IndexError):
+        return None
+
+
 def _calculate_gpa(courses: List[StudentCourse]) -> float:
     """Calculate GPA for a list of courses"""
     if not courses:
@@ -490,10 +579,16 @@ class RequirementEvaluator:
                         used_courses.add(course_code)
 
         # Check if bucket is satisfied
-        result.is_met = (
-                result.credits_earned >= bucket.credits_required and
-                all(r.is_met for r in result.rule_results if r.requirement_type == "all_credits_from")
-        )
+        # For buckets with non-credit rules (like foreign language), check all rules are met
+        # For credit-based buckets, check credits and all_credits_from rules
+        has_non_credit_rules = any(r.requirement_type not in ["all_credits_from", "min_credits_from", "x_of"] for r in result.rule_results)
+        if has_non_credit_rules:
+            result.is_met = all(r.is_met for r in result.rule_results)
+        else:
+            result.is_met = (
+                    result.credits_earned >= bucket.credits_required and
+                    all(r.is_met for r in result.rule_results if r.requirement_type == "all_credits_from")
+            )
 
         result.overall_progress = f"{result.credits_earned:.1f}/{bucket.credits_required:.1f} credits"
         return result
@@ -508,6 +603,8 @@ class RequirementEvaluator:
             return _evaluate_min_credits_from(student, rule_data, used_courses, self.courses)
         elif rule_type == 'x_of':
             return _evaluate_x_of(student, rule_data, used_courses, self.courses)
+        elif rule_type == 'foreign_language_requirement':
+            return _evaluate_foreign_language_requirement(student, rule_data, used_courses, self.courses)
         raise ValueError(f"Unknown rule type: {rule_type}")
 
     def _inject_ec_requirements(self, student: StudentData, degree: Degree) -> None:
