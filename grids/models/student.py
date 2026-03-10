@@ -10,9 +10,26 @@ from .transcript import TranscriptTotals
 
 # Passing grades: A, B, C (with +/-) and EC (Exemption with Credit)
 # Excludes: D, E, P (not passing), EX (exemption without credit), CO (co-curricular)
-_PASSING_GRADE_RE = re.compile(r'^[ABC][+-]?$|^EC$', re.IGNORECASE)
-_ALL_PASSING_GRADE_RE = re.compile(r'^[ABC][+-]?$|^EC$', re.IGNORECASE)
-_GRADE_ORDER = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "E+", "E", "E-", "P"]
+_PASSING_GRADE_RE = re.compile(r"^[ABC][+-]?$|^EC$", re.IGNORECASE)
+_ALL_PASSING_GRADE_RE = re.compile(r"^[ABC][+-]?$|^EC$", re.IGNORECASE)
+_GRADE_ORDER = [
+    "A+",
+    "A",
+    "A-",
+    "B+",
+    "B",
+    "B-",
+    "C+",
+    "C",
+    "C-",
+    "D+",
+    "D",
+    "D-",
+    "E+",
+    "E",
+    "E-",
+    "P",
+]
 _GRADE_SCORE = {g: len(_GRADE_ORDER) - i for i, g in enumerate(_GRADE_ORDER)}
 
 
@@ -28,32 +45,41 @@ class StudentCourse(BaseModel):
     grade: str = ""
     credits: float = 0.0
     points: Optional[float] = None
+    level: int = 0
     # Alternative field names from frontend
     code: Optional[str] = None
     name: Optional[str] = None  # Alias for title
 
-    @model_validator(mode='before')
+    @model_validator(mode="before")
     @classmethod
     def normalize_fields(cls, values):
         # Handle aliases: 'name' -> 'title', 'code' -> 'subject' + 'number'
         if isinstance(values, dict):
             # Handle title vs name
-            if 'name' in values and 'title' not in values:
-                values['title'] = values['name']
+            if "name" in values and "title" not in values:
+                values["title"] = values["name"]
 
             # Handle code -> subject + number
-            if 'code' in values and values['code']:
-                code = values['code']
+            if "code" in values and values["code"]:
+                code = values["code"]
                 # Parse "COMP 1600" -> subject="COMP", number=1600
                 parts = code.strip().split()
                 if len(parts) >= 2:
-                    if 'subject' not in values or not values.get('subject'):
-                        values['subject'] = parts[0]
-                    if 'number' not in values or not values.get('number'):
+                    if "subject" not in values or not values.get("subject"):
+                        values["subject"] = parts[0]
+                    if "number" not in values or not values.get("number"):
                         try:
-                            values['number'] = int(parts[1])
+                            values["number"] = int(parts[1])
                         except ValueError:
                             pass
+
+            # LEVEL INFERENCE
+            if values.get("number") and not values.get("level"):
+                try:
+                    values["level"] = int(values["number"]) // 1000
+                except (ValueError, TypeError):
+                    pass
+
         return values
 
     @property
@@ -80,16 +106,16 @@ class TermData(BaseModel):
     semester: Optional[str] = None  # Alias for term_name
     status: Optional[str] = None  # Frontend sends this
 
-    @model_validator(mode='before')
+    @model_validator(mode="before")
     @classmethod
     def normalize_fields(cls, values):
         # Handle alias: 'semester' -> 'term_name'
         if isinstance(values, dict):
             # Handle term_name vs semester
-            if 'semester' in values and 'term_name' not in values:
-                values['term_name'] = values['semester']
-            elif 'semester' in values and not values.get('term_name'):
-                values['term_name'] = values['semester']
+            if "semester" in values and "term_name" not in values:
+                values["term_name"] = values["semester"]
+            elif "semester" in values and not values.get("term_name"):
+                values["term_name"] = values["semester"]
         return values
 
 
@@ -109,26 +135,26 @@ class StudentData(BaseModel):
     creditsEarned: Optional[float] = None  # Direct credits value from frontend
     buckets: Optional[List[Any]] = None  # Frontend sends this
 
-    @model_validator(mode='before')
+    @model_validator(mode="before")
     @classmethod
     def normalize_fields(cls, values):
         # Handle aliases: 'id' -> 'student_number', 'gpa' -> 'overall_gpa'
         if isinstance(values, dict):
             # Handle id vs student_number
-            if 'id' in values and 'student_number' not in values:
-                values['student_number'] = values['id']
+            if "id" in values and "student_number" not in values:
+                values["student_number"] = values["id"]
 
             # Handle gpa vs overall_gpa
-            if 'gpa' in values and 'overall_gpa' not in values:
-                values['overall_gpa'] = values['gpa']
+            if "gpa" in values and "overall_gpa" not in values:
+                values["overall_gpa"] = values["gpa"]
 
             # Handle programme format from frontend (simpler structure)
-            if 'programme' in values and isinstance(values['programme'], dict):
-                prog = values['programme']
+            if "programme" in values and isinstance(values["programme"], dict):
+                prog = values["programme"]
                 # Frontend sends {name, faculty, major, requiredCredits}
                 # Backend expects {programme, faculty, major, ...}
-                if 'name' in prog and 'programme' not in prog:
-                    prog['programme'] = prog['name']
+                if "name" in prog and "programme" not in prog:
+                    prog["programme"] = prog["name"]
         return values
 
     @property
@@ -210,7 +236,11 @@ class StudentData(BaseModel):
                 key = f"{c.subject.strip().upper()} {c.number}"
                 prev = best.get(key)
 
-                if (prev is None) or (score > prev[0]) or (score == prev[0] and ti > prev[1]):
+                if (
+                    (prev is None)
+                    or (score > prev[0])
+                    or (score == prev[0] and ti > prev[1])
+                ):
                     best[key] = (score, ti, c)
 
         return [t[2] for t in best.values()]
@@ -237,7 +267,11 @@ class StudentData(BaseModel):
                 key = f"{c.subject.strip().upper()} {c.number}"
                 prev = best.get(key)
 
-                if (prev is None) or (score > prev[0]) or (score == prev[0] and ti > prev[1]):
+                if (
+                    (prev is None)
+                    or (score > prev[0])
+                    or (score == prev[0] and ti > prev[1])
+                ):
                     best[key] = (score, ti, c)
 
         # Sort by credits descending (highest first)
