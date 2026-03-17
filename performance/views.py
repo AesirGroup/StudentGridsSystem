@@ -1,5 +1,7 @@
 import os
 import json
+import re
+import pdfplumber
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
@@ -9,6 +11,46 @@ from grids.models import Degree, Course
 from grids.evaluation.rule_engine import RequirementEvaluator, _find_course
 from grids.parsing.parser_service import parse_text
 from .models import StudentProfile, AuditRecord, BucketResult
+
+# --- HELPER FUNCTIONS ---
+
+
+def extract_text_from_grid_pdf(file_obj):
+    # Parses the 3-column PDF directly from memory
+    all_text = []
+    with pdfplumber.open(file_obj) as pdf:
+        for page in pdf.pages:
+            width = page.width
+            height = page.height
+            third_width = width / 3
+            padding = 5
+
+            box_left = (0, 0, third_width, height)
+            box_mid = (third_width - padding, 0, third_width * 2 - padding, height)
+            box_right = (third_width * 2, 0, width, height)
+
+            try:
+                text_left = page.crop(box_left).extract_text()
+                text_mid = page.crop(box_mid).extract_text()
+                text_right = page.crop(box_right).extract_text()
+
+                if text_left:
+                    all_text.append(text_left)
+                if text_mid:
+                    all_text.append(text_mid)
+                if text_right:
+                    all_text.append(text_right)
+            except Exception as e:
+                print(f"Error on PDF extraction: {e}")
+
+
+def is_valid_grid_data(text):
+    # Checks if the parsed text contains actual student data
+    # If it's a redacted PDF, these fields will be missing or obscured
+    safe_text = str(text) if text else ""
+    has_student_number = re.search(r"Student Number:\s*\d+", safe_text, re.IGNORECASE)
+    has_record_of = re.search(r"Record of:\s*[A-Za-z]+", safe_text, re.IGNORECASE)
+    return bool(has_student_number and has_record_of)
 
 
 def load_catalog_courses():
@@ -32,13 +74,14 @@ def load_catalog_courses():
                 )
     return courses
 
+
 class UploadGridView(LoginRequiredMixin, View):
     template_name = "upload.html"
 
     def get(self, request, *args, **kwargs):
         # 1. Fetch all students permanently stored in the database
         profiles = StudentProfile.objects.all()
-        
+
         results = []
         can_graduate_count = 0
         cannot_graduate_count = 0
@@ -47,22 +90,24 @@ class UploadGridView(LoginRequiredMixin, View):
         for profile in profiles:
             # Grab the most recent audit for this student
             latest_audit = profile.audits.order_by("-audit_date").first()
-            
+
             if latest_audit:
                 if latest_audit.can_graduate:
                     can_graduate_count += 1
                 else:
                     cannot_graduate_count += 1
-                    
-                results.append({
-                    "student_number": profile.student_number,
-                    "name": profile.name,
-                    "programme": profile.programme,
-                    "major": profile.major,
-                    "gpa": profile.overall_gpa,
-                    "can_graduate": latest_audit.can_graduate,
-                    "detail_url": f"/grid/{profile.student_number}/",
-                })
+
+                results.append(
+                    {
+                        "student_number": profile.student_number,
+                        "name": profile.name,
+                        "programme": profile.programme,
+                        "major": profile.major,
+                        "gpa": profile.overall_gpa,
+                        "can_graduate": latest_audit.can_graduate,
+                        "detail_url": f"/grid/{profile.student_number}/",
+                    }
+                )
 
         # 3. Rebuild the summary
         summary = {
@@ -78,7 +123,7 @@ class UploadGridView(LoginRequiredMixin, View):
             {
                 "last_results": results,
                 "last_summary": summary,
-            }
+            },
         )
 
     def post(self, request, *args, **kwargs):
@@ -87,7 +132,34 @@ class UploadGridView(LoginRequiredMixin, View):
             return JsonResponse({"error": "No file uploaded"}, status=400)
 
         try:
-            raw_text = uploaded_file.read().decode("utf-8")
+            # raw_text = uploaded_file.read().decode("utf-8")
+            # students = parse_text(raw_text, dtype="GRID")
+            filename = uploaded_file.name.lower()
+            raw_text = ""
+
+            # 1. ROUTING: Handle PDF vs TXT
+            if filename.endswith(".pdf"):
+                raw_text = extract_text_from_grid_pdf(uploaded_file)
+            elif filename.endswith(".txt"):
+                raw_text = uploaded_file.read().decode("utf-8")
+            else:
+                return JsonResponse(
+                    {
+                        "error": "Unsupported file type. Please upload a .pdf or .txt file."
+                    },
+                    status=400,
+                )
+
+            # 2. VALIDATION: Check the extracted text regardless of origin format
+            if not is_valid_grid_data(raw_text):
+                return JsonResponse(
+                    {
+                        "error": "The uploaded file appears to be redacted or is missing critical student identification data (Student Number, Name). Please upload an unredacted PDF or a formatted TXT file."
+                    },
+                    status=400,
+                )
+
+            # 3. PROCEED TO PARSING
             students = parse_text(raw_text, dtype="GRID")
 
             # VIRTUAL CATALOG INJECTION

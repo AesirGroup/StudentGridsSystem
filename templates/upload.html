@@ -6,11 +6,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GRID Upload Dashboard</title>
+    <!-- Bootstrap 5.3.8 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/upload.css' %}">
 </head>
 
 <body>
     <div class="container">
+        <div id="alert-container"></div>
         <h1 class="title">Upload GRID File</h1>
 
         <input type="file" id="file-input" class="file-input">
@@ -47,6 +51,11 @@
 
     {{ last_results|json_script:"session-results" }}
     {{ last_summary|json_script:"session-summary" }}
+    
+    <!-- Bootstrap 5.3.8 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+    </script>
 
     <script>
         const csrftoken = '{{ csrf_token }}';
@@ -135,11 +144,35 @@
                 body: formData
             })
                 .then(res => res.json())
+                // .then(data => {
+                //     if (data.error) {
+                //         alert(data.error);
+                //         return;
+                //     }
+
+                //     allResults = data.results;
+                //     summary = data.summary;
+
+                //     currentPage = 1;
+                //     renderSummary(summary);
+                //     renderTable();
+                // });
                 .then(data => {
+                    const alertContainer = document.getElementById("alert-container");
+                    
                     if (data.error) {
-                        alert(data.error);
-                        return;
+                        // Inject a Bootstrap Danger Alert dynamically
+                        alertContainer.innerHTML = `
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>Upload Failed!</strong> ${data.error}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `;
+                        return; // Stop execution
                     }
+                    
+                    // Clear the alert if a successful upload happens subsequently
+                    alertContainer.innerHTML = "";
 
                     allResults = data.results;
                     summary = data.summary;
