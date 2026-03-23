@@ -1,42 +1,191 @@
+import os
+import json
+import re
+import pdfplumber
 from django.views import View
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-
-# Student Grids imports
-from grids.models import Degree
-from grids.models.evaluation import MAJORS
+from grids.models import Degree, Course
 from grids.evaluation.rule_engine import RequirementEvaluator, _find_course
 from grids.parsing.parser_service import parse_text
+from .models import StudentProfile, AuditRecord, BucketResult
+
+# --- HELPER FUNCTIONS ---
+
+
+def extract_text_from_grid_pdf(file_obj):
+    # Parses the 3-column PDF directly from memory
+    all_text = []
+    with pdfplumber.open(file_obj) as pdf:
+        for page in pdf.pages:
+            width = page.width
+            height = page.height
+            third_width = width / 3
+            padding = 5
+
+            box_left = (0, 0, third_width, height)
+            box_mid = (third_width - padding, 0, third_width * 2 - padding, height)
+            box_right = (third_width * 2, 0, width, height)
+
+            try:
+                text_left = page.crop(box_left).extract_text()
+                text_mid = page.crop(box_mid).extract_text()
+                text_right = page.crop(box_right).extract_text()
+
+                if text_left:
+                    all_text.append(text_left)
+                if text_mid:
+                    all_text.append(text_mid)
+                if text_right:
+                    all_text.append(text_right)
+            except Exception as e:
+                print(f"Error on PDF extraction: {e}")
+
+
+def is_valid_grid_data(text):
+    # Checks if the parsed text contains actual student data
+    # If it's a redacted PDF, these fields will be missing or obscured
+    safe_text = str(text) if text else ""
+    has_student_number = re.search(r"Student Number:\s*\d+", safe_text, re.IGNORECASE)
+    has_record_of = re.search(r"Record of:\s*[A-Za-z]+", safe_text, re.IGNORECASE)
+    return bool(has_student_number and has_record_of)
+
+
+def load_catalog_courses():
+    json_path = os.path.join("grids", "data", "course_listing.json")
+    if not os.path.exists(json_path):
+        return []
+    with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    courses = []
+    for subject, levels in data.items():
+        for level_name, clist in levels.items():
+            for c in clist:
+                subj_code, num_code = c["code"].split()
+                courses.append(
+                    Course(
+                        subject=subj_code,
+                        number=int(num_code),
+                        title=c["title"],
+                        credits=float(c["credits"]),
+                    )
+                )
+    return courses
 
 
 class UploadGridView(LoginRequiredMixin, View):
     template_name = "upload.html"
-    
+
     def get(self, request, *args, **kwargs):
-        last_results = request.session.get('last_results', [])
-        last_summary = request.session.get('last_summary', {})
-        return render(request, self.template_name, {
-            "last_results": last_results,
-            "last_summary": last_summary
-        })
-    
+        # 1. Fetch all students permanently stored in the database
+        profiles = StudentProfile.objects.all()
+
+        results = []
+        can_graduate_count = 0
+        cannot_graduate_count = 0
+
+        # 2. Rebuild the results list dynamically
+        for profile in profiles:
+            # Grab the most recent audit for this student
+            latest_audit = profile.audits.order_by("-audit_date").first()
+
+            if latest_audit:
+                if latest_audit.can_graduate:
+                    can_graduate_count += 1
+                else:
+                    cannot_graduate_count += 1
+
+                results.append(
+                    {
+                        "student_number": profile.student_number,
+                        "name": profile.name,
+                        "programme": profile.programme,
+                        "major": profile.major,
+                        "gpa": profile.overall_gpa,
+                        "can_graduate": latest_audit.can_graduate,
+                        "detail_url": f"/grid/{profile.student_number}/",
+                    }
+                )
+
+        # 3. Rebuild the summary
+        summary = {
+            "total_students": len(profiles),
+            "can_graduate": can_graduate_count,
+            "cannot_graduate": cannot_graduate_count,
+        }
+
+        # 4. Render the template using the database-backed data
+        return render(
+            request,
+            self.template_name,
+            {
+                "last_results": results,
+                "last_summary": summary,
+            },
+        )
+
     def post(self, request, *args, **kwargs):
         uploaded_file = request.FILES.get("file")
         if not uploaded_file:
             return JsonResponse({"error": "No file uploaded"}, status=400)
 
         try:
-            raw_text = uploaded_file.read().decode("utf-8")
-            request.session["last_uploaded_text"] = raw_text
+            # raw_text = uploaded_file.read().decode("utf-8")
+            # students = parse_text(raw_text, dtype="GRID")
+            filename = uploaded_file.name.lower()
+            raw_text = ""
 
+            # 1. ROUTING: Handle PDF vs TXT
+            if filename.endswith(".pdf"):
+                raw_text = extract_text_from_grid_pdf(uploaded_file)
+            elif filename.endswith(".txt"):
+                raw_text = uploaded_file.read().decode("utf-8")
+            else:
+                return JsonResponse(
+                    {
+                        "error": "Unsupported file type. Please upload a .pdf or .txt file."
+                    },
+                    status=400,
+                )
+
+            # 2. VALIDATION: Check the extracted text regardless of origin format
+            if not is_valid_grid_data(raw_text):
+                return JsonResponse(
+                    {
+                        "error": "The uploaded file appears to be redacted or is missing critical student identification data (Student Number, Name). Please upload an unredacted PDF or a formatted TXT file."
+                    },
+                    status=400,
+                )
+
+            # 3. PROCEED TO PARSING
             students = parse_text(raw_text, dtype="GRID")
-            evaluator = RequirementEvaluator(courses=[])
 
-            results = []
-            can_graduate_count = 0
-            cannot_graduate_count = 0
+            # VIRTUAL CATALOG INJECTION
+            # Ensure the web UI sees legacy and out-of-faculty courses.
+            catalog_courses = load_catalog_courses()
+            existing_codes = {c.code for c in catalog_courses}
+
+            for student in students:
+                for term in student.terms:
+                    for sc in term.courses:
+                        if sc.course_code not in existing_codes:
+                            virtual_course = Course(
+                                subject=sc.subject,
+                                number=sc.number,
+                                title=sc.title,
+                                credits=sc.credits,
+                                code=sc.course_code,
+                                level=sc.level,
+                            )
+                            catalog_courses.append(virtual_course)
+                            existing_codes.add(sc.course_code)
+
+            # Initialize evaluator with the enriched catalog
+            evaluator = RequirementEvaluator(courses=catalog_courses)
+
+            results, can_graduate_count, cannot_graduate_count = [], 0, 0
 
             for student in students:
                 degree = Degree.from_student_data(student)
@@ -48,25 +197,96 @@ class UploadGridView(LoginRequiredMixin, View):
                 else:
                     cannot_graduate_count += 1
 
-                results.append({
-                    "student_number": student.student_number,
-                    "name": student.name,
-                    "programme": student.programme.programme if student.programme else "Unknown",
-                    "major": student.programme.major if student.programme else "Unknown",
-                    "gpa": student.overall_gpa,
-                    "can_graduate": can_graduate,
-                    "unmet_requirements": result.unmet_requirements,
-                    "detail_url": f"/grid/{student.student_number}/"
-                })
+                prog_name = student.programme.programme if student.programme else ""
+                major_name = student.programme.major if student.programme else ""
+
+                # 1. Save Profile
+                profile, _ = StudentProfile.objects.update_or_create(
+                    student_number=student.student_number,
+                    defaults={
+                        "name": student.name,
+                        "programme": prog_name,
+                        "major": major_name,
+                        "overall_gpa": student.overall_gpa,
+                    },
+                )
+
+                # 2. Save Audit Record
+                audit = AuditRecord.objects.create(
+                    student=profile,
+                    evaluated_programme=prog_name,
+                    evaluated_major=major_name,
+                    can_graduate=can_graduate,
+                    total_credits_earned=result.total_credits_earned,
+                    total_credits_required=result.total_credits_required,
+                    overall_progress=result.overall_progress,
+                    unmet_requirements_json=result.unmet_requirements,
+                    next_steps_json=result.next_steps,
+                )
+
+                # 3. Helper to save buckets
+                def save_bucket(component_name, b_result):
+                    completed_courses = []
+                    courses_needed = []
+                    is_all_req = False
+
+                    for rule in b_result.rule_results:
+                        if rule.requirement_type == "all_credits_from":
+                            is_all_req = True
+                        courses_needed.extend(rule.courses_needed)
+                        for code in rule.courses_used:
+                            sc = _find_course(student, code)
+                            if sc:
+                                completed_courses.append(
+                                    {
+                                        "code": sc.course_code,
+                                        "grade": sc.grade,
+                                        "credits": sc.credits,
+                                    }
+                                )
+
+                    from .models import (
+                        BucketResult,
+                    )  # Ensure this is imported at top of file
+
+                    BucketResult.objects.create(
+                        audit=audit,
+                        component_name=component_name,
+                        bucket_name=b_result.bucket_name,
+                        is_met=b_result.is_met,
+                        credits_earned=b_result.credits_earned,
+                        credits_required=b_result.credits_required,
+                        is_all_required=is_all_req,
+                        courses_completed_json=completed_courses,
+                        courses_needed_json=courses_needed,
+                    )
+
+                # Save Major Buckets
+                for major in result.major_results:
+                    for b_result in major.bucket_results:
+                        save_bucket(major.component_name, b_result)
+
+                # Save General Buckets
+                for g_result in result.general_requirements:
+                    save_bucket("General Requirements", g_result)
+
+                results.append(
+                    {
+                        "student_number": student.student_number,
+                        "name": student.name,
+                        "programme": prog_name,
+                        "major": major_name,
+                        "gpa": student.overall_gpa,
+                        "can_graduate": can_graduate,
+                        "detail_url": f"/grid/{student.student_number}/",
+                    }
+                )
 
             summary = {
                 "total_students": len(students),
                 "can_graduate": can_graduate_count,
                 "cannot_graduate": cannot_graduate_count,
             }
-
-            request.session['last_results'] = results
-            request.session['last_summary'] = summary
 
             return JsonResponse({"summary": summary, "results": results})
 
@@ -78,37 +298,11 @@ class StudentDetailView(LoginRequiredMixin, View):
     template_name = "student_details.html"
 
     def get(self, request, student_number, *args, **kwargs):
-        raw_text = request.session.get("last_uploaded_text")
-        if not raw_text:
+        profile = get_object_or_404(StudentProfile, student_number=student_number)
+
+        # Grab the most recent audit
+        audit = profile.audits.order_by("-audit_date").first()
+        if not audit:
             return redirect("upload_grid")
 
-        students = parse_text(raw_text, dtype="GRID")
-        student = next((s for s in students if s.student_number == student_number), None)
-        if not student:
-            return JsonResponse({"error": "Student not found"}, status=404)
-
-        evaluator = RequirementEvaluator(courses=[])
-        degree = Degree.from_student_data(student)
-        result = evaluator.evaluate_degree(student, degree)
-
-        # Attach courses and remaining requirements to each bucket
-        for major in result.major_results:
-            for bucket in major.bucket_results:
-                bucket.courses = [
-                    _find_course(student, code)
-                    for rule in bucket.rule_results
-                    for code in rule.courses_used
-                    if _find_course(student, code) is not None
-                ]
-                bucket.courses_needed = []
-                bucket.is_all_required = False
-                for rule in bucket.rule_results:
-                    if rule.requirement_type == "all_credits_from":
-                        bucket.is_all_required = True
-                    bucket.courses_needed.extend(rule.courses_needed)
-
-        context = {
-            "student": student,
-            "result": result,
-        }
-        return render(request, self.template_name, context)
+        return render(request, self.template_name, {"student": profile, "audit": audit})

@@ -15,3 +15,7 @@ wheels/
 
 # VSCode
 .vscode/
+
+# SQLITE
+*.sqlite3
+*.sqlite
