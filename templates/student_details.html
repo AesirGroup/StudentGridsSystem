@@ -1,103 +1,185 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ student.name }} - Details</title>
-    <link rel="stylesheet" href="{% static 'css/student_details.css' %}">
-</head>
-<body>
-<div class="container">
-    <h1 class="title">{{ student.name }} ({{ student.student_number }})</h1>
 
-    <a href="{% url 'upload_grid' %}" class="card">Back to Upload</a>
+{% block title %}{{ student.name }} - Details{% endblock %}
 
-    <div class="card">
-        <p><strong>Programme:</strong> {{ audit.evaluated_programme|default:"Unknown" }}</p>
-        <p><strong>Major:</strong> {{ audit.evaluated_major|default:"Unknown" }}</p>
-        <p><strong>Degree GPA:</strong> {{ student.overall_gpa|default:"N/A" }}</p>
-        <p><strong>Status:</strong> {{ audit.overall_progress|default:"N/A" }}</p>
-        <p>
-            <strong>Total Credits:</strong>
-            {{ audit.total_credits_earned|default:0 }}/{{ audit.total_credits_required|default:0 }}
-        </p>
-    </div>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/student_details.css' %}">
+{% endblock %}
 
-    {% regroup audit.bucket_results.all by component_name as component_list %}
-    
-    {% for component in component_list %}
-        {% for bucket in component.list %}
-            <div class="bucket-card">
-                <div class="bucket-header" onclick="toggleBucket(this)">
-                    <span>{{ bucket.bucket_name }}</span>
-                    <span>
-                        {{ bucket.credits_earned|default:0 }}/{{ bucket.credits_required|default:0 }}
-                    </span>
-                </div>
-                <div class="bucket-body">
-                    {% if bucket.courses_completed_json %}
-                        <div><strong>Completed Courses:</strong></div>
-                        {% for course in bucket.courses_completed_json %}
-                            <div class="course completed">
-                                {{ course.code|default:"N/A" }} – 
-                                {{ course.grade|default:"N/A" }} – 
-                                {{ course.credits|default:0 }} credits
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="course">No courses completed in this bucket</div>
-                    {% endif %}
+{% block content %}
+<main class="student-details-page">
 
-                    {% if bucket.courses_needed_json %}
-                        <div class="courses-needed"><strong>Courses still needed:</strong> {{ bucket.courses_needed_json|join:", " }}</div>
-                    {% else %}
-                        <div class="courses-needed">No additional courses needed for this bucket</div>
-                    {% endif %}
+    <!-- ==================== PAGE ACTIONS ==================== -->
+    <nav class="home-hero">
+        <a href="{% url 'upload_grid' %}">
+            <img src="{% static 'img/student_details/back-arrow-icon.svg' %}" alt="Back to students">
+            <span>Back to Students</span>
+        </a>
+        <button class="add-report-btn">
+            <img src="{% static 'img/student_details/add-report-icon.svg' %}" alt="Add to report">
+            <span>Add to Report</span>
+        </button>
+    </nav>
 
-                    {% if bucket.is_all_required %}
-                        <div class="courses-needed"><em>All courses in this bucket are required.</em></div>
-                    {% endif %}
-                </div>
+    <h1>{{ student.name }}</h1>
+
+    <!-- ==================== STUDENT OVERVIEW ==================== -->
+    <section class="student-info">
+        <h2>Student Overview</h2>
+        <div class="student-details-container">
+            <div class="app-card">
+                <h4>Student ID</h4>
+                <p>{{ student.student_number }}</p>
             </div>
+            <div class="app-card">
+                <h4>Programme</h4>
+                <p>{{ audit.evaluated_programme|default:"Unknown" }}</p>
+            </div>
+            <div class="app-card">
+                <h4>Major</h4>
+                <p>{{ audit.evaluated_major|default:"Unknown" }}</p>
+            </div>
+            <div class="app-card">
+                <h4>Cumulative GPA</h4>
+                <p>{{ student.overall_gpa|default:"N/A" }}</p>
+            </div>
+            <div class="app-card">
+                <h4>Credits</h4>
+                <p>{{ audit.total_credits_earned|default:0 }} / {{ audit.total_credits_required|default:0 }}</p>
+            </div>
+            <div class="app-card">
+                <h4>Status</h4>
+                <p class="{% if audit.can_graduate %}eligible{% else %}not-eligible{% endif %}">
+                    {% if audit.can_graduate %}Eligible{% else %}Not Eligible{% endif %}
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== BUCKETS ==================== -->
+    <section class="bucket-container">
+
+        {% regroup audit.bucket_results.all by component_name as component_list %}
+        {% for component in component_list %}
+        {% for bucket in component.list %}
+        <div class="bucket">
+            <button class="bucket-toggle">
+                {{ bucket.bucket_name }}
+                <span>{{ bucket.credits_earned|default:0 }} / {{ bucket.credits_required|default:0 }} credits</span>
+            </button>
+            <div class="bucket-content">
+
+                {% if bucket.courses_completed_json %}
+                <h3 class="bucket-heading">
+                    <img src="{% static 'img/student_details/completed-icon.svg' %}" alt="Completed Icon"
+                        class="heading-icon">
+                    Completed
+                </h3>
+                <div class="completed">
+                    {% for course in bucket.courses_completed_json %}
+                    <div class="app-card">
+                        <h5 class="course-code">{{ course.code|default:"N/A" }}</h5>
+                        <div>
+                            <p class="credits">{{ course.credits|default:0 }} credits</p>
+                            <p class="grade">{{ course.grade|default:"N/A" }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if bucket.courses_needed_json %}
+                <h3 class="bucket-heading">
+                    <img src="{% static 'img/student_details/uncompleted-icon.svg' %}" alt="Uncompleted Icon"
+                        class="heading-icon">
+                    Uncompleted
+                </h3>
+                <div class="uncompleted">
+                    {% for course in bucket.courses_needed_json %}
+                    <div class="app-card">
+                        <h5 class="course-code">{{ course }}</h5>
+                        <div>
+                            <p class="credits">3 credits</p>
+                            <p class="req">Required</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
         {% endfor %}
-    {% endfor %}
+        {% endfor %}
 
-    {% if audit.unmet_requirements_json %}
-        <div class="card">
-            <h3>Unmet Requirements:</h3>
-            <ul>
-                {% for req in audit.unmet_requirements_json %}
+        <!-- ==================== UNMET REQUIREMENTS ==================== -->
+        {% if audit.unmet_requirements_json %}
+        <section class="unmet-container bucket">
+            <button class="bucket-toggle">Unmet Requirements</button>
+            <div class="bucket-content">
+                <ul>
+                    {% for req in audit.unmet_requirements_json %}
                     <li>{{ req }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+        {% endif %}
 
-    {% if audit.next_steps_json %}
-        <div class="card">
-            <h3>Suggested Next Steps:</h3>
-            <ul>
-                {% for step in audit.next_steps_json %}
+        <!-- ==================== SUGGESTED NEXT STEPS ==================== -->
+        {% if audit.next_steps_json %}
+        <section class="suggested-container bucket">
+            <button class="bucket-toggle">Suggested Next Steps</button>
+            <div class="bucket-content">
+                <ul>
+                    {% for step in audit.next_steps_json %}
                     <li>{{ step }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-</div>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+        {% endif %}
 
+    </section>
+</main>
+{% endblock %}
+
+
+
+
+
+{% block extra_js %}
 <script>
-function toggleBucket(header) {
-    const body = header.nextElementSibling;
-    const arrow = header.querySelector(".bucket-arrow");
-    if (body.style.display === "block") {
-        body.style.display = "none";
-        if (arrow) arrow.classList.remove("open");
-    } else {
-        body.style.display = "block";
-        if (arrow) arrow.classList.add("open");
+    const buckets = document.querySelectorAll('.bucket');
+
+    function updateBucketHeights() {
+        buckets.forEach(bucket => {
+            const content = bucket.querySelector('.bucket-content');
+            if (bucket.classList.contains('is-open')) {
+                // Update max-height dynamically
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+        });
     }
-}
+
+    // Toggle logic
+    buckets.forEach(toggle => {
+        const button = toggle.querySelector('.bucket-toggle');
+        button.addEventListener('click', () => {
+            const content = toggle.querySelector('.bucket-content');
+            toggle.classList.toggle('is-open');
+            if (toggle.classList.contains('is-open')) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+            } else {
+                content.style.maxHeight = 0;
+            }
+        });
+    });
+
+    // Recalculate heights on window resize
+    window.addEventListener('resize', () => {
+        updateBucketHeights();
+    });
 </script>
-</body>
-</html>
+{% endblock %}
