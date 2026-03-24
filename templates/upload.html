@@ -17,7 +17,9 @@
         <div id="alert-container"></div>
         <h1 class="title">Upload GRID File</h1>
 
-        <input type="file" id="file-input" class="file-input">
+        <!-- <input type="file" id="file-input" class="file-input"> -->
+        <!-- <input type="file" id="fileInput" name="file" accept=".pdf, .txt" required> -->
+        <input type="file" id="file-input" name="file" accept=".pdf, .txt" class="file-input">
 
         <!-- SUMMARY -->
         <div id="summary" class="card summary-card">
@@ -51,11 +53,11 @@
 
     {{ last_results|json_script:"session-results" }}
     {{ last_summary|json_script:"session-summary" }}
-    
+
     <!-- Bootstrap 5.3.8 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-    </script>
+        </script>
 
     <script>
         const csrftoken = '{{ csrf_token }}';
@@ -128,11 +130,47 @@
             window.location.href = `/performance/${studentNumber}/`;
         }
 
+        /* ---------------- HELPERS ---------------- */
+
+        function showFrontendError(message) {
+            const alertContainer = document.getElementById("alert-container");
+            alertContainer.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Upload Cancelled!</strong> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            // Clear the file input so the user can select the same file again if needed
+            document.getElementById("file-input").value = "";
+        }
+
         /* ---------------- FILE UPLOAD ---------------- */
 
         document.getElementById("file-input").addEventListener("change", () => {
-            const file = document.getElementById("file-input").files[0];
+            const fileInput = document.getElementById("file-input");
+            const file = fileInput.files[0];
+
             if (!file) return;
+
+            // 1. FRONTEND SIZE GUARDRAIL (50 MB)
+            const maxSizeInBytes = 50 * 1024 * 1024;
+            if (file.size > maxSizeInBytes) {
+                showFrontendError("File size exceeds the 50MB limit. Please upload a smaller file.");
+                return; // ABORT THE UPLOAD INSTANTLY
+            }
+
+            // 2. FRONTEND TYPE GUARDRAIL
+            const validExtensions = ['.pdf', '.txt'];
+            const fileName = file.name.toLowerCase();
+            const isValidType = validExtensions.some(ext => fileName.endsWith(ext));
+
+            if (!isValidType) {
+                showFrontendError("Unsupported file type. Please upload a .pdf or .txt file.");
+                return; // ABORT THE UPLOAD INSTANTLY
+            }
+
+            // If it passes both frontend checks, clear previous alerts and proceed to backend
+            document.getElementById("alert-container").innerHTML = "";
 
             const formData = new FormData();
             formData.append("file", file);
@@ -144,24 +182,11 @@
                 body: formData
             })
                 .then(res => res.json())
-                // .then(data => {
-                //     if (data.error) {
-                //         alert(data.error);
-                //         return;
-                //     }
-
-                //     allResults = data.results;
-                //     summary = data.summary;
-
-                //     currentPage = 1;
-                //     renderSummary(summary);
-                //     renderTable();
-                // });
                 .then(data => {
                     const alertContainer = document.getElementById("alert-container");
-                    
+
                     if (data.error) {
-                        // Inject a Bootstrap Danger Alert dynamically
+                        // Inject a Bootstrap Danger Alert dynamically for Backend Errors
                         alertContainer.innerHTML = `
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <strong>Upload Failed!</strong> ${data.error}
@@ -170,7 +195,7 @@
                         `;
                         return; // Stop execution
                     }
-                    
+
                     // Clear the alert if a successful upload happens subsequently
                     alertContainer.innerHTML = "";
 
