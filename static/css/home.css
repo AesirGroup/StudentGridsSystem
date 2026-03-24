@@ -1,16 +1,121 @@
-/* Hero Section */
+/* ===================== VARIABLES ===================== */
+:root {
 
+    /* Main Color */
+    --clr-primary: #2BA384; 
+
+    /* Font Colors */
+    --text-primary: #111827;
+    --text-secondary: #718096;
+
+    --clr-card-background: #fff;
+    --clr-border: #E2E8F0;
+
+    --icon-bg: #e5f1ed;
+    --body-bg: #f5f5f5;
+
+    /* Font Family */
+    --ff-base: Arial, Helvetica, sans-serif;
+    --ff-heading: "Space Grotesk", sans-serif;
+
+    /* Font Size  */
+    --fs-3xs: 0.625rem;  /* 10px */
+    --fs-2xs: 0.75rem;   /* 12px */
+    --fs-xs: 0.875rem;   /* 14px */
+    --fs-sm: 1rem;       /* 16px */
+    --fs-md: 1.125rem;   /* 18px */
+    --fs-lg: 1.25rem;    /* 20px */
+    --fs-xl: 1.5rem;     /* 24px */
+    --fs-2xl: 1.875rem;  /* 30px */
+    --fs-3xl: 2.25rem;   /* 36px */
+    --fs-4xl: 3rem;      /* 48px */
+
+    /* Font Weights */
+    --fw-thin: 100;   
+    --fw-extralight: 200;    
+    --fw-light: 300;
+    --fw-regular: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    --fw-black: 800;
+}
+
+/* ===================== RESET ===================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+img, svg, label {
+    display: inline-block;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+body {
+    font-family: var(--ff-base);
+    background-color: var(--body-bg);
+    min-height: 100vh;
+}
+
+/* ===================== BANNER ===================== */
+.banner {
+    background-color: var(--clr-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .5rem 3rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo img {
+    width: 50px;
+    margin-bottom: 3px;
+}
+
+.logo p {
+    font-size: var(--fs-xl);
+    font-weight: bold;
+    color: var(--clr-card-background);
+}
+
+.logout-btn, .change-pw-btn {
+    padding: .5rem 1rem;
+    font-weight: var(--fw-bold);
+    border-radius: .5rem;
+    border: 2px solid var(--clr-card-background);
+}
+
+.logout-btn {
+    color: var(--clr-card-background); 
+    margin-right: 1rem;
+}
+
+.change-pw-btn {
+    color: var(--clr-primary);
+    background-color: var(--clr-card-background);
+}
+
+/* ===================== AUTHENTICATED HOME HERO ===================== */
 .home-hero {
     margin: 0 auto;
     background-color: var(--clr-primary);
     display: grid;
     place-content: center;
-    padding-top: 4rem;
-}
-
-.home-hero .welcome {
-    color: var(--clr-card-background);
-    margin-bottom: 1rem;
+    padding-top: 2rem;
 }
 
 .home-hero h1 {
@@ -29,7 +134,7 @@
     margin: 0 auto 3rem;
 }
 
-.home-hero a {
+.home-hero a.get-started-btn {
     color: var(--clr-primary);
     background-color: var(--clr-card-background);
     padding: .75rem 1.75rem;
@@ -40,10 +145,11 @@
     font-size: var(--fs-md);
     font-weight: var(--fw-bold);
     cursor: pointer;
+    text-align: center;
+    display: block;
 }
 
-/* --- Tools ---  */
-
+/* ===================== TOOLS ===================== */
 .tools {
     max-width: 1000px;
     margin: 0 auto 5rem;
@@ -57,7 +163,7 @@
     font-weight: var(--fw-bold);
 }
 
-.tools  > p {
+.tools > p {
     text-align: center;
     font-size: var(--fs-md);
     color: var(--text-secondary);
@@ -66,7 +172,7 @@
 .tools-container {
     margin: 3rem auto 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 350px));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
     justify-content: center;
     padding: 0 2rem;
@@ -76,7 +182,6 @@
     text-decoration: none;
     display: block;
     padding: 1rem;
-    width: 100%;
     cursor: pointer;
     border-radius: 0.5rem;
     transition: all 0.3s ease;
@@ -110,13 +215,127 @@
     line-height: 1.5;
 }
 
+/* ===================== LOGOUT PAGE ===================== */
 
 
+header.logout {
+    background-color: var(--clr-primary);
+    min-height: 100vh;
+    padding: 0 1rem;
+    display: grid;
+    place-content: center;
+}
+
+header.logout > * {
+    opacity: 0;
+    transform: translateY(2em);
+    animation: content-slide-up 1s forwards ease-out;
+}
+
+@keyframes content-slide-up {
+    from { opacity: 0; transform: translateY(2em); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+header.logout div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+    color: var(--clr-primary);
+    background-color: #ffffff1a;
+    font-size: clamp(var(--fs-xs), 2vw, var(--fs-sm));
+    text-align: center;
+    margin: 0 auto 32px;
+    padding: 0.5rem 1.5rem;
+    border-radius: 5rem;
+    font-family: var(--ff-heading);
+    font-weight: var(--fw-bold);
+    border: 1px solid #fff;
+}
+
+header.logout div p {
+    margin-bottom: 0;
+    font-size: clamp(var(--fs-sm), 2vw, var(--fs-md));
+    color: var(--clr-card-background);
+}
+
+header.logout img {
+    width: 25px;
+    margin-bottom: 2px;
+}
+
+header.logout h1 {
+    font-size: clamp(var(--fs-2xl), 10vw, 4rem);
+    color: var(--clr-card-background);
+    margin: 0 0 1.5rem;
+    text-align: center;
+    font-weight: var(--fw-bold);
+}
+
+header.logout h1 span {
+    display: block;
+    position: relative;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+header.logout h1 span::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 0%;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.3);
+    animation: underline-grow 2s forwards ease;
+}
+
+@keyframes underline-grow {
+    from { width: 0%; }
+    to { width: 100%; }
+}
+
+header.logout p {
+    color: #cde4dd;
+    margin: 0 auto 24px;
+    max-width: 500px;
+}
+
+header.logout a,
+header.logout button {
+    background-color: var(--clr-card-background);
+    color: var(--clr-primary);
+    font-weight: var(--fw-bold);
+    padding: 0.75rem 1.75rem;
+    border-radius: 0.5rem;
+    border: none;
+    width: 200px;
+    text-align: center;
+    margin: 0 auto;
+    cursor: pointer;
+    display: block;
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
+    header.logout h1 {
+        font-size: clamp(2rem, 8vw, 3rem);
+    }
+
+    header.logout div {
+        padding: 0.5rem 1rem;
+        font-size: clamp(0.8rem, 2vw, 1rem);
+    }
+
+    header.logout a,
+    header.logout button {
+        width: 150px;
+    }
+}
 
 
-/* --- Responsive --- */
 @media (max-width: 600px) {
-
     .banner {
         display: flex;
         justify-content: space-between;
@@ -134,13 +353,20 @@
     }
 
     .logout-btn, .change-pw-btn {
-        padding: .3rem .6rem;  /* smaller padding */
-        font-size: 0.85rem;     /* smaller text */
+        padding: .3rem .6rem;
+        font-size: 0.85rem;
     }
 
     .logout-btn {
-        color: var(--clr-card-background); 
         margin-right: .5rem;
     }
 
+    header.logout h1 {
+        font-size: clamp(1.75rem, 8vw, 2.5rem);
+    }
+
+    header.logout a,
+    header.logout button {
+        width: 140px;
+    }
 }

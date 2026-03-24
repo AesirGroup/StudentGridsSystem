@@ -10,7 +10,7 @@
 {% block content %}
 {% if user.is_authenticated %}
 <main>
-    
+
     <!-- Hero Section -->
     <header class="home-hero">
         <p class="welcome">Let's get started {{ user.username }}</p>
@@ -18,14 +18,14 @@
         <p>Streamline your grading workflow with automated analysis and structured feedback.</p>
         <a href="{% url 'upload_grid' %}" class="get-started-btn">Get Started ➜</a>
     </header>
-    
+
     <!-- Decorative SVG Wave -->
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 250">
         <path fill="#2ba384" fill-opacity="1"
-                d="M0,64L60,85.3C120,107,240,149,360,160C480,171,600,149,720,128C840,107,960,85,1080,80C1200,75,1320,85,1380,90.7L1440,96L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z">
+            d="M0,64L60,85.3C120,107,240,149,360,160C480,171,600,149,720,128C840,107,960,85,1080,80C1200,75,1320,85,1380,90.7L1440,96L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z">
         </path>
     </svg>
-    
+
     <!-- Tools Section -->
     <section class="tools">
         <h2>Everything you need</h2>
@@ -34,15 +34,17 @@
             <a href="{% url 'upload_grid' %}" class="card">
                 <img src="{% static 'img/home/upload.svg' %}" alt="Upload Icon">
                 <h3>Upload Grid</h3>
-                <p>Upload a grading grid PDF and automatically parse its table layout to extract student names and details into structured data.</p>
+                <p>Upload a grading grid PDF and automatically parse its table layout to extract student names and
+                    details into structured data.</p>
             </a>
-    
+
             <a href="#" class="card">
                 <img src="{% static 'img/home/transcript.svg' %}" alt="Transcript Icon">
                 <h3>Process Transcript</h3>
-                <p>Upload a transcript PDF and automatically extract course details, grades, and student information into structured data.</p>
+                <p>Upload a transcript PDF and automatically extract course details, grades, and student information
+                    into structured data.</p>
             </a>
-    
+
             <a href="#" class="card">
                 <img src="{% static 'img/home/report.svg' %}" alt="Report Icon">
                 <h3>Generate Report</h3>
@@ -50,13 +52,9 @@
             </a>
         </div>
     </section>
-    
-    {% else %}
 
-    <!-- <h1>You are not logged in.</h1> -->
-    <!-- <a href="{% url 'login' %}">Log In</a>
-    <a href="{% url 'signup' %}">Sign Up</a> -->
-    <section class="py-5 text-center">
+    {% else %}
+    <!-- <section class="py-5 text-center">
         <div class="container" style="max-width: 720px;">
             
             <h1 class="display-5 fw-semibold mb-3">
@@ -68,7 +66,23 @@
                 and generate reports instantly.
             </p>
         </div>
-    </section>
+    </section> -->
+
+    <header class="home-hero logout">
+        <div>
+            <img src="{% static 'img/home/hat-transparent.svg' %}" alt="Graduation Hat Icon">
+            <p class="welcome">Welcome to Student Grids</p>
+        </div>
+        <h1 class="logout">Automate grading
+            <span class="relative">workflows</span>
+            <span class="underline"></span>
+        </h1>
+        <p class="logout">
+            Upload grading grids and transcripts, extract structured student data, and generate reports instantly.
+        </p>
+        <a href="{% url 'login' %}" class="logout">Login</a>
+    </header>
+
     {% endif %}
     {% endblock %}
 </main>
