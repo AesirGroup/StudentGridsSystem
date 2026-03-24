@@ -1,6 +1,6 @@
 # Evaluation models
 # Bucket, Major, Degree definitions and JSON loaders
-
+from django.conf import settings
 from typing import Dict, List, Optional, Any
 from pydantic import BaseModel, Field, model_validator
 import json
@@ -103,7 +103,10 @@ def _load_majors(path: str) -> dict[Any, Major]:
 
 
 # Define BASEDIR as the grids package data directory
-BASEDIR = Path(__file__).parent.parent / 'data'
+# BASEDIR = Path(__file__).parent.parent / 'data'
+
+# CHANGE: Safely anchors to the project root while maintaining the Pathlib object type
+BASEDIR = settings.BASE_DIR / 'grids' / 'data'
 
 # Try to load buckets and majors, but handle missing files gracefully
 try:
