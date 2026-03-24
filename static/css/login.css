@@ -1,272 +1,281 @@
 :root {
-
-    /* Main Color */
-    --clr-primary: #2BA384; 
-
-    /* Font Colors */
+    /* ================ COLORS ================ */
+    --clr-primary: #2BA384;
     --text-primary: #111827;
     --text-secondary: #718096;
-
+    --text-tertiary: #fff;
     --clr-card-background: #fff;
     --clr-border: #E2E8F0;
+    --body-bg: #f5f5f5;
+    --icon-bg: #e5f1ed;
 
-    /* Font Family */
+    /* ============ FONT FAMILY ============ */
     --ff-base: Arial, Helvetica, sans-serif;
     --ff-heading: "Space Grotesk", sans-serif;
 
+    /* ============ FONT SIZES ============ */
+    --fs-3xs: 0.625rem;
+    --fs-2xs: 0.75rem;
+    --fs-xs: 0.875rem;
+    --fs-sm: 1rem;
+    --fs-md: 1.125rem;
+    --fs-lg: 1.25rem;
+    --fs-xl: 1.5rem;
+    --fs-2xl: 1.875rem;
+    --fs-3xl: 2.25rem;
+    --fs-4xl: 3rem;
 
-    /* Font Size  */
-    --fs-3xs: 0.625rem;  /* 10px */
-    --fs-2xs: 0.75rem;   /* 12px */
-    --fs-xs: 0.875rem;   /* 14px */
-    --fs-sm: 1rem;       /* 16px */
-    --fs-md: 1.125rem;   /* 18px */
-    --fs-lg: 1.25rem;    /* 20px */
-    --fs-xl: 1.5rem;     /* 24px */
-    --fs-2xl: 1.875rem;  /* 30px */
-    --fs-3xl: 2.25rem;   /* 36px */
-    --fs-4xl: 3rem;      /* 48px */
-
-
-    /* Font Weights */
-    --fw-thin: 100;   
-    --fw-extralight: 200;    
+    /* ============ FONT WEIGHTS ============ */
+    --fw-thin: 100;
+    --fw-extralight: 200;
     --fw-light: 300;
     --fw-regular: 400;
     --fw-medium: 500;
     --fw-semibold: 600;
     --fw-bold: 700;
     --fw-black: 800;
+
+    /* ============ SPACING ============ */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+    --space-2xl: 4rem;
+    --space-3xl: 5rem;
+
+    /* ============ BORDER RADIUS ============ */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
 }
 
 /* Resets */
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-img, svg, label {
-    display: inline-block;
+img,
+svg,
+label {
+  display: inline-block;
 }
 
 li {
-    list-style: none;
+  list-style: none;
 }
-
 
 /* --- Page Setup --- */
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f5f5f5;
-    font-family: var(--ff-base);
-    margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  font-family: var(--ff-base);
+  margin: 0;
 }
-
 
 *:focus {
-    outline: none;
-    box-shadow: none;
-    border: none; /* optional if you also have border changes on focus */
+  outline: none;
+  box-shadow: none;
+  border: none; /* optional if you also have border changes on focus */
 }
-
-
 
 /* --- Card Container --- */
 .login-card {
-    background-color: var(--clr-card-background);
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 450px;
-    text-align: center;
-    margin: 1rem 0;
+  background-color: var(--clr-card-background);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  margin: 1rem 0;
 }
-
-
 
 /* --- Heading --- */
 
 .card-header h1 {
-    color: var(--text-primary);
-    color: var(--clr-primary);
-    font-size: var(--fs-3xl);
+  color: var(--text-primary);
+  color: var(--clr-primary);
+  font-size: var(--fs-3xl);
 }
 
 .card-header .app-name {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
 .app-name img {
-    width: 5rem;
+  width: 5rem;
 }
 
 .card-header h2 {
-    color: var(--text-primary);
-    font-size: var(--fs-2xl);
-    text-align: center;
-    margin-bottom: .25rem;
+  color: var(--text-primary);
+  font-size: var(--fs-2xl);
+  text-align: center;
+  margin-bottom: 0.25rem;
 }
 
 .card-header p {
-    color: var(--text-secondary);
-    font-weight: var(--fw-medium);
-    text-align: center;
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
+  text-align: center;
 }
-
-
-
-
 
 /* --- Form --- */
 
 form {
-    margin-top: 1.5rem;
+  margin-top: 1.5rem;
 }
 
-.email-container, .password-container {
-    display: flex;
-    align-items: center;
-    border: 1px solid var(--clr-border);
-    padding: .25rem .5rem;
-    border-radius: .5rem;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
+.email-container,
+.password-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--clr-border);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
 }
 
-.email-container:focus-within, .password-container:focus-within {
-    box-shadow: 0 0 6px 1px rgba(43, 163, 132, 0.25);
-    border: 1px solid var(--clr-primary);
+.email-container:focus-within,
+.password-container:focus-within {
+  box-shadow: 0 0 6px 1px rgba(43, 163, 132, 0.25);
+  border: 1px solid var(--clr-primary);
 }
 
-.form-errors p{
-    text-align: left;
-    color: red;
-    margin-bottom: 1rem;
-    width: 100%;
+.form-errors p {
+  text-align: left;
+  color: red;
+  margin-bottom: 1rem;
+  width: 100%;
 }
 
 .login-card form img {
-    width: 20px;
+  width: 20px;
 }
 
 .email-container img {
-    margin-bottom: 3px;
+  margin-bottom: 3px;
 }
 
 /* --- Labels --- */
 
-
-form label{
-    margin-bottom: 0.3rem;
-    width: 100%;
-    text-align: left;
-    color: var(--text-primary);
-    margin-bottom: 0.3rem;
-    font-weight: var(--fw-bold);
+form label {
+  margin-bottom: 0.3rem;
+  width: 100%;
+  text-align: left;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+  font-weight: var(--fw-bold);
 }
 
 .password-header {
-    display: flex;
-    justify-content: space-between;
-    width: auto;
+  display: flex;
+  justify-content: space-between;
+  width: auto;
 }
 
-.password-header label{
-    width: auto;
+.password-header label {
+  width: auto;
 }
 
-.password-header a{
-    font-size: var(--fs-2xs);
-    text-decoration: none;
-    color: var(--clr-primary);
-    width: fit-content;
+.password-header a {
+  font-size: var(--fs-2xs);
+  text-decoration: none;
+  color: var(--clr-primary);
+  width: fit-content;
 }
-
 
 /* --- Inputs --- */
 .login-card input {
-    width: 100%;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: none;
-    color: var(--text-secondary);
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: none;
+  color: var(--text-secondary);
 }
 
 .login-card input:focus {
-    border: none;
-    outline: none;
+  border: none;
+  outline: none;
 }
 
-#togglePassword{
-    cursor: pointer;
+#togglePassword {
+  cursor: pointer;
 }
-
-
-
 
 /* --- Submit Button --- */
 
 .login-card button {
-    width: 100%;
-    padding: 0.7rem;
-    background-color: var(--clr-primary);
-    color: var(--clr-card-background);
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: var(--fw-bold);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 1rem 0;
+  width: 100%;
+  padding: 0.7rem;
+  background-color: var(--clr-primary);
+  color: var(--clr-card-background);
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 1rem 0;
 }
 
 .login-card button:hover {
-    transform: scale(1.01);   
-    opacity: .95; 
+  transform: scale(1.01);
+  opacity: 0.95;
 }
 
 .create-account {
-    color: var(--text-secondary);
-    font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
 }
 
 .create-account a {
-    text-decoration: none;
-    color: var(--clr-primary);
-    font-weight: var(--fw-bold);
-    margin-left: .5rem;
+  text-decoration: none;
+  color: var(--clr-primary);
+  font-weight: var(--fw-bold);
+  margin-left: 0.5rem;
 }
 
+/* ================= FIELD ERRORS ================= */
+.field-error p {
+  color: #e53e3e;
+  font-size: var(--fs-xs);
+  text-align: left;
+  margin-top: -0.75rem;
+  margin-bottom: var(--space-md);
+  font-weight: var(--fw-semibold);
+}
 
-
-/* --- Non-field Errors --- */
-
-
-
-
-
+.form-errors p {
+  color: #e53e3e;
+  font-size: var(--fs-xs);
+  margin-bottom: var(--space-md);
+  font-weight: var(--fw-semibold);
+}
 
 /* --- Responsive --- */
 @media (min-width: 600px) {
-    .login-card {
-        width: 80%;
-        padding: 2rem;
-    }
+  .login-card {
+    width: 80%;
+    padding: 2rem;
+  }
 }
 
 /* For larger screens (desktop) */
 @media (min-width: 900px) {
-    .login-card {
-        width: 450px; /* max width already handled */
-        padding: 2rem;
-    }
+  .login-card {
+    width: 450px; /* max width already handled */
+    padding: 2rem;
+  }
 }
