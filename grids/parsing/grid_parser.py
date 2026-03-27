@@ -22,14 +22,27 @@ def _extract_student_numbers(text: str) -> List[str]:
 
 def _extract_student_names(text: str) -> List[str]:
     names = []
-    # Look for "Record of: FirstName LastName"
-    # We use multiline mode so ^ matches start of line
-    pattern = re.compile(r"Record of:\s*(.+)", re.IGNORECASE)
-    for match in pattern.finditer(text):
-        name = match.group(1).strip()
-        names.append(name.title())
-    return names
+    lines = text.splitlines()
 
+    for i, line in enumerate(lines):
+        if line.strip().lower().startswith("record of:"):
+            first_part = line.split(":", 1)[1].strip()
+            collected = [first_part] if first_part else []
+
+            j = i + 1
+            while j < len(lines):
+                candidate = lines[j].strip()
+                # Stop only if line begins with "Admit Term" (flexible spacing/punctuation)
+                if re.match(r"^admit\s*term\b", candidate, re.IGNORECASE):
+                    break
+                if candidate:
+                    collected.append(candidate)
+                j += 1
+
+            full_name = " ".join(collected)
+            names.append(full_name.title())
+
+    return names
 
 def _extract_student_campuses(text: str) -> List[str]:
     campuses = []
@@ -385,23 +398,46 @@ def _extract_degree_gpas(text: str) -> List[float]:
 
 
 def _extract_overall_gpas(text: str) -> List[float]:
-    """Extract cumulative GPA values (looks for 'Cumm. GPA' or 'Cumulative GPA')."""
+    """Extract cumulative/degree GPA values handling both inline and tabular formats."""
     if not text or not text.strip():
         return []
 
     t = text.replace("\r\n", "\n").replace("\r", "\n")
+    results: List[float] = []
 
-    # Match variants like: "Cumm. GPA 3.01" or "Cumulative GPA: 3.01"
-    pattern = re.compile(
-        r"(?:Cumm\.?|Cumulative)\s*GPA\s*[:\-]?\s*([0-4](?:\.\d{1,2})?)", re.IGNORECASE
+    # STRATEGY 1: The Tabular Format (From the Grids PDF)
+    # Looks for the bottom of the header: "Points GPA\n"
+    # Then captures the 5 floats that follow it.
+    # Capture Group 1 = Cumm. GPA (2.77) | Capture Group 2 = Degree GPA (2.71)
+    tabular_pattern = re.compile(
+        r"Points\s+GPA\s*\n\s*[\d\.]+\s+[\d\.]+\s+[\d\.]+\s+([\d\.]+)\s+([\d\.]+)",
+        re.IGNORECASE
+    )
+    
+    # STRATEGY 2: The Inline Format (Fallback)
+    inline_pattern = re.compile(
+        r"(?:Cumm\.?|Cumulative|Degree|Overall)\s*GPA\s*[:\-]?\s*([0-4](?:\.\d{1,2})?)", 
+        re.IGNORECASE
     )
 
-    results: List[float] = []
-    for m in pattern.finditer(t):
-        try:
-            results.append(float(m.group(1)))
-        except ValueError:
-            pass
+    # First, try to find tabular GPAs
+    tabular_matches = list(tabular_pattern.finditer(t))
+    
+    if tabular_matches:
+        for m in tabular_matches:
+            try:
+                # m.group(1) is the Cumm. GPA. m.group(1) is the Overall GPA
+                results.append(float(m.group(1)))
+            except ValueError:
+                pass
+    else:
+        # Fallback to inline pattern if tabular isn't found
+        for m in inline_pattern.finditer(t):
+            try:
+                results.append(float(m.group(1)))
+            except ValueError:
+                pass
+
     return results
 
 
@@ -538,6 +574,19 @@ def _extract_term_block_data(term_entry: Dict[str, str]) -> Dict[str, Any]:
     _NUMBER_ONLY = re.compile(r"^\d{3,4}$")
     _GPA_NUM_RE = re.compile(r"\b([0-5](?:\.\d{1,2})?)\b")
 
+    def _is_page_header_line(ln: str) -> bool:
+        # Common page headers/footers that should be ignored
+        # like
+        # THE UNIVERSITY OF THE WEST INDIES
+        # Report Run Date / Time : 12-Jan-26 11:58:41 AM
+        # Page # : 100 Page #: 100
+        noise_patterns = [
+            r"^THE UNIVERSITY",
+            r"^Report Run Date",
+            r"^Page\s+#",
+        ]
+        return any(re.match(pat, ln, re.IGNORECASE) for pat in noise_patterns)
+
     def _is_float_token(s: str) -> bool:
         try:
             float(s)
@@ -574,7 +623,7 @@ def _extract_term_block_data(term_entry: Dict[str, str]) -> Dict[str, Any]:
 
     block = term_entry.get("block", "") or ""
     term_label = term_entry.get("term", "").strip()
-    lines = [ln.strip() for ln in block.split("\n") if ln.strip()]
+    lines = [ln.strip() for ln in block.split("\n") if ln.strip() and not _is_page_header_line(ln.strip())]
 
     academic_standing: Optional[str] = None
     student_session: Optional[str] = None
