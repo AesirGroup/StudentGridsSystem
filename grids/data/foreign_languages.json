@@ -2,7 +2,7 @@
   "subjects": [
     {"code": "FREN", "name": "French"},
     {"code": "SPAN", "name": "Spanish"},
-    {"code": "GERM", "name": "German"},
-    {"code": "JAPN", "name": "Japanese"}
+    {"code": "CHIN", "name": "Chinese"},
+    {"code": "JAPA", "name": "Japanese"}
   ]
 }

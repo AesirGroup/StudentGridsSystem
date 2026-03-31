@@ -98,7 +98,7 @@ class ForeignLanguageRequirementTestCase(TestCase):
 
     def test_student_with_japanese_course_met(self):
         """Student with a Japanese course should meet the requirement"""
-        courses = [self._create_course("JAPN", 101, "Japanese I", "B")]
+        courses = [self._create_course("JAPA", 101, "Japanese I", "B")]
         student = self._create_student(admit_term="2023/2024 Semester I", courses=courses)
 
         result = _evaluate_foreign_language_requirement(student, self.rule_data, self.used_courses, self.courses)

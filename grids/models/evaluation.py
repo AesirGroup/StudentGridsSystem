@@ -123,7 +123,7 @@ except FileNotFoundError:
     print("Warning: buckets.json, majors.json, or foreign_languages.json not found. Using empty dictionaries/sets.")
     BUCKETS = {}
     MAJORS = {}
-    FOREIGN_LANGUAGES = set()
+    FOREIGN_LANGUAGES = {'FREN', 'SPAN', 'GERM', 'JAPA'}
 
 
 class Degree(BaseModel):

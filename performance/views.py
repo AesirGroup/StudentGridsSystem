@@ -289,7 +289,18 @@ class UploadGridView(LoginRequiredMixin, View):
 
             for student in students:
                 degree = Degree.from_student_data(student)
-                result = evaluator.evaluate_degree(student, degree)
+
+                # Check if an advisor has previously verified the FLR exemption
+                flr_override = False
+                try:
+                    existing_profile = StudentProfile.objects.get(
+                        student_number=student.student_number
+                    )
+                    flr_override = existing_profile.flr_exempt_verified
+                except StudentProfile.DoesNotExist:
+                    pass
+
+                result = evaluator.evaluate_degree(student, degree, flr_override=flr_override)
 
                 can_graduate = len(result.unmet_requirements) == 0
                 if can_graduate:
@@ -376,3 +387,13 @@ class StudentDetailView(LoginRequiredMixin, View):
             return redirect("upload_grid")
 
         return render(request, self.template_name, {"student": profile, "audit": audit})
+
+
+class ToggleFLRExemptionView(LoginRequiredMixin, View):
+    """Advisor override: toggle the CSEC/CAPE foreign-language exemption flag."""
+
+    def post(self, request, student_number, *args, **kwargs):
+        profile = get_object_or_404(StudentProfile, student_number=student_number)
+        profile.flr_exempt_verified = not profile.flr_exempt_verified
+        profile.save(update_fields=["flr_exempt_verified"])
+        return redirect("student_detail", student_number=student_number)
