@@ -1,8 +1,0 @@
-{
-  "subjects": [
-    {"code": "FREN", "name": "French"},
-    {"code": "SPAN", "name": "Spanish"},
-    {"code": "CHIN", "name": "Chinese"},
-    {"code": "JAPA", "name": "Japanese"}
-  ]
-}
