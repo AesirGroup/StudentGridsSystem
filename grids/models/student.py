@@ -284,7 +284,7 @@ class StudentData(BaseModel):
         # Use creditsEarned if provided and no terms data
         if self.creditsEarned is not None and self.creditsEarned > 0 and not self.terms:
             return self.creditsEarned
-        return sum(c.credits for c in self.passed_courses_best)
+        return sum(c.credits for c in self.all_passed_courses_best)
 
     def __str__(self) -> str:
         # Basics

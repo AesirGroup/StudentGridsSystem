@@ -5,6 +5,7 @@ class TranscriptTotalRow(BaseModel):
     """Represents a single row of transcript totals (e.g., Total Institution, Overall, etc.)"""
     attempt_hours: float = 0.0
     passed_hours: float = 0.0
+    earned_hours: float = 0.0
     gpa_hrs_hours: float = 0.0
     quality_points: float = 0.0
     gpa: float = 0.0
@@ -16,3 +17,4 @@ class TranscriptTotals(BaseModel):
     total_transfer: TranscriptTotalRow = Field(default_factory=TranscriptTotalRow)
     overall: TranscriptTotalRow = Field(default_factory=TranscriptTotalRow)
     degree: TranscriptTotalRow = Field(default_factory=TranscriptTotalRow)
+    
