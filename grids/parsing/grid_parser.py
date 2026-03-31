@@ -12,7 +12,7 @@ from ..models import (
     ProgrammeSummaryItem,
 )
 from .splitter import split_grid_documents
-from .grades import quality_points_to_grade
+from .grades import quality_points_to_grade, ALL_RECOGNIZED_GRADES
 
 
 def _extract_student_numbers(text: str) -> List[str]:
@@ -609,7 +609,6 @@ def _extract_term_block_data(term_entry: Dict[str, str]) -> Dict[str, Any]:
             "R3",
             "R4",
             "R5",
-            "LW",
         }
         if not tok or len(tok) > 4:
             return False
@@ -709,11 +708,14 @@ def _extract_term_block_data(term_entry: Dict[str, str]) -> Dict[str, Any]:
             # SAFEGUARD: Never treat a 4-letter subject code as a grade
             if re.match(r"^[A-Za-z]{4}$", token):
                 return False
+            
+            clean_tok = token.upper()
+            if clean_tok in ALL_RECOGNIZED_GRADES:
+                return True
+                
             if _looks_like_grade_token(token):
                 return True
-            # Explicitly recognize these as valid status grades
-            admin_grades = {"AB", "W", "AM", "V", "FA", "EC", "EX", "FMP"}
-            return token.upper() in admin_grades
+            return False
 
         found = False
         for ln in reversed(bounded_window):

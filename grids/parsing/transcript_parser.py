@@ -6,7 +6,7 @@ import re
 
 from ..models import StudentData, ProgrammeData, TermData, StudentCourse, TranscriptTotals, TranscriptTotalRow
 from .splitter import split_transcript_documents
-from .grades import quality_points_to_grade
+from .grades import quality_points_to_grade, KNOWN_GRADE_REGEX_CHUNK
 
 
 def sanitize_transcript_text(raw_text: str) -> str:
@@ -150,7 +150,7 @@ def _extract_term_block_data(term_entry: Dict[str, str]) -> Dict[str, Any]:
     # Bulletproof regex for capturing the UWI inline course sandwich
     # Allows for missing grades specifically to support "In Progress" courses
     course_pattern = re.compile(
-        r"^([A-Z]{4})\s+(\d{4})\s+[A-Z]\s+[A-Z]{2}\s+(.*?)\s+(?:([A-Z][+-]?|F\d?|EX|EC|TC[+-]?)\s+)?(\d+\.\d{2})\s+(\d+\.\d{2})",
+        r"^([A-Z]{4})\s+(\d{4})\s+[A-Z]\s+[A-Z]{2}\s+(.*?)\s+(?:" + KNOWN_GRADE_REGEX_CHUNK + r"\s+)?(\d+\.\d{2})\s+(\d+\.\d{2})",
         re.MULTILINE
     )
     
@@ -241,92 +241,41 @@ def _parse_transcript_totals(block: str) -> Optional[TranscriptTotals]:
     if not block or not block.strip():
         return None
 
-    def extract_floats(text: str) -> List[float]:
-        float_pattern = re.compile(r'\b\d+\.\d+\b')
-        matches = float_pattern.findall(text)
-        return [float(m) for m in matches]
+    def extract_row(prefix_regex: str) -> Dict[str, float]:
+        # Prefix could be 'Total Institution', 'Total Transfer', 'Overall', 'Degree'
+        # Followed by optional colon and spaces
+        # Then 6 floating point values
+        pattern = re.compile(rf"{prefix_regex}[:\s]*([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)\s+([\d\.]+)", re.IGNORECASE)
+        match = re.search(pattern, block)
+        if match:
+            floats = [float(match.group(i)) for i in range(1, 7)]
+            return {
+                'attempt_hours': floats[0],
+                'passed_hours': floats[1],
+                'earned_hours': floats[2],
+                'gpa_hrs_hours': floats[3],
+                'quality_points': floats[4],
+                'gpa': floats[5]
+            }
+        return {
+            'attempt_hours': 0.0,
+            'passed_hours': 0.0,
+            'earned_hours': 0.0,
+            'gpa_hrs_hours': 0.0,
+            'quality_points': 0.0,
+            'gpa': 0.0
+        }
 
     totals_marker = re.search(r"TRANSCRIPT\s+TOTALS", block, re.IGNORECASE)
     if not totals_marker:
         return None
 
-    pre_totals_text = block[:totals_marker.start()]
-    post_totals_text = block[totals_marker.end():]
-
-    table_start = re.search(r"(?:Attempt|GPA\s+Hrs)", pre_totals_text, re.IGNORECASE)
-    if table_start:
-        table_text = pre_totals_text[table_start.end():]
-        floats_before = extract_floats(table_text)
-    else:
-        floats_before = extract_floats(pre_totals_text)
-
-    floats_after = extract_floats(post_totals_text)
-
-    degree_gpa = None
-    lines = pre_totals_text.split('\n')
-    for i, line in enumerate(lines):
-        if re.search(r"Total\s+Transfer", line, re.IGNORECASE):
-            for j in range(max(0, i-3), i):
-                line_floats = extract_floats(lines[j])
-                for val in line_floats:
-                    if 0.0 < val <= 5.0:
-                        degree_gpa = val
-                        break
-                if degree_gpa:
-                    break
-            break
-
-    if len(floats_before) >= 12 and len(floats_after) >= 3:
-        attempt_col = floats_before[0:3] if len(floats_before) >= 3 else []
-        gpa_hrs_col = floats_before[3:6] if len(floats_before) >= 6 else []
-        quality_pts_col = floats_before[6:9] if len(floats_before) >= 9 else []
-        gpa_col = floats_before[9:12] if len(floats_before) >= 12 else []
-
-        degree_floats = floats_before[12:15] if len(floats_before) >= 15 else []
-        passed_col = floats_after[0:3] if len(floats_after) >= 3 else []
-
-        rows = []
-        for i in range(3):
-            rows.append({
-                'attempt_hours': attempt_col[i] if i < len(attempt_col) else 0.0,
-                'passed_hours': passed_col[i] if i < len(passed_col) else 0.0,
-                'gpa_hrs_hours': gpa_hrs_col[i] if i < len(gpa_hrs_col) else 0.0,
-                'quality_points': quality_pts_col[i] if i < len(quality_pts_col) else 0.0,
-                'gpa': gpa_col[i] if i < len(gpa_col) else 0.0
-            })
-
-        degree_row = {
-            'attempt_hours': degree_floats[0] if len(degree_floats) >= 1 else 0.0,
-            'passed_hours': degree_floats[1] if len(degree_floats) >= 2 else degree_floats[0] if len(degree_floats) >= 1 else 0.0,
-            'gpa_hrs_hours': degree_floats[0] if len(degree_floats) >= 1 else 0.0,
-            'quality_points': degree_floats[2] if len(degree_floats) >= 3 else 0.0,
-            'gpa': degree_gpa if degree_gpa else 0.0
-        }
-
-        transfer_row_idx = None
-        for i, row in enumerate(rows):
-            if all(v == 0.0 for v in row.values()):
-                transfer_row_idx = i
-                break
-
-        if transfer_row_idx is not None:
-            other_indices = [i for i in range(3) if i != transfer_row_idx]
-            overall_row = rows[other_indices[0]] if len(other_indices) >= 1 else rows[1]
-            institution_row = rows[other_indices[1]] if len(other_indices) >= 2 else rows[2]
-            transfer_row = rows[transfer_row_idx]
-        else:
-            transfer_row = rows[0]
-            overall_row = rows[1]
-            institution_row = rows[2]
-
-        return TranscriptTotals(
-            total_institution=TranscriptTotalRow(**institution_row),
-            total_transfer=TranscriptTotalRow(**transfer_row),
-            overall=TranscriptTotalRow(**overall_row),
-            degree=TranscriptTotalRow(**degree_row)
-        )
-
-    return None
+    return TranscriptTotals(
+        total_institution=TranscriptTotalRow(**extract_row(r"Total\s+Institution")),
+        total_transfer=TranscriptTotalRow(**extract_row(r"Total\s+Transfer")),
+        overall=TranscriptTotalRow(**extract_row(r"Overall")),
+        degree=TranscriptTotalRow(**extract_row(r"Degree"))
+    )
 
 
 def parse_transcripts(raw: str) -> List[StudentData]:
