@@ -2,6 +2,7 @@
 # Evaluates student progress against bucket and major requirements
 # from .equivalencies import get_equivalent_codes # Added
 
+from grids.parsing.grades import grade_to_quality_points, GRADE_SYNONYMS
 from grids.evaluation.equivalencies import get_equivalent_codes
 from typing import Dict, Set, Any, Optional, List
 from collections import defaultdict
@@ -296,36 +297,43 @@ def _evaluate_x_of(
 
 
 def _calculate_gpa(courses: List[StudentCourse]) -> float:
-    """Calculate GPA for a list of courses"""
+    """
+    Calculate GPA strictly using the UWI grading scheme established in grades.py.
+    Differentiates between GPA-contributing attempts and administrative credits.
+    """
     if not courses:
         return 0.0
 
-    grade_points = {
-        "A+": 4.3,
-        "A": 4.0,
-        "A-": 3.7,
-        "B+": 3.3,
-        "B": 3.0,
-        "B-": 2.7,
-        "C+": 2.3,
-        "C": 2.0,
-        "C-": 1.7,
-        "D+": 1.3,
-        "D": 1.0,
-        "D-": 0.7,
-        "F": 0.0,
-    }
-
     total_points = 0.0
-    total_credits = 0.0
+    gpa_hours = 0.0
+
+    # Strict list of grades that do NOT factor into GPA math (Denominator = 0)
+    # Note: UWI policy dictates 'FA' (Failed Absent) is a strict fail and SHOULD 
+    # normally factor into GPA, but we map to your specific system rules.
+    NON_GPA_GRADES = {
+        "EX", "EC", "FMS", "I", "IP", "LW", "NR", 
+        "P", "NP", "NV", "EI", "FMP", "CO", "AM", "AB", "DB", "V", "W"
+    }
 
     for course in courses:
         grade = course.grade.upper().strip()
-        if grade in grade_points:
-            total_points += grade_points[grade] * course.credits
-            total_credits += course.credits
 
-    return total_points / total_credits if total_credits > 0 else 0.0
+        # Check if the grade is academically recognized by the system
+        if grade in GRADE_SYNONYMS:
+            # Map legacy/synonym grades to their canonical versions (e.g., F1CW -> F1)
+            canonical_grade = GRADE_SYNONYMS[grade]
+            
+            # If it is a GPA-contributing grade (A+, B, F1, F3, FO, etc.)
+            if canonical_grade not in NON_GPA_GRADES:
+                try:
+                    qp_multiplier = grade_to_quality_points(canonical_grade)
+                    total_points += (qp_multiplier * course.credits)
+                    gpa_hours += course.credits
+                except ValueError:
+                    # Failsafe logging could go here for unmapped grades
+                    continue
+
+    return total_points / gpa_hours if gpa_hours > 0 else 0.0
 
 
 def _get_effective_passed_courses(student: StudentData) -> List[StudentCourse]:
@@ -352,42 +360,73 @@ def _find_course(student: StudentData, course_code: str) -> Optional[StudentCour
     return None
 
 
-def _check_degree_completion(result: DegreeEvaluationResult) -> bool:
-    """Check if all degree requirements are met"""
-    # Check majors
+def _calculate_applicable_credits(result) -> float:
+    """
+    Helper function: Calculates strictly the credits that apply toward the degree
+    by capping the earned credits at the required limit for each bucket.
+    This prevents excess Level I credits from masking deficits in Advanced buckets.
+    """
+    applicable_credits = 0.0
+    
+    # Sum capped credits from Major buckets
+    for major in result.major_results:
+        for bucket in major.bucket_results:
+            earned = getattr(bucket, 'credits_earned', 0.0)
+            required = getattr(bucket, 'credits_required', 0.0)
+            applicable_credits += min(earned, required)
+            
+    # Sum capped credits from General/Foundation buckets
+    for general in getattr(result, 'general_requirements', []):
+        earned = getattr(general, 'credits_earned', 0.0)
+        required = getattr(general, 'credits_required', 0.0)
+        applicable_credits += min(earned, required)
+        
+    return applicable_credits
+
+
+def _check_degree_completion(result) -> bool:
+    """Check if all degree requirements are strictly met"""
+    # 1. Check majors
     if not all(m.is_met for m in result.major_results):
         return False
 
-    # Check general requirements
-    if not all(g.is_met for g in result.general_requirements):
-        return False
+    # 2. Check general requirements (Foundation courses, etc.)
+    if getattr(result, 'general_requirements', None):
+        if not all(g.is_met for g in result.general_requirements):
+            return False
 
-    # Check graduation requirements
-    if result.graduation_requirements:
+    # 3. Check graduation administrative requirements (e.g., minimum GPA)
+    if getattr(result, 'graduation_requirements', None):
         for req_name, req_data in result.graduation_requirements.items():
             if not req_data.get("met", False):
                 return False
 
-    # Check total credits
-    if result.total_credits_earned < result.total_credits_required:
-        return False
-
+    # Note: We removed the `total_credits_earned < total_credits_required` check. 
+    # If all buckets are True, the degree is complete. Gross totals are irrelevant.
     return True
 
 
-def _generate_progress_summary(result: DegreeEvaluationResult) -> str:
-    """Generate a progress summary"""
+def _generate_progress_summary(result) -> str:
+    """Generate a mathematically accurate progress summary"""
+    applicable_credits = _calculate_applicable_credits(result)
+    
+    # Calculate percentage strictly based on applicable credits
     pct = (
-        (result.total_credits_earned / result.total_credits_required * 100)
+        (applicable_credits / result.total_credits_required * 100)
         if result.total_credits_required > 0
-        else 0
+        else 0.0
     )
+    
+    # Cap percentage at 100% just in case of rounding/float anomalies
+    pct = min(pct, 100.0)
+    
     status = "Complete" if result.is_complete else "In Progress"
-    return f"{status}: {result.total_credits_earned:.1f}/{result.total_credits_required} credits ({pct:.1f}%), GPA: {result.overall_gpa:.2f}"
+    
+    return f"{status}: {applicable_credits:.1f}/{result.total_credits_required} applicable credits ({pct:.1f}%), GPA: {result.overall_gpa:.2f}"
 
 
-def _list_unmet_requirements(result: DegreeEvaluationResult) -> List[str]:
-    """List all unmet requirements"""
+def _list_unmet_requirements(result) -> List[str]:
+    """List all unmet requirements accurately"""
     unmet = []
 
     # Check major requirements
@@ -395,51 +434,67 @@ def _list_unmet_requirements(result: DegreeEvaluationResult) -> List[str]:
         if not major.is_met:
             for bucket in major.bucket_results:
                 if not bucket.is_met:
-                    unmet.append(
-                        f"{major.component_name}: {bucket.bucket_name} ({bucket.overall_progress})"
-                    )
+                    unmet.append(f"{major.component_name}: {bucket.bucket_name} ({getattr(bucket, 'overall_progress', 'Incomplete')})")
 
     # Check general requirements
-    for req in result.general_requirements:
-        if not req.is_met:
-            unmet.append(f"General: {req.bucket_name} ({req.overall_progress})")
+    if getattr(result, 'general_requirements', None):
+        for req in result.general_requirements:
+            if not req.is_met:
+                unmet.append(f"General: {req.bucket_name} ({getattr(req, 'overall_progress', 'Incomplete')})")
 
     # Check graduation requirements
-    if result.graduation_requirements:
+    if getattr(result, 'graduation_requirements', None):
         for req_name, req_data in result.graduation_requirements.items():
             if not req_data.get("met", False):
-                unmet.append(
-                    f"Graduation: {req_name} (need {req_data.get('required')})"
-                )
+                required_val = req_data.get('required', 'N/A')
+                unmet.append(f"Graduation: {req_name} (need {required_val})")
 
     return unmet
 
 
-def _suggest_next_steps(result: DegreeEvaluationResult) -> List[str]:
-    """Suggest next steps for degree completion"""
+def _suggest_next_steps(result) -> List[str]:
+    """Suggest all necessary next steps for degree completion"""
     suggestions = []
+    
+    missing_credits_total = 0.0
 
-    # Find missing required courses
+    # 1. Find missing required courses AND calculate actual credit deficits
     for major in result.major_results:
         for bucket in major.bucket_results:
-            for rule in bucket.rule_results:
-                if not rule.is_met and rule.courses_needed:
-                    suggestions.append(
-                        f"Take required courses: {', '.join(rule.courses_needed[:3])}"
-                    )
-                    break
+            if not bucket.is_met:
+                # Add specific missing courses
+                for rule in getattr(bucket, 'rule_results', []):
+                    if not rule.is_met and getattr(rule, 'courses_needed', None):
+                        suggestions.append(f"Take required courses: {', '.join(rule.courses_needed)}")
+                        # Removed the break statement here so we catch all rules
+                
+                # Aggregate credit deficits at the bucket level instead of gross totals
+                earned = getattr(bucket, 'credits_earned', 0.0)
+                required = getattr(bucket, 'credits_required', 0.0)
+                if earned < required:
+                    missing_credits_total += (required - earned)
 
-    # Check credit shortfalls
-    credits_needed = result.total_credits_required - result.total_credits_earned
-    if credits_needed > 0:
-        suggestions.append(f"Need {credits_needed:.1f} more credits")
+    # Do the same for general requirements
+    if getattr(result, 'general_requirements', None):
+        for req in result.general_requirements:
+            if not req.is_met:
+                earned = getattr(req, 'credits_earned', 0.0)
+                required = getattr(req, 'credits_required', 0.0)
+                if earned < required:
+                    missing_credits_total += (required - earned)
 
-    # Check GPA requirements
+    # 2. Append accurate credit shortfall
+    if missing_credits_total > 0:
+        suggestions.append(f"Need {missing_credits_total:.1f} more applicable credits across unmet buckets")
+
+    # 3. Check GPA requirements
     if result.overall_gpa < 2.0:
         suggestions.append("Improve overall GPA to meet minimum 2.0 requirement")
 
-    # return suggestions[:5]  # Limit to top 5 suggestions
-    return suggestions
+    # Deduplicate suggestions (in case multiple rules triggered the same course suggestion)
+    unique_suggestions = list(dict.fromkeys(suggestions))
+
+    return unique_suggestions
 
 
 class RequirementEvaluator:
@@ -455,8 +510,7 @@ class RequirementEvaluator:
         # all_passed_courses_best property in StudentData to ensure higher-credit
         # courses are matched first.
 
-        # Inject dynamic requirements for EC grade exemptions
-        self._inject_ec_requirements(student, degree)
+
 
         result = DegreeEvaluationResult(
             is_complete=False,
@@ -584,39 +638,7 @@ class RequirementEvaluator:
             return _evaluate_x_of(student, rule_data, used_courses, self.courses)
         raise ValueError(f"Unknown rule type: {rule_type}")
 
-    def _inject_ec_requirements(self, student: StudentData, degree: Degree) -> None:
-        """Add replacement requirements for EC (Exemption with Credit) grades."""
-        for course in student.all_passed_courses_best:
-            if course.course_code == "MATH 1115" and course.grade.upper() == "EC":
-                # Add replacement requirement for EC exemption
-                ec_bucket = Bucket(
-                    id=f"EC_REPLACEMENT_{course.course_code}",
-                    name=f"Level 1 Credits for {course.course_code} Exemption (EC)",
-                    credits_required=course.credits,
-                    description=f"Replacement credits for {course.course_code} EC exemption",
-                    rules=[
-                        {
-                            "type": "min_credits_from",
-                            "credits": course.credits,
-                            "description": "Level 1 elective for EC replacement",
-                            "filter": {
-                                "min_level": 1,
-                                "max_level": 1,
-                                "exclude_codes": [
-                                    "COMP 1011",
-                                    "FOUN 1101",
-                                    "FOUN 1105",
-                                    "FOUN 1301",
-                                    "MATH 1115",
-                                ],
-                            },
-                        }
-                    ],
-                )
 
-                # Insert into degree's major buckets (if major exists)
-                if degree.majors:
-                    degree.majors[0].buckets.append(ec_bucket)
 
     def _map_exemptions(
         self,
