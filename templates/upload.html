@@ -1,0 +1,220 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRID Upload Dashboard</title>
+    <!-- Bootstrap 5.3.8 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/upload.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div id="alert-container"></div>
+        <h1 class="title">Upload GRID File</h1>
+
+        <!-- <input type="file" id="file-input" class="file-input"> -->
+        <!-- <input type="file" id="fileInput" name="file" accept=".pdf, .txt" required> -->
+        <input type="file" id="file-input" name="file" accept=".pdf, .txt" class="file-input">
+
+        <!-- SUMMARY -->
+        <div id="summary" class="card summary-card">
+            <div>Total Students: <span id="total-students">0</span></div>
+            <div>Can Graduate: <span id="can-graduate">0</span></div>
+            <div>Cannot Graduate: <span id="cannot-graduate">0</span></div>
+        </div>
+
+        <!-- RESULTS TABLE -->
+        <div class="card">
+            <table id="results-table" class="results-table">
+                <thead>
+                    <tr>
+                        <th>Student Number</th>
+                        <th>Name</th>
+                        <th>Programme</th>
+                        <th>Major</th>
+                        <th>GPA</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="results">
+                    <!-- rows injected -->
+                </tbody>
+            </table>
+
+            <!-- PAGINATION -->
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </div>
+
+    {{ last_results|json_script:"session-results" }}
+    {{ last_summary|json_script:"session-summary" }}
+
+    <!-- Bootstrap 5.3.8 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+        </script>
+
+    <script>
+        const csrftoken = '{{ csrf_token }}';
+        const RESULTS_PER_PAGE = 5;
+
+        let currentPage = 1;
+        let allResults = JSON.parse(document.getElementById("session-results").textContent || "[]");
+        let summary = JSON.parse(document.getElementById("session-summary").textContent || "{}");
+
+        /* ---------------- SUMMARY ---------------- */
+
+        function renderSummary(summary) {
+            document.getElementById("total-students").innerText = summary.total_students || 0;
+            document.getElementById("can-graduate").innerText = summary.can_graduate || 0;
+            document.getElementById("cannot-graduate").innerText = summary.cannot_graduate || 0;
+        }
+
+        /* ---------------- TABLE ---------------- */
+
+        function renderTable() {
+            const start = (currentPage - 1) * RESULTS_PER_PAGE;
+            const end = start + RESULTS_PER_PAGE;
+            const pageResults = allResults.slice(start, end);
+
+            const tbody = document.getElementById("results");
+            tbody.innerHTML = pageResults.map(r => `
+            <tr>
+                <td>
+                    <strong class="student-id" onclick="goToStudent('${r.student_number}')">
+                        ${r.student_number}
+                    </strong>
+                </td>
+                <td>${r.name}</td>
+                <td>${r.programme}</td>
+                <td>${r.major}</td>
+                <td>${r.gpa}</td>
+                <td class="${r.can_graduate ? 'eligible' : 'not-eligible'}">
+                    ${r.can_graduate ? 'Eligible' : 'Not Eligible'}
+                </td>
+            </tr>
+        `).join("");
+
+            renderPagination();
+        }
+
+        /* ---------------- PAGINATION ---------------- */
+
+        function renderPagination() {
+            const totalPages = Math.ceil(allResults.length / RESULTS_PER_PAGE);
+            const pagination = document.getElementById("pagination");
+
+            pagination.innerHTML = "";
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement("span");
+                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                btn.innerText = i;
+                btn.onclick = () => {
+                    currentPage = i;
+                    renderTable();
+                };
+                pagination.appendChild(btn);
+            }
+        }
+
+        /* ---------------- NAVIGATION ---------------- */
+
+        function goToStudent(studentNumber) {
+            // Updated to match new app URL prefix
+            window.location.href = `/performance/${studentNumber}/`;
+        }
+
+        /* ---------------- HELPERS ---------------- */
+
+        function showFrontendError(message) {
+            const alertContainer = document.getElementById("alert-container");
+            alertContainer.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Upload Cancelled!</strong> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            // Clear the file input so the user can select the same file again if needed
+            document.getElementById("file-input").value = "";
+        }
+
+        /* ---------------- FILE UPLOAD ---------------- */
+
+        document.getElementById("file-input").addEventListener("change", () => {
+            const fileInput = document.getElementById("file-input");
+            const file = fileInput.files[0];
+
+            if (!file) return;
+
+            // 1. FRONTEND SIZE GUARDRAIL (50 MB)
+            const maxSizeInBytes = 50 * 1024 * 1024;
+            if (file.size > maxSizeInBytes) {
+                showFrontendError("File size exceeds the 50MB limit. Please upload a smaller file.");
+                return; // ABORT THE UPLOAD INSTANTLY
+            }
+
+            // 2. FRONTEND TYPE GUARDRAIL
+            const validExtensions = ['.pdf', '.txt'];
+            const fileName = file.name.toLowerCase();
+            const isValidType = validExtensions.some(ext => fileName.endsWith(ext));
+
+            if (!isValidType) {
+                showFrontendError("Unsupported file type. Please upload a .pdf or .txt file.");
+                return; // ABORT THE UPLOAD INSTANTLY
+            }
+
+            // If it passes both frontend checks, clear previous alerts and proceed to backend
+            document.getElementById("alert-container").innerHTML = "";
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            // Upload URL automatically resolved via Django name
+            fetch("{% url 'upload_grid' %}", {
+                method: "POST",
+                headers: { "X-CSRFToken": csrftoken },
+                body: formData
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const alertContainer = document.getElementById("alert-container");
+
+                    if (data.error) {
+                        // Inject a Bootstrap Danger Alert dynamically for Backend Errors
+                        alertContainer.innerHTML = `
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>Upload Failed!</strong> ${data.error}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `;
+                        return; // Stop execution
+                    }
+
+                    // Clear the alert if a successful upload happens subsequently
+                    alertContainer.innerHTML = "";
+
+                    allResults = data.results;
+                    summary = data.summary;
+
+                    currentPage = 1;
+                    renderSummary(summary);
+                    renderTable();
+                });
+        });
+
+        /* ---------------- INITIAL LOAD ---------------- */
+
+        if (allResults.length) {
+            renderSummary(summary);
+            renderTable();
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In</title>
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+
+<body>
+  <div class="login-card">
+    <header class="card-header">
+      <div class="app-name">
+        <img src="{% static 'img/login/logo.svg' %}" alt="A graduation cap">
+        <h1>Student Grids</h1>
+      </div>
+      <h2>Welcome</h2>
+      <p>Sign into your account to continue</p>
+    </header>
+
+    <form method="post">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+      <div class="form-errors">
+        {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Username Field -->
+      <label for="id_username">Username</label>
+      <div class="email-container">
+        <img src="{% static 'img/login/email.svg' %}" alt="User icon">
+        <input type="text" name="username" id="id_username" placeholder="Enter your username"
+          value="{{ form.username.value|default_if_none:'' }}" autocomplete="off" required>
+      </div>
+
+      {% if form.username.errors %}
+      <div class="field-error">
+        {% for error in form.username.errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Password Field -->
+      <div class="password-header">
+        <label for="id_password">Password</label>
+        <a href="{% url 'password_reset' %}" tabindex="-1">Forgot password?</a>
+      </div>
+
+      <div class="password-container">
+        <img src="{% static 'img/login/lock.svg' %}" alt="Lock icon">
+        <input type="password" name="password" id="id_password" placeholder="Enter your password"
+          autocomplete="current-password" required>
+        <img src="{% static 'img/login/eye-open.svg' %}" alt="Toggle password" id="togglePassword">
+      </div>
+
+      {% if form.password.errors %}
+      <div class="field-error">
+        {% for error in form.password.errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <button type="submit">Sign In ➜</button>
+    </form>
+
+    <p class="create-account">
+      Don't have an account?
+      <a href="{% url 'signup' %}">Create one</a>
+    </p>
+  </div>
+
+  <script>
+    const password = document.getElementById('id_password');
+    const toggle = document.getElementById('togglePassword');
+
+    toggle.addEventListener('click', () => {
+      const type = password.type === 'password' ? 'text' : 'password';
+      password.type = type;
+
+      toggle.src = type === 'password'
+        ? "{% static 'img/login/eye-open.svg' %}"
+        : "{% static 'img/login/eye-close.svg' %}";
+    });
+  </script>
+</body>
+
+</html>

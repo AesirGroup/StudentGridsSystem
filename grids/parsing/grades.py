@@ -28,6 +28,26 @@ GRADE_TABLE: List[GradeSpec] = [
     # Special fails when total >= 50 but a key component was failed:
     GradeSpec("FCW", 1.7, 50, None),  # Coursework fail (>=50 overall)
     GradeSpec("FWE", 1.7, 50, None),  # Written exam fail (>=50 overall)
+    # Administrative & Miscellaneous Non-GPA grades (0.0 QPs so reverse lookups don't violently crash)
+    GradeSpec("EX", 0.0, None, None),
+    GradeSpec("EC", 0.0, None, None),
+    GradeSpec("FA", 0.0, None, None),
+    GradeSpec("FMS", 0.0, None, None),
+    GradeSpec("I", 0.0, None, None),
+    GradeSpec("IP", 0.0, None, None),
+    GradeSpec("LW", 0.0, None, None),
+    GradeSpec("NR", 0.0, None, None),
+    GradeSpec("P", 0.0, None, None),
+    GradeSpec("NP", 0.0, None, None),
+    GradeSpec("NV", 0.0, None, None),
+    GradeSpec("EI", 0.0, None, None),
+    GradeSpec("FMP", 0.0, None, None),
+    GradeSpec("CO", 0.0, None, None),
+    GradeSpec("AM", 0.0, None, None),
+    GradeSpec("AB", 0.0, None, None),
+    GradeSpec("DB", 0.0, None, None),
+    GradeSpec("V", 0.0, None, None),
+    GradeSpec("W", 0.0, None, None),
 ]
 
 # Accept common synonyms mapped to canonical letters
@@ -36,9 +56,21 @@ GRADE_SYNONYMS: Dict[str, str] = {
     "F2CW": "F2", "F2WE": "F2",
     "F3CW": "F3", "F3WE": "F3",
     "FCW": "FCW", "FWE": "FWE",
+    "FC": "FCW", "FE": "FWE",  # Handbook canonical
     # identity for all canonical letters:
     **{g.letter: g.letter for g in GRADE_TABLE}
 }
+
+# --- UNIFIED SYSTEM ENGINE CONSTANTS FOR PARSERS --- 
+ALL_RECOGNIZED_GRADES = {
+    "A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-",
+    "F1", "F2", "F3", "FC", "FE", "FCW", "FWE", 
+    "EX", "EC", "TC", "FA", "FMS", "I", "IP", "LW", 
+    "NR", "P", "NP", "NV", "EI", "FMP", "CO", "AM", "AB", "DB", "V", "W", "FO"
+}
+
+KNOWN_GRADE_REGEX_CHUNK = r"([A-Z][+-]?|F[1-3]?|FCW|FWE|FC|FE|EX|EC|TC[+-]?|FMP|FMS|FA|LW|NR|NP|NV|EI|CO|AM|AB|DB|IP|FO)"
+
 
 # ---- Reverse lookup structures ----
 _QP_TO_CANONICALS: Dict[float, List[str]] = {}

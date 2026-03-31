@@ -14,6 +14,7 @@ from .filters import CourseFilter
 
 class RequirementResult(BaseModel):
     """Result of evaluating a single requirement"""
+
     requirement_type: str
     requirement_name: str
     is_met: bool
@@ -32,6 +33,7 @@ class RequirementResult(BaseModel):
 
 class BucketResult(BaseModel):
     """Result of evaluating a bucket requirement"""
+
     bucket_id: str
     bucket_name: str
     is_met: bool
@@ -50,6 +52,7 @@ class BucketResult(BaseModel):
 
 class ComponentResult(BaseModel):
     """Result for major/minor component"""
+
     component_name: str
     component_type: str  # "major" or "minor"
     is_met: bool
@@ -61,6 +64,7 @@ class ComponentResult(BaseModel):
 
 class DegreeEvaluationResult(BaseModel):
     """Complete evaluation result for a degree"""
+
     is_complete: bool
     overall_progress: str
     total_credits_earned: float
@@ -81,39 +85,46 @@ class DegreeEvaluationResult(BaseModel):
 
 
 # ── Rule Evaluators ───────────────────────────────
-def _evaluate_all_credits_from(student: StudentData, rule_data: Dict[str, Any], used_courses: Set[str], courses: List[Course]) -> RequirementResult:
-    result = RequirementResult(requirement_type="all_credits_from", requirement_name=rule_data.get('description', '-'), is_met=False)
+def _evaluate_all_credits_from(
+    student: StudentData,
+    rule_data: Dict[str, Any],
+    used_courses: Set[str],
+    courses: List[Course],
+) -> RequirementResult:
+    result = RequirementResult(
+        requirement_type="all_credits_from",
+        requirement_name=rule_data.get("description", "-"),
+        is_met=False,
+    )
 
-    if 'list' in rule_data:
-        required_courses = set(rule_data['list'])
-    elif 'filter' in rule_data:
-        filter_obj = CourseFilter(**rule_data['filter'])
+    if "list" in rule_data:
+        required_courses = set(rule_data["list"])
+    elif "filter" in rule_data:
+        filter_obj = CourseFilter(**rule_data["filter"])
         required_courses = set([c.code for c in filter_obj.apply(courses)])
     else:
         return result
 
-    # REPLACED THIS LINE:
-    # completed_courses = {c.course_code for c in student.all_passed_courses_best}
-    
-    # WITH THIS:
     completed_courses = {c.course_code for c in _get_effective_passed_courses(student)}
 
-    
     courses_missing = []
-    
+
     for req_code in required_courses:
         # Expand the requirement to include legacy alternatives
         eligible_equivalents = get_equivalent_codes(req_code)
-        
+
         # Check if the student has ANY of the equivalents
         matches = eligible_equivalents & completed_courses
-        
+
         if matches:
             for course_code in matches:
                 course = _find_course(student, course_code)
                 if course and course.grade.upper() == "EX":
                     if course_code not in result.exemptions_without_credits:
                         result.exemptions_without_credits.append(course_code)
+                    # FIXED: Add EX to the main list so the Django template actually renders it
+                    if course_code not in result.courses_used:
+                        result.courses_used.append(course_code)
                 else:
                     if course_code not in result.courses_used:
                         result.courses_used.append(course_code)
@@ -127,36 +138,44 @@ def _evaluate_all_credits_from(student: StudentData, rule_data: Dict[str, Any], 
     return result
 
 
-def _evaluate_min_credits_from(student: StudentData, rule_data: Dict[str, Any], used_courses: Set[str], courses: List[Course]) -> RequirementResult:
-    required_credits = rule_data.get('credits', 0)
+def _evaluate_min_credits_from(
+    student: StudentData,
+    rule_data: Dict[str, Any],
+    used_courses: Set[str],
+    courses: List[Course],
+) -> RequirementResult:
+    required_credits = rule_data.get("credits", 0)
     result = RequirementResult(
         requirement_type="min_credits_from",
-        requirement_name=rule_data.get('description', f'Minimum {required_credits} credits'),
+        requirement_name=rule_data.get(
+            "description", f"Minimum {required_credits} credits"
+        ),
         is_met=False,
-        credits_required=required_credits
+        credits_required=required_credits,
     )
 
-    if 'list' in rule_data:
-        base_course_list = set(rule_data['list'])
-    elif 'filter' in rule_data:
-        filter_obj = CourseFilter(**rule_data['filter'])
+    if "list" in rule_data:
+        base_course_list = set(rule_data["list"])
+    elif "filter" in rule_data:
+        filter_obj = CourseFilter(**rule_data["filter"])
         base_course_list = set([c.code for c in filter_obj.apply(courses)])
     else:
-        raise ValueError(f"No filter or list specified in min_credits_from rule: {rule_data}")
+        raise ValueError(
+            f"No filter or list specified in min_credits_from rule: {rule_data}"
+        )
 
     # Expand the allowed list to include legacy alternatives
     expanded_course_list = set()
     for code in base_course_list:
         expanded_course_list.update(get_equivalent_codes(code))
 
-    # REPLACED THIS LINE:
-    # eligible_courses = [c for c in student.all_passed_courses_best if c.course_code in expanded_course_list and c.course_code not in used_courses]
-    
-    # WITH THIS:
-    eligible_courses = [c for c in _get_effective_passed_courses(student) if c.course_code in expanded_course_list and c.course_code not in used_courses]
+    eligible_courses = [
+        c
+        for c in _get_effective_passed_courses(student)
+        if c.course_code in expanded_course_list and c.course_code not in used_courses
+    ]
 
-    # ... (Keep the rest of the original function exactly the same from max_per_subject down to the return statement)
-    max_per_subject = rule_data.get('max_per_subject')
+    max_per_subject = rule_data.get("max_per_subject")
     if max_per_subject:
         subject_credits = defaultdict(float)
         filtered_courses = []
@@ -168,8 +187,14 @@ def _evaluate_min_credits_from(student: StudentData, rule_data: Dict[str, Any], 
 
     credits_earned = 0.0
     for course in eligible_courses:
+        # FIXED: If the rule has enough credits, stop grabbing courses
+        if credits_earned >= required_credits:
+            break
+
         if course.grade.upper() == "EX":
             result.exemptions_without_credits.append(course.course_code)
+            # FIXED: Add EX to the main list so the Django template actually renders it
+            result.courses_used.append(course.course_code)
         else:
             result.courses_used.append(course.course_code)
             credits_earned += course.credits
@@ -181,20 +206,23 @@ def _evaluate_min_credits_from(student: StudentData, rule_data: Dict[str, Any], 
     return result
 
 
-def _evaluate_x_of(student: StudentData, rule_data: Dict[str, Any], used_courses: Set[str], courses: List[Course]) -> RequirementResult:
-    required_count = int(rule_data.get('x', 1))
-    options = rule_data.get('options', [])
+def _evaluate_x_of(
+    student: StudentData,
+    rule_data: Dict[str, Any],
+    used_courses: Set[str],
+    courses: List[Course],
+) -> RequirementResult:
+    required_count = int(rule_data.get("x", 1))
+    options = rule_data.get("options", [])
 
     result = RequirementResult(
         requirement_type="x_of",
-        requirement_name=rule_data.get('description', f"Complete {required_count} of {len(options)} options"),
-        is_met=False
+        requirement_name=rule_data.get(
+            "description", f"Complete {required_count} of {len(options)} options"
+        ),
+        is_met=False,
     )
 
-    # REPLACE THIS LINE:
-    # passed_best = list(student.all_passed_courses_best)
-    
-    # WITH THIS:
     passed_best = _get_effective_passed_courses(student)
     passed_codes_best: Set[str] = {c.course_code for c in passed_best}
 
@@ -202,13 +230,13 @@ def _evaluate_x_of(student: StudentData, rule_data: Dict[str, Any], used_courses
     all_courses_used: List[str] = []
 
     for i, option in enumerate(options):
-        option_name = option.get('name', f'Option {i + 1}')
-        min_credits = float(option.get('min_credits', 0.0))
+        option_name = option.get("name", f"Option {i + 1}")
+        min_credits = float(option.get("min_credits", 0.0))
 
-        if 'list' in option:
-            base_eligible_codes = set(option['list'])
-        elif 'filter' in option:
-            filter_obj = CourseFilter(**option['filter'])
+        if "list" in option:
+            base_eligible_codes = set(option["list"])
+        elif "filter" in option:
+            filter_obj = CourseFilter(**option["filter"])
             base_eligible_codes = {c.code for c in filter_obj.apply(courses)}
         else:
             raise ValueError(f"No filter or list specified in x_of rule: {option}")
@@ -219,19 +247,21 @@ def _evaluate_x_of(student: StudentData, rule_data: Dict[str, Any], used_courses
             expanded_eligible_codes.update(get_equivalent_codes(code))
 
         eligible_passed_courses = [
-            c for c in passed_best
-            if c.course_code in expanded_eligible_codes and c.course_code not in used_courses
+            c
+            for c in passed_best
+            if c.course_code in expanded_eligible_codes
+            and c.course_code not in used_courses
         ]
 
         satisfied = False
         option_courses_used: List[str] = []
 
-        if 'list' in option and min_credits <= 0:
+        if "list" in option and min_credits <= 0:
             # Must satisfy every required code (or its equivalent)
             has_all = True
             used_for_option = []
-            
-            for req_code in option['list']:
+
+            for req_code in option["list"]:
                 equivs = get_equivalent_codes(req_code)
                 matches = equivs & passed_codes_best
                 unused_matches = matches - used_courses
@@ -240,7 +270,7 @@ def _evaluate_x_of(student: StudentData, rule_data: Dict[str, Any], used_courses
                 else:
                     has_all = False
                     break
-                    
+
             if has_all:
                 satisfied = True
                 option_courses_used = used_for_option
@@ -258,7 +288,8 @@ def _evaluate_x_of(student: StudentData, rule_data: Dict[str, Any], used_courses
     result.courses_used = all_courses_used
     result.details = (
         f"Satisfied {len(satisfied_options)}/{required_count} options: {', '.join(satisfied_options)}"
-        if satisfied_options else "No options satisfied"
+        if satisfied_options
+        else "No options satisfied"
     )
     result.progress = f"{len(satisfied_options)}/{required_count} options"
 
@@ -359,11 +390,19 @@ def _calculate_gpa(courses: List[StudentCourse]) -> float:
         return 0.0
 
     grade_points = {
-        'A+': 4.3, 'A': 4.0, 'A-': 3.7,
-        'B+': 3.3, 'B': 3.0, 'B-': 2.7,
-        'C+': 2.3, 'C': 2.0, 'C-': 1.7,
-        'D+': 1.3, 'D': 1.0, 'D-': 0.7,
-        'F': 0.0
+        "A+": 4.3,
+        "A": 4.0,
+        "A-": 3.7,
+        "B+": 3.3,
+        "B": 3.0,
+        "B-": 2.7,
+        "C+": 2.3,
+        "C": 2.0,
+        "C-": 1.7,
+        "D+": 1.3,
+        "D": 1.0,
+        "D-": 0.7,
+        "F": 0.0,
     }
 
     total_points = 0.0
@@ -381,10 +420,10 @@ def _calculate_gpa(courses: List[StudentCourse]) -> float:
 def _get_effective_passed_courses(student: StudentData) -> List[StudentCourse]:
     """Get all passed courses PLUS any EX (Exemption) courses."""
     courses = list(student.all_passed_courses_best)
-    ex_codes = {c.course_code for c in courses} # Track what's already there
-    
+    ex_codes = {c.course_code for c in courses}  # Track what's already there
+
     # Manually dig through terms to find hidden EX grades
-    if hasattr(student, 'terms') and student.terms:
+    if hasattr(student, "terms") and student.terms:
         for term in student.terms:
             for c in term.courses:
                 if c.grade and c.grade.upper() == "EX":
@@ -392,6 +431,7 @@ def _get_effective_passed_courses(student: StudentData) -> List[StudentCourse]:
                         courses.append(c)
                         ex_codes.add(c.course_code)
     return courses
+
 
 def _find_course(student: StudentData, course_code: str) -> Optional[StudentCourse]:
     """Find a course in student's record"""
@@ -414,7 +454,7 @@ def _check_degree_completion(result: DegreeEvaluationResult) -> bool:
     # Check graduation requirements
     if result.graduation_requirements:
         for req_name, req_data in result.graduation_requirements.items():
-            if not req_data.get('met', False):
+            if not req_data.get("met", False):
                 return False
 
     # Check total credits
@@ -427,7 +467,10 @@ def _check_degree_completion(result: DegreeEvaluationResult) -> bool:
 def _generate_progress_summary(result: DegreeEvaluationResult) -> str:
     """Generate a progress summary"""
     pct = (
-                result.total_credits_earned / result.total_credits_required * 100) if result.total_credits_required > 0 else 0
+        (result.total_credits_earned / result.total_credits_required * 100)
+        if result.total_credits_required > 0
+        else 0
+    )
     status = "Complete" if result.is_complete else "In Progress"
     return f"{status}: {result.total_credits_earned:.1f}/{result.total_credits_required} credits ({pct:.1f}%), GPA: {result.overall_gpa:.2f}"
 
@@ -441,7 +484,9 @@ def _list_unmet_requirements(result: DegreeEvaluationResult) -> List[str]:
         if not major.is_met:
             for bucket in major.bucket_results:
                 if not bucket.is_met:
-                    unmet.append(f"{major.component_name}: {bucket.bucket_name} ({bucket.overall_progress})")
+                    unmet.append(
+                        f"{major.component_name}: {bucket.bucket_name} ({bucket.overall_progress})"
+                    )
 
     # Check general requirements
     for req in result.general_requirements:
@@ -451,11 +496,12 @@ def _list_unmet_requirements(result: DegreeEvaluationResult) -> List[str]:
     # Check graduation requirements
     if result.graduation_requirements:
         for req_name, req_data in result.graduation_requirements.items():
-            if not req_data.get('met', False):
-                unmet.append(f"Graduation: {req_name} (need {req_data.get('required')})")
+            if not req_data.get("met", False):
+                unmet.append(
+                    f"Graduation: {req_name} (need {req_data.get('required')})"
+                )
 
     return unmet
-
 
 
 def _suggest_next_steps(result: DegreeEvaluationResult) -> List[str]:
@@ -467,7 +513,9 @@ def _suggest_next_steps(result: DegreeEvaluationResult) -> List[str]:
         for bucket in major.bucket_results:
             for rule in bucket.rule_results:
                 if not rule.is_met and rule.courses_needed:
-                    suggestions.append(f"Take required courses: {', '.join(rule.courses_needed[:3])}")
+                    suggestions.append(
+                        f"Take required courses: {', '.join(rule.courses_needed[:3])}"
+                    )
                     break
 
     # Check credit shortfalls
@@ -489,7 +537,9 @@ class RequirementEvaluator:
     def __init__(self, courses: List[Course]):
         self.courses = courses
 
-    def evaluate_degree(self, student: StudentData, degree: Degree) -> DegreeEvaluationResult:
+    def evaluate_degree(
+        self, student: StudentData, degree: Degree
+    ) -> DegreeEvaluationResult:
         # Note: Course sorting by credits (descending) is now handled by the
         # all_passed_courses_best property in StudentData to ensure higher-credit
         # courses are matched first.
@@ -502,7 +552,7 @@ class RequirementEvaluator:
             overall_progress="",
             total_credits_earned=student.passed_credits,
             total_credits_required=degree.total_credits,
-            overall_gpa=student.overall_gpa or 0.0
+            overall_gpa=student.overall_gpa or 0.0,
         )
 
         used_courses = set()
@@ -533,14 +583,16 @@ class RequirementEvaluator:
 
         return result
 
-    def _evaluate_major(self, student: StudentData, major: Major, used_courses: Set[str]) -> ComponentResult:
+    def _evaluate_major(
+        self, student: StudentData, major: Major, used_courses: Set[str]
+    ) -> ComponentResult:
         """Evaluate major requirements"""
         result = ComponentResult(
             component_name=major.name,
             component_type="major",
             is_met=False,
             total_credits_earned=0,
-            total_credits_required=major.total_credits
+            total_credits_required=major.total_credits,
         )
 
         for bucket in major.buckets:
@@ -550,23 +602,29 @@ class RequirementEvaluator:
 
         return result
 
-    def _evaluate_bucket(self, student: StudentData, bucket: Bucket, used_courses: Set[str]) -> BucketResult:
+    def _evaluate_bucket(
+        self, student: StudentData, bucket: Bucket, used_courses: Set[str]
+    ) -> BucketResult:
         """Evaluate a bucket requirement"""
+
         result = BucketResult(
             bucket_id=bucket.id,
             bucket_name=bucket.name,
             is_met=False,
-            credits_earned=0,
+            credits_earned=0.0,
             credits_required=bucket.credits_required,
-            overall_progress=""
+            overall_progress="",
         )
 
         for rule in bucket.rules:
             rule_result = self._evaluate_rule(student, rule, used_courses)
             result.rule_results.append(rule_result)
 
+            # Track exactly what was consumed to prevent phantom frontend renders
+            actually_consumed_for_rule = []
+
             # Add credits from courses used in this rule
-            # CRITICAL: Stop consuming courses once bucket reaches max_credits
+            # Stop consuming courses once bucket reaches max_credits
             for course_code in rule_result.courses_used:
                 # Stop if bucket already full
                 if result.credits_earned >= bucket.credits_required:
@@ -575,33 +633,43 @@ class RequirementEvaluator:
                 if course_code not in used_courses:
                     course = _find_course(student, course_code)
                     if course:
-                        result.credits_earned += course.credits
+                        # Only grant credits if it's not an EX grade
+                        if course.grade.upper() != "EX":
+                            result.credits_earned += course.credits
+
                         used_courses.add(course_code)
+                        actually_consumed_for_rule.append(course_code)
+
+            # Override the rule's greedy list with reality
+            rule_result.courses_used = actually_consumed_for_rule
 
         # Check if bucket is satisfied
-        # For buckets with non-credit rules (like foreign language), check all rules are met
-        # For credit-based buckets, check credits and all_credits_from rules
-        has_non_credit_rules = any(r.requirement_type not in ["all_credits_from", "min_credits_from", "x_of"] for r in result.rule_results)
-        if has_non_credit_rules:
-            result.is_met = all(r.is_met for r in result.rule_results)
-        else:
-            result.is_met = (
-                    result.credits_earned >= bucket.credits_required and
-                    all(r.is_met for r in result.rule_results if r.requirement_type == "all_credits_from")
-            )
+        result.is_met = result.credits_earned >= bucket.credits_required and all(
+            r.is_met
+            for r in result.rule_results
+            if r.requirement_type == "all_credits_from"
+        )
 
-        result.overall_progress = f"{result.credits_earned:.1f}/{bucket.credits_required:.1f} credits"
+        result.overall_progress = (
+            f"{result.credits_earned:.1f}/{bucket.credits_required:.1f} credits"
+        )
         return result
 
-    def _evaluate_rule(self, student: StudentData, rule_data: Dict[str, Any], used_courses: Set[str]) -> RequirementResult:
+    def _evaluate_rule(
+        self, student: StudentData, rule_data: Dict[str, Any], used_courses: Set[str]
+    ) -> RequirementResult:
         """Evaluate a single rule"""
-        rule_type = rule_data.get('type')
+        rule_type = rule_data.get("type")
 
-        if rule_type == 'all_credits_from':
-            return _evaluate_all_credits_from(student, rule_data, used_courses, self.courses)
-        elif rule_type == 'min_credits_from':
-            return _evaluate_min_credits_from(student, rule_data, used_courses, self.courses)
-        elif rule_type == 'x_of':
+        if rule_type == "all_credits_from":
+            return _evaluate_all_credits_from(
+                student, rule_data, used_courses, self.courses
+            )
+        elif rule_type == "min_credits_from":
+            return _evaluate_min_credits_from(
+                student, rule_data, used_courses, self.courses
+            )
+        elif rule_type == "x_of":
             return _evaluate_x_of(student, rule_data, used_courses, self.courses)
         elif rule_type == 'foreign_language_requirement':
             return _evaluate_foreign_language_requirement(student, rule_data, used_courses, self.courses)
@@ -617,27 +685,41 @@ class RequirementEvaluator:
                     name=f"Level 1 Credits for {course.course_code} Exemption (EC)",
                     credits_required=course.credits,
                     description=f"Replacement credits for {course.course_code} EC exemption",
-                    rules=[{
-                        "type": "min_credits_from",
-                        "credits": course.credits,
-                        "description": "Level 1 elective for EC replacement",
-                        "filter": {
-                            "min_level": 1,
-                            "max_level": 1,
-                            "exclude_codes": ["COMP 1011", "FOUN 1101", "FOUN 1105", "FOUN 1301", "MATH 1115"]
+                    rules=[
+                        {
+                            "type": "min_credits_from",
+                            "credits": course.credits,
+                            "description": "Level 1 elective for EC replacement",
+                            "filter": {
+                                "min_level": 1,
+                                "max_level": 1,
+                                "exclude_codes": [
+                                    "COMP 1011",
+                                    "FOUN 1101",
+                                    "FOUN 1105",
+                                    "FOUN 1301",
+                                    "MATH 1115",
+                                ],
+                            },
                         }
-                    }]
+                    ],
                 )
 
                 # Insert into degree's major buckets (if major exists)
                 if degree.majors:
                     degree.majors[0].buckets.append(ec_bucket)
 
-    def _map_exemptions(self, student: StudentData, bucket_results: List[BucketResult], used_courses: Set[str]) -> None:
+    def _map_exemptions(
+        self,
+        student: StudentData,
+        bucket_results: List[BucketResult],
+        used_courses: Set[str],
+    ) -> None:
         """Map EX (Exemption without Credit) grades to replacement courses."""
         # Build pool of unused courses
         unused_courses = [
-            c for c in student.all_passed_courses_best
+            c
+            for c in student.all_passed_courses_best
             if c.course_code not in used_courses and c.grade.upper() != "EX"
         ]
 
@@ -652,16 +734,20 @@ class RequirementEvaluator:
                     # Determine replacement level filter based on exempted course level
                     # Level 1 EX -> find Level 1 replacement (ANY_LVL1)
                     # Advanced EX -> find Advanced replacement (ANY_ADV, levels 2-3)
-                    if hasattr(ex_course, 'level'):
+                    if hasattr(ex_course, "level"):
                         if ex_course.level == 1:
                             min_level, max_level = 1, 1
                         else:
                             min_level, max_level = 2, None  # Level 2+ (Advanced)
                     else:
                         # Fallback: use course number to determine level
-                        course_num_str = str(ex_course.number) if hasattr(ex_course, 'number') else ex_code.split()[-1]
-                        first_digit = course_num_str[0] if course_num_str else '1'
-                        if first_digit == '1':
+                        course_num_str = (
+                            str(ex_course.number)
+                            if hasattr(ex_course, "number")
+                            else ex_code.split()[-1]
+                        )
+                        first_digit = course_num_str[0] if course_num_str else "1"
+                        if first_digit == "1":
                             min_level, max_level = 1, 1
                         else:
                             min_level, max_level = 2, None
@@ -670,11 +756,21 @@ class RequirementEvaluator:
                     replacement = None
                     for candidate in unused_courses:
                         # Check if candidate matches level requirement
-                        cand_level = candidate.level if hasattr(candidate, 'level') else None
+                        cand_level = (
+                            candidate.level if hasattr(candidate, "level") else None
+                        )
                         if cand_level is None:
                             # Fallback: determine level from course number
-                            cand_num_str = str(candidate.number) if hasattr(candidate, 'number') else candidate.code.split()[-1]
-                            cand_level = int(cand_num_str[0]) if cand_num_str and cand_num_str[0].isdigit() else 1
+                            cand_num_str = (
+                                str(candidate.number)
+                                if hasattr(candidate, "number")
+                                else candidate.code.split()[-1]
+                            )
+                            cand_level = (
+                                int(cand_num_str[0])
+                                if cand_num_str and cand_num_str[0].isdigit()
+                                else 1
+                            )
 
                         # Check level match
                         level_match = cand_level >= min_level
@@ -687,19 +783,25 @@ class RequirementEvaluator:
 
                     if replacement:
                         # Safely get the course code depending on the object type
-                        rep_code = replacement.course_code if hasattr(replacement, 'course_code') else replacement.code
-                        
+                        rep_code = (
+                            replacement.course_code
+                            if hasattr(replacement, "course_code")
+                            else replacement.code
+                        )
+
                         # Add replacement credits to bucket
                         bucket_result.credits_earned += replacement.credits
                         used_courses.add(rep_code)
                         unused_courses.remove(replacement)
 
                         # Record mapping in rule result
-                        rule_result.exemption_mappings.append({
-                            "exempted_course": ex_code,
-                            "replacement_course": rep_code,
-                            "credits": replacement.credits
-                        })
+                        rule_result.exemption_mappings.append(
+                            {
+                                "exempted_course": ex_code,
+                                "replacement_course": rep_code,
+                                "credits": replacement.credits,
+                            }
+                        )
 
                         # Add to bucket's exemption tracking
                         if ex_code not in bucket_result.exemptions_without_credits:
@@ -707,7 +809,12 @@ class RequirementEvaluator:
 
                         # Recalculate bucket satisfaction
                         bucket_result.is_met = (
-                            bucket_result.credits_earned >= bucket_result.credits_required and
-                            all(r.is_met for r in bucket_result.rule_results if r.requirement_type == "all_credits_from")
+                            bucket_result.credits_earned
+                            >= bucket_result.credits_required
+                            and all(
+                                r.is_met
+                                for r in bucket_result.rule_results
+                                if r.requirement_type == "all_credits_from"
+                            )
                         )
                         bucket_result.overall_progress = f"{bucket_result.credits_earned:.1f}/{bucket_result.credits_required:.1f} credits"
