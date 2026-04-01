@@ -30,11 +30,8 @@ class AuditRecord(models.Model):
     evaluated_major = models.CharField(max_length=255, blank=True, default="")
 
     can_graduate = models.BooleanField(default=False)
-    # total_credits_earned = models.FloatField(default=0.0)
-    # total_credits_required = models.FloatField(default=0.0)
-    total_credits_earned = models.PositiveIntegerField(default=0)
-    total_credits_required = models.PositiveIntegerField(default=0)
-
+    total_credits_earned = models.FloatField(default=0.0)
+    total_credits_required = models.FloatField(default=0.0)
     overall_progress = models.CharField(max_length=255, blank=True, default="")
 
     # Store the engine's list outputs natively
@@ -57,10 +54,8 @@ class BucketResult(models.Model):
     bucket_name = models.CharField(max_length=255)
 
     is_met = models.BooleanField(default=False)
-    # credits_earned = models.FloatField(default=0.0)
-    # credits_required = models.FloatField(default=0.0)
-    credits_earned = models.PositiveIntegerField(default=0)
-    credits_required = models.PositiveIntegerField(default=0)
+    credits_earned = models.FloatField(default=0.0)
+    credits_required = models.FloatField(default=0.0)
     is_all_required = models.BooleanField(default=False)
 
     # Store the exact courses they took, and what they still need

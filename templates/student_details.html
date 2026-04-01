@@ -46,7 +46,10 @@
             </div>
             <div class="app-card">
                 <h4>Credits</h4>
-                <p>{{ audit.total_credits_earned|default:0 }} / {{ audit.total_credits_required|default:0 }}</p>
+                <p>
+                    {{ audit.total_credits_earned|default:0|floatformat:0 }} /
+                    {{ audit.total_credits_required|default:0|floatformat:0 }}
+                </p>
             </div>
             <div class="app-card">
                 <h4>Status</h4>
@@ -66,7 +69,10 @@
         <div class="bucket">
             <button class="bucket-toggle">
                 {{ bucket.bucket_name }}
-                <span>{{ bucket.credits_earned|default:0 }} / {{ bucket.credits_required|default:0 }} credits</span>
+                <span>
+                    {{ bucket.credits_earned|default:0|floatformat:0 }} /
+                    {{ bucket.credits_required|default:0|floatformat:0 }} credits
+                </span>
             </button>
             <div class="bucket-content">
 
@@ -81,7 +87,7 @@
                     <div class="app-card">
                         <h5 class="course-code">{{ course.code|default:"N/A" }}</h5>
                         <div>
-                            <p class="credits">{{ course.credits|default:0 }} credits</p>
+                            <p class="credits">{{ course.credits|default:0|floatformat:0 }} credits</p>
                             <p class="grade">{{ course.grade|default:"N/A" }}</p>
                         </div>
                     </div>
