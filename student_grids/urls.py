@@ -17,13 +17,25 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic.base import TemplateView
+from django.contrib.auth import views as auth_views
 
+from accounts.forms import AsyncPasswordResetForm
+from accounts.decorators import ratelimit
+
+
+# Rate-limited, async password reset view.
+# Limits a single IP to 5 reset requests per hour.
+rate_limited_reset = ratelimit(key="ip", rate="5/h", block=True)(
+    auth_views.PasswordResetView.as_view(form_class=AsyncPasswordResetForm)
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("accounts.urls")),
+    # Override the default password_reset BEFORE including auth.urls
+    path("accounts/password_reset/", rate_limited_reset, name="password_reset"),
     path("accounts/", include("django.contrib.auth.urls")),
     path("", include("pages.urls")),
-    path('performance/', include('performance.urls')),
+    path("performance/", include("performance.urls")),
 ]
+

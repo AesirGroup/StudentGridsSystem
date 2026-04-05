@@ -1,1 +1,1 @@
-web: gunicorn student_grids.wsgi:application --log-file -
+web: honcho start -f Procfile.honcho

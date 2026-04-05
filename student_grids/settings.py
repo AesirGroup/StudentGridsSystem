@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     # 3rd Party
     "crispy_forms",
     "crispy_bootstrap5",
+    "django_q",
+    "anymail",
     # Local
     "accounts",
     "pages",
@@ -149,6 +151,28 @@ LOGOUT_REDIRECT_URL = "home"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# --- Email Configuration ---
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", default="onboarding@resend.dev")
+
+if DEBUG:
+    # LOCAL: Print emails to the terminal. No API key needed.
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    # PRODUCTION (Heroku): Send real emails via Resend
+    EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
+    ANYMAIL = {
+        "RESEND_API_KEY": env.str("RESEND_API_KEY", default=""),
+    }
+
+# --- Django-Q2 Task Queue ---
+Q_CLUSTER = {
+    "name": "student-grids",
+    "workers": 1,
+    "timeout": 60,
+    "retry": 120,
+    "orm": "default",  # Uses the existing database as the broker
+    "ack_failures": True,
+    "max_attempts": 3,
+}
 
 CSRF_TRUSTED_ORIGINS = ["https://*.herokuapp.com"]
