@@ -1,0 +1,16 @@
+{
+  "subjects": [
+    {"code": "FREN", "name": "French"},
+    {"code": "SPAN", "name": "Spanish"},
+    {"code": "CHIN", "name": "Chinese"},
+    {"code": "JAPA", "name": "Japanese"},
+    {"code": "COCR", "name": "Sign Language"}
+  ],
+  "approved_courses": [
+    {"code": "CHIN 1007", "name": "Chinese (Mandarin) Beginners I (Blended)"},
+    {"code": "FREN 1009", "name": "French for Beginners I (Blended)"},
+    {"code": "JAPA 1007", "name": "Japanese for Beginners I (Blended)"},
+    {"code": "SPAN 1007", "name": "Spanish for Beginners I (Blended)"},
+    {"code": "COCR 1052", "name": "Introduction to Sign Language"}
+  ]
+}
