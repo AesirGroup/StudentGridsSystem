@@ -565,3 +565,113 @@ class ToggleFLRExemptionView(LoginRequiredMixin, View):
         profile.flr_exempt_verified = not profile.flr_exempt_verified
         profile.save(update_fields=["flr_exempt_verified"])
         return redirect("student_detail", student_number=student_number)
+    
+##Report views 
+
+class ReportView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, "report.html")
+
+
+class ReportStudentsView(LoginRequiredMixin, View):
+    """
+    Returns a JSON list of students for the Report page.
+    Supports filtering by specific student numbers via ?ids= query param.
+    """
+    def get(self, request):
+        # 1. Capture the 'ids' parameter from the URL
+        ids_param = request.GET.get('ids', '').strip()
+
+        # 2. Determine the base queryset
+        if ids_param:
+            # Split "816001,816002" into ['816001', '816002']
+            id_list = [i.strip() for i in ids_param.split(',') if i.strip()]
+            profiles = StudentProfile.objects.filter(student_number__in=id_list)
+        else:
+            # Fallback: return all students if no IDs are provided
+            profiles = StudentProfile.objects.all()
+
+        # 3. Apply optimization and ordering
+        # Prefetching 'audits' prevents the "N+1" database problem
+        profiles = profiles.prefetch_related(
+            Prefetch("audits", queryset=AuditRecord.objects.order_by("-audit_date"))
+        ).order_by("name")
+
+        # 4. Build the JSON-ready payload
+        data = []
+        for s in profiles:
+            # Get the most recent audit for this student
+            latest_audit = s.audits.first()
+            
+            data.append({
+                "student_number": s.student_number,
+                "name": s.name,
+                "programme": s.programme,
+                "major": s.major,
+                "gpa": s.overall_gpa if s.overall_gpa else 0,
+                "can_graduate": latest_audit.can_graduate if latest_audit else False,
+                "credits_earned": latest_audit.total_credits_earned if latest_audit else 0,
+                "credits_required": latest_audit.total_credits_required if latest_audit else 0,
+            })
+
+        return JsonResponse({"students": data})
+
+
+class StudentReportDataView(LoginRequiredMixin, View):
+    def get(self, request, student_number):
+        student = get_object_or_404(StudentProfile, student_number=student_number)
+        audit = student.audits.order_by("-audit_date").first()
+
+        if not audit:
+            return JsonResponse(
+                {
+                    "student_number": student.student_number,
+                    "name": student.name,
+                    "programme": student.programme,
+                    "major": student.major,
+                    "overall_gpa": student.overall_gpa,
+                    "has_audit": False,
+                    "can_graduate": False,
+                    "total_credits_earned": 0,
+                    "total_credits_required": 0,
+                    "evaluated_programme": "",
+                    "evaluated_major": "",
+                    "bucket_results": [],
+                    "unmet_requirements": [],
+                    "next_steps": [],
+                }
+            )
+
+        bucket_results = [
+            {
+                "component_name": b.component_name,
+                "bucket_name": b.bucket_name,
+                "is_met": b.is_met,
+                "credits_earned": b.credits_earned,
+                "credits_required": b.credits_required,
+                "is_all_required": b.is_all_required,
+                "courses_completed": b.courses_completed_json,
+                "courses_needed": b.courses_needed_json,
+            }
+            for b in audit.bucket_results.all()
+        ]
+
+        return JsonResponse(
+            {
+                "student_number": student.student_number,
+                "name": student.name,
+                "programme": student.programme,
+                "major": student.major,
+                "overall_gpa": student.overall_gpa,
+                "has_audit": True,
+                "can_graduate": audit.can_graduate,
+                "total_credits_earned": audit.total_credits_earned,
+                "total_credits_required": audit.total_credits_required,
+                "evaluated_programme": audit.evaluated_programme,
+                "evaluated_major": audit.evaluated_major,
+                "audit_date": audit.audit_date.strftime("%Y-%m-%d"),
+                "bucket_results": bucket_results,
+                "unmet_requirements": audit.unmet_requirements_json,
+                "next_steps": audit.next_steps_json,
+            }
+        )
