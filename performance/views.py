@@ -121,6 +121,7 @@ def save_bucket_to_db(audit, component_name, b_result, student):
     """Extracted from post() to improve readability and testing"""
     completed_courses = []
     courses_needed = []
+    exemption_mappings = []
     is_all_req = False
 
     for rule in b_result.rule_results:
@@ -136,6 +137,11 @@ def save_bucket_to_db(audit, component_name, b_result, student):
                     "credits": sc.credits,
                 })
 
+        # Collect exemption mappings (EX course → replacement course)
+        for mapping in rule.exemption_mappings:
+            if "replacement_course" in mapping:
+                exemption_mappings.append(mapping)
+
     BucketResult.objects.create(
         audit=audit,
         component_name=component_name,
@@ -146,6 +152,7 @@ def save_bucket_to_db(audit, component_name, b_result, student):
         is_all_required=is_all_req,
         courses_completed_json=completed_courses,
         courses_needed_json=courses_needed,
+        exemption_mappings_json=exemption_mappings,
     )
 
 
@@ -551,7 +558,7 @@ class EphemeralEvaluationView(View):
 
 
 class ToggleFLRExemptionView(LoginRequiredMixin, View):
-    """Advisor override: toggle the CSEC/CAPE foreign-language exemption flag."""
+    """Admin override: toggle whether the student is eligible for the foreign language requirement."""
 
     def post(self, request, student_number, *args, **kwargs):
         profile = get_object_or_404(StudentProfile, student_number=student_number)

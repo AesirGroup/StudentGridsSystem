@@ -24,6 +24,7 @@ class Bucket(BaseModel):
     id: str
     name: str
     credits_required: float
+    contributes_to_degree_gpa: bool = True
     description: Optional[str] = None
     rules: List[Any] = Field(default_factory=list)
 
@@ -31,6 +32,7 @@ class Bucket(BaseModel):
 class Major(BaseModel):
     id: str
     name: str
+    faculty: Optional[str] = None
     total_credits: float
     description: Optional[str] = None
     bucket_ids: List[str] = Field(default_factory=list)
@@ -102,12 +104,34 @@ def _load_majors(path: str) -> dict[Any, Major]:
     return {m['id']: Major(**m) for m in data['majors']}
 
 
-def _load_foreign_languages(path: str) -> tuple[set[str], set[str]]:
-    with open(path, 'r', encoding="utf-8") as f:
-        data = json.load(f)
-    subjects = {s['code'] for s in data['subjects']}
-    approved_courses = {c['code'] for c in data.get('approved_courses', [])}
-    return subjects, approved_courses
+
+# ── Faculty name normalisation ───────────────────────────────
+# Transcript text may say "Science and Technology" while bucket IDs use "FST".
+_FACULTY_ALIASES: Dict[str, str] = {
+    "science and technology": "FST",
+    "fst": "FST",
+    "engineering": "ENG",
+    "eng": "ENG",
+    "humanities and education": "FHE",
+    "fhe": "FHE",
+    "food and agriculture": "FFA",
+    "ffa": "FFA",
+    "social sciences": "FSS",
+    "fss": "FSS",
+    "medical sciences": "MEDSCI",
+    "medsci": "MEDSCI",
+    "fms": "MEDSCI",
+    "law": "LAW",
+    "sport": "SPORT",
+}
+
+
+def _normalise_faculty(raw: str) -> Optional[str]:
+    """Map free-text faculty names to canonical bucket-ID suffixes."""
+    if not raw:
+        return None
+    key = raw.strip().lower()
+    return _FACULTY_ALIASES.get(key, raw.upper())
 
 
 # Define BASEDIR as the grids package data directory
@@ -120,13 +144,10 @@ BASEDIR = settings.BASE_DIR / 'grids' / 'data'
 try:
     BUCKETS = _load_buckets(str(BASEDIR / 'buckets.json'))
     MAJORS = _load_majors(str(BASEDIR / 'majors.json'))
-    FOREIGN_LANGUAGES, FLR_APPROVED_COURSES = _load_foreign_languages(str(BASEDIR / 'foreign_languages.json'))
 except FileNotFoundError:
-    print("Warning: buckets.json, majors.json, or foreign_languages.json not found. Using empty dictionaries/sets.")
+    print("Warning: buckets.json or majors.json not found. Using empty dictionaries.")
     BUCKETS = {}
     MAJORS = {}
-    FOREIGN_LANGUAGES = {'FREN', 'SPAN', 'GERM', 'JAPA'}
-    FLR_APPROVED_COURSES = {'CHIN 1007', 'FREN 1009', 'JAPA 1007', 'SPAN 1007', 'COCR 1052'}
 
 
 class Degree(BaseModel):
@@ -147,19 +168,22 @@ class Degree(BaseModel):
             if programme.major == major.name:
                 majors.append(major.model_copy(deep=True))
 
-        # Add foreign language requirement
-        foreign_language_bucket = Bucket(
-            id="FOREIGN_LANGUAGE_REQUIREMENT",
-            name="Foreign Language Requirement",
-            credits_required=3,
-            description="Foreign language requirement for students admitted in 2023 or later",
-            rules=[{
-                "type": "foreign_language_requirement",
-                "description": "Complete 3 credits of foreign language courses",
-                "credits": 3.0
-            }]
-        )
-        general_requirements.append(foreign_language_bucket)
+        # ── Faculty-based general requirements ────────────────────
+        # Resolve the faculty from the matched major or the programme data.
+        faculty = None
+        if majors and majors[0].faculty:
+            faculty = majors[0].faculty
+        elif programme.faculty:
+            faculty = _normalise_faculty(programme.faculty)
+
+        # Look up the faculty-specific FLR bucket from buckets.json.
+        flr_bucket_id = f"FLR_{faculty}" if faculty else None
+        if flr_bucket_id and flr_bucket_id in BUCKETS:
+            general_requirements.append(BUCKETS[flr_bucket_id].model_copy(deep=True))
+        else:
+            # Fallback: use FST rules when faculty is unknown (preserves old behaviour)
+            if "FLR_FST" in BUCKETS:
+                general_requirements.append(BUCKETS["FLR_FST"].model_copy(deep=True))
 
         total_credits = 93
 
