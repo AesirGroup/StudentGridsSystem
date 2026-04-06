@@ -1,0 +1,797 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}Upload Grid – Student Grids{% endblock %}
+
+
+{% block extra_css %}
+    <!-- PDF-LIB (loaded early so it's ready) -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+    <!-- STYLESHEET -->
+    <link rel="stylesheet" href="{% static 'css/upload_grid.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+        <!-- BACK BUTTON -->
+        <a href="{% url 'home' %}" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+            Back to Dashboard
+        </a>
+
+        <h1>Upload Grid</h1>
+
+
+        <!-- ==================== ALERT CONTAINER ==================== -->
+        <div id="alert-container"></div>
+
+
+        <!-- ==================== UPLOAD SECTION ==================== -->
+        <div class="upload-section">
+
+            <!-- COLLAPSIBLE TOGGLE HEADER -->
+            <button class="upload-toggle" id="uploadToggle" type="button">
+                <span class="upload-toggle-left">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                    </svg>
+                    Upload Additional Grid
+                </span>
+                <svg class="chevron" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 15l-6-6-6 6" />
+                </svg>
+            </button>
+
+            <!-- COLLAPSIBLE BODY -->
+            <div class="upload-body" id="uploadBody">
+
+                <!-- PROGRESS UI (hidden by default, shown during upload) -->
+                <div id="processing-ui" class="processing-ui d-none">
+                    <p id="status-text" class="status-text">Initialising…</p>
+                    <div class="progress-track">
+                        <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- DRAG & DROP ZONE -->
+                <div class="drop-zone" id="dropZone">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                    </svg>
+                    <p id="dropLabel">Drag &amp; drop a PDF or TXT file here</p>
+                    <p class="drop-sub">or click to browse</p>
+                    <p class="drop-sub">Max file size: 50 MB</p>
+                    <input type="file" id="file-input" name="file" accept=".pdf,.txt" hidden>
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <button class="update-btn" id="uploadBtn" type="button">Update Grid</button>
+
+            </div>
+        </div>
+
+
+        <!-- ==================== STATS CARDS ==================== -->
+        <div class="stats-grid" id="statsGrid">
+
+            <!-- TOTAL STUDENTS -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <img src="{% static 'img/upload_grid/students.svg' %}" alt="Students">
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="statTotal">0</span>
+                    <span class="stat-label">Total Students</span>
+                </div>
+            </div>
+
+            <!-- ELIGIBLE -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <img src="{% static 'img/upload_grid/eligible.svg' %}" alt="Eligible">
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="statEligible">0</span>
+                    <span class="stat-label">Eligible</span>
+                </div>
+            </div>
+
+            <!-- NOT ELIGIBLE -->
+            <div class="stat-card">
+                <div class="stat-icon stat-icon--red">
+                    <img src="{% static 'img/upload_grid/not_eligible.svg' %}" alt="Not Eligible">
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number" id="statNotEligible">0</span>
+                    <span class="stat-label">Not Eligible</span>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ==================== SEARCH BAR ==================== -->
+        <div class="search-bar" id="searchBarWrapper">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+            </svg>
+            <input type="text" id="searchInput" placeholder="Search by name or student ID…">
+        </div>
+
+
+        <!-- ==================== FILTER DROPDOWNS ==================== -->
+        <div class="filters" id="filtersBar">
+
+            <!-- PROGRAMME FILTER -->
+            <div class="custom-select" data-id="filterProgramme">
+                <button class="custom-select__trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="custom-select__label">All Programmes</span>
+                    <svg class="custom-select__chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <ul class="custom-select__dropdown" role="listbox" id="dropdownProgramme">
+                    <li class="custom-select__option is-selected" data-value="">All Programmes</li>
+                </ul>
+            </div>
+
+            <!-- MAJOR FILTER -->
+            <div class="custom-select" data-id="filterMajor">
+                <button class="custom-select__trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="custom-select__label">All Majors</span>
+                    <svg class="custom-select__chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <ul class="custom-select__dropdown" role="listbox" id="dropdownMajor">
+                    <li class="custom-select__option is-selected" data-value="">All Majors</li>
+                </ul>
+            </div>
+
+            <!-- ELIGIBILITY FILTER -->
+            <div class="custom-select" data-id="filterEligibility">
+                <button class="custom-select__trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="custom-select__label">All Eligibility</span>
+                    <svg class="custom-select__chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <ul class="custom-select__dropdown" role="listbox">
+                    <li class="custom-select__option is-selected" data-value="">All Eligibility</li>
+                    <li class="custom-select__option" data-value="eligible">Eligible</li>
+                    <li class="custom-select__option" data-value="not_eligible">Not Eligible</li>
+                </ul>
+            </div>
+
+            <!-- CREDITS MISSING FILTER -->
+            <div class="custom-select" data-id="filterCredits">
+                <button class="custom-select__trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="custom-select__label">All Credits Missing</span>
+                    <svg class="custom-select__chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                </button>
+                <ul class="custom-select__dropdown" role="listbox">
+                    <li class="custom-select__option is-selected" data-value="">All Credits Missing</li>
+                    <li class="custom-select__option" data-value="0">None missing (0)</li>
+                    <li class="custom-select__option" data-value="1-10">1 – 10 credits</li>
+                    <li class="custom-select__option" data-value="11-20">11 – 20 credits</li>
+                    <li class="custom-select__option" data-value="21-30">21 – 30 credits</li>
+                    <li class="custom-select__option" data-value="31+">31+ credits</li>
+                </ul>
+            </div>
+
+        </div>
+
+
+        <!-- ==================== STUDENT CARD GRID ==================== -->
+        <div class="student-grid" id="studentGrid"></div>
+
+
+        <!-- ==================== PAGINATION ==================== -->
+        <div class="pagination" id="pagination"></div>
+
+    </main>
+
+
+    <!-- ==================== SESSION DATA (Django → JS) ==================== -->
+    {{ last_results|json_script:"session-results" }}
+    {{ last_summary|json_script:"session-summary" }}
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    /* ================================================================
+       CONSTANTS & CONFIG
+    ================================================================ */
+    const CSRF_TOKEN = '{{ csrf_token }}';
+    const UPLOAD_URL = '{% url "upload_grid" %}';
+    const EXTRACT_URL = '/performance/api/extract-chunk/';
+    const STUDENT_URL = '/performance/';
+    const PER_PAGE = 6;
+
+    /* ================================================================
+       STATE
+    ================================================================ */
+    let allResults = [];
+    let filtered   = [];
+    let currentPage = 1;
+
+    const filterValues = {
+        filterProgramme:   '',
+        filterMajor:       '',
+        filterEligibility: '',
+        filterCredits:     '',
+    };
+
+    /* ================================================================
+       SAFE DOM HELPERS — null-safe, nothing crashes if el is absent
+    ================================================================ */
+    function $id(id)           { return document.getElementById(id) || null; }
+    function setText(id, val)  { const el = $id(id); if (el) el.textContent = val; }
+    function show(id)          { const el = $id(id); if (el) el.classList.remove('d-none'); }
+    function hide(id)          { const el = $id(id); if (el) el.classList.add('d-none'); }
+    function setWidth(id, pct) { const el = $id(id); if (el) el.style.width = pct + '%'; }
+
+    /* ================================================================
+       CREDITS MISSING HELPER — computes gap from a result object
+    ================================================================ */
+    function creditsMissing(r) {
+        const earned   = parseFloat(r.credits_earned   || 0);
+        const required = parseFloat(r.credits_required || 0);
+        return Math.max(0, required - earned);
+    }
+
+    /* ================================================================
+       UPLOAD SECTION — collapsible toggle
+    ================================================================ */
+    (function initUploadToggle() {
+        const toggle = $id('uploadToggle');
+        const body   = $id('uploadBody');
+        if (!toggle || !body) return;
+
+        // Start closed
+        toggle.classList.add('is-closed');
+        body.style.maxHeight = '0';
+
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('is-closed');
+            body.style.maxHeight = toggle.classList.contains('is-closed')
+                ? '0'
+                : body.scrollHeight + 'px';
+        });
+    })();
+
+    /* ================================================================
+       DROP ZONE — drag & drop + click-to-browse
+    ================================================================ */
+    (function initDropZone() {
+        const dropZone  = $id('dropZone');
+        const fileInput = $id('file-input');
+        const dropLabel = $id('dropLabel');
+        if (!dropZone || !fileInput) return;
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                // Sync the hidden input then fire the change handler
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                fileInput.files = dt.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+    })();
+
+    /* ================================================================
+       UPLOAD BUTTON — triggers file input
+    ================================================================ */
+    (function initUploadBtn() {
+        const btn       = $id('uploadBtn');
+        const fileInput = $id('file-input');
+        if (!btn || !fileInput) return;
+        btn.addEventListener('click', () => fileInput.click());
+    })();
+
+    /* ================================================================
+       ALERTS
+    ================================================================ */
+    function showAlert(type, title, message) {
+        const container = $id('alert-container');
+        if (!container) return;
+        container.innerHTML = `
+            <div class="app-alert app-alert--${type}">
+                <strong>${title}</strong> ${message}
+                <button class="app-alert__close" onclick="this.parentElement.remove()" aria-label="Close">&times;</button>
+            </div>`;
+    }
+
+    function clearAlerts() {
+        const container = $id('alert-container');
+        if (container) container.innerHTML = '';
+    }
+
+    /* ================================================================
+       FILE INPUT — validation + routing
+    ================================================================ */
+    (function initFileInput() {
+        const fileInput = $id('file-input');
+        const dropLabel = $id('dropLabel');
+        if (!fileInput) return;
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            // Update drop zone label
+            if (dropLabel) dropLabel.textContent = file.name;
+
+            // 1. SIZE GUARDRAIL (50 MB)
+            if (file.size > 50 * 1024 * 1024) {
+                showAlert('danger', 'Upload Cancelled!', 'File size exceeds the 50 MB limit.');
+                fileInput.value = '';
+                if (dropLabel) dropLabel.textContent = 'Drag & drop a PDF or TXT file here';
+                return;
+            }
+
+            // 2. TYPE GUARDRAIL
+            const name = file.name.toLowerCase();
+            if (!name.endsWith('.pdf') && !name.endsWith('.txt')) {
+                showAlert('danger', 'Upload Cancelled!', 'Unsupported file type. Please upload a .pdf or .txt file.');
+                fileInput.value = '';
+                if (dropLabel) dropLabel.textContent = 'Drag & drop a PDF or TXT file here';
+                return;
+            }
+
+            clearAlerts();
+
+            if (name.endsWith('.pdf')) {
+                handlePdfUpload(file);
+            } else {
+                handleStandardUpload(file);
+            }
+        });
+    })();
+
+    /* ================================================================
+       PDF UPLOAD — chunk extraction → backend evaluation
+    ================================================================ */
+    async function handlePdfUpload(file) {
+        const fileInput    = $id('file-input');
+        const dropLabel    = $id('dropLabel');
+        const uploadBody   = $id('uploadBody');
+        const uploadToggle = $id('uploadToggle');
+
+        if (fileInput) fileInput.disabled = true;
+        show('processing-ui');
+        setWidth('progress-bar', 0);
+
+        // Ensure the upload body stays open while processing
+        if (uploadToggle && uploadBody) {
+            uploadToggle.classList.remove('is-closed');
+            uploadBody.style.maxHeight = uploadBody.scrollHeight + 'px';
+        }
+
+        try {
+            setText('status-text', 'Loading PDF securely in browser…');
+
+            const arrayBuffer = await file.arrayBuffer();
+            const pdfDoc      = await PDFLib.PDFDocument.load(arrayBuffer);
+            const totalPages  = pdfDoc.getPageCount();
+
+            const CHUNK_SIZE         = 20;
+            let fullExtractedText    = '';
+            let detectedIsTranscript = false;
+
+            for (let i = 0; i < totalPages; i += CHUNK_SIZE) {
+                const endPage = Math.min(i + CHUNK_SIZE, totalPages);
+                setText('status-text', `Extracting text: pages ${i + 1}–${endPage} of ${totalPages}…`);
+
+                const chunkPdf    = await PDFLib.PDFDocument.create();
+                const pageIndices = Array.from({ length: endPage - i }, (_, idx) => i + idx);
+                const copied      = await chunkPdf.copyPages(pdfDoc, pageIndices);
+                copied.forEach(p => chunkPdf.addPage(p));
+
+                const chunkBytes = await chunkPdf.save();
+                const chunkBlob  = new Blob([chunkBytes], { type: 'application/pdf' });
+
+                const formData = new FormData();
+                formData.append('pdf_chunk',   chunkBlob, `chunk_${i}.pdf`);
+                formData.append('chunk_index', i.toString());
+                if (i > 0) formData.append('is_transcript', detectedIsTranscript ? 'true' : 'false');
+
+                const response = await fetch(EXTRACT_URL, {
+                    method:  'POST',
+                    body:    formData,
+                    headers: { 'X-CSRFToken': CSRF_TOKEN }
+                });
+
+                const ct = response.headers.get('content-type') || '';
+                if (!ct.includes('application/json')) {
+                    throw new Error('Server returned an invalid non-JSON response during chunk extraction.');
+                }
+
+                const data = await response.json();
+                if (!response.ok || data.error) throw new Error(data.error || 'Server failed to parse a chunk.');
+
+                fullExtractedText += data.text + '\n\n';
+                if (i === 0 && data.is_transcript) detectedIsTranscript = true;
+
+                setWidth('progress-bar', Math.round((endPage / totalPages) * 75));
+            }
+
+            setText('status-text', 'Evaluating academic rules (this may take a moment)…');
+            setWidth('progress-bar', 85);
+
+            const textBlob = new Blob([fullExtractedText], { type: 'text/plain' });
+            const textFile = new File([textBlob], file.name.replace('.pdf', '') + '_extracted.txt', { type: 'text/plain' });
+
+            await performBackendUpload(textFile);
+
+            setWidth('progress-bar', 100);
+            setText('status-text', 'Evaluation complete!');
+
+            setTimeout(() => {
+                hide('processing-ui');
+                if (fileInput) { fileInput.disabled = false; fileInput.value = ''; }
+                if (dropLabel) dropLabel.textContent = 'Drag & drop a PDF or TXT file here';
+                // Recalculate upload body height after hiding progress UI
+                if (uploadBody && uploadToggle && !uploadToggle.classList.contains('is-closed')) {
+                    uploadBody.style.maxHeight = uploadBody.scrollHeight + 'px';
+                }
+            }, 2000);
+
+        } catch (error) {
+            console.error(error);
+            showAlert('danger', 'Upload Failed!', error.message);
+            hide('processing-ui');
+            if (fileInput) { fileInput.disabled = false; fileInput.value = ''; }
+            if (dropLabel) dropLabel.textContent = 'Drag & drop a PDF or TXT file here';
+        }
+    }
+
+    /* ================================================================
+       STANDARD TXT UPLOAD
+    ================================================================ */
+    function handleStandardUpload(file) {
+        performBackendUpload(file).catch(error => {
+            showAlert('danger', 'Upload Failed!', error.message);
+        });
+    }
+
+    /* ================================================================
+       BACKEND UPLOAD — posts file, receives results + summary
+    ================================================================ */
+    async function performBackendUpload(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const res = await fetch(UPLOAD_URL, {
+            method:  'POST',
+            headers: { 'X-CSRFToken': CSRF_TOKEN },
+            body:    formData
+        });
+
+        const ct = res.headers.get('content-type') || '';
+        if (!ct.includes('application/json')) {
+            throw new Error('Server returned an invalid response. The degree evaluation endpoint failed.');
+        }
+
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+            showAlert('danger', 'Upload Failed!', data.error || 'An unknown error occurred.');
+            throw new Error(data.error);
+        }
+
+        clearAlerts();
+
+        const newResults  = data.results || [];
+        const existingMap = new Map(allResults.map(r => [r.student_number, r]));
+        newResults.forEach(r => existingMap.set(r.student_number, r));
+        allResults = Array.from(existingMap.values());
+        currentPage = 1;
+
+        const mergedSummary = {
+            total_students:  allResults.length,
+            can_graduate:    allResults.filter(r =>  r.can_graduate).length,
+            cannot_graduate: allResults.filter(r => !r.can_graduate).length,
+        };
+        renderSummary(mergedSummary);
+        buildDynamicFilters();
+        applyFilters();
+    }
+
+    /* ================================================================
+       SUMMARY CARDS
+    ================================================================ */
+    function renderSummary(summary) {
+        setText('statTotal',       summary.total_students  || 0);
+        setText('statEligible',    summary.can_graduate    || 0);
+        setText('statNotEligible', summary.cannot_graduate || 0);
+    }
+
+    /* ================================================================
+       DYNAMIC FILTER OPTIONS — built from real result data
+    ================================================================ */
+    function buildDynamicFilters() {
+        const programmes = [...new Set(allResults.map(r => r.programme).filter(Boolean))].sort();
+        const majors     = [...new Set(allResults.map(r => r.major).filter(Boolean))].sort();
+
+        function rebuildDropdown(dropdownId, values, allLabel) {
+            const ul = $id(dropdownId);
+            if (!ul) return;
+            ul.innerHTML = `<li class="custom-select__option is-selected" data-value="">${allLabel}</li>`;
+            values.forEach(v => {
+                const li         = document.createElement('li');
+                li.className     = 'custom-select__option';
+                li.dataset.value = v;
+                li.textContent   = v;
+                ul.appendChild(li);
+            });
+            // Re-attach option click listeners for this dropdown
+            attachDropdownListeners(ul.closest('.custom-select'));
+        }
+
+        rebuildDropdown('dropdownProgramme', programmes, 'All Programmes');
+        rebuildDropdown('dropdownMajor',     majors,     'All Majors');
+    }
+
+    /* ================================================================
+       CUSTOM SELECT DROPDOWNS
+    ================================================================ */
+    function attachDropdownListeners(select) {
+        if (!select) return;
+        const id      = select.dataset.id;
+        const trigger = select.querySelector('.custom-select__trigger');
+        const label   = select.querySelector('.custom-select__label');
+        if (!trigger || !label || !id) return;
+
+        // Remove old listener by cloning trigger
+        const newTrigger = trigger.cloneNode(true);
+        trigger.parentNode.replaceChild(newTrigger, trigger);
+
+        newTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = select.classList.contains('is-open');
+            closeAllDropdowns();
+            if (!isOpen) {
+                select.classList.add('is-open');
+                newTrigger.setAttribute('aria-expanded', 'true');
+            }
+        });
+
+        select.querySelectorAll('.custom-select__option').forEach(option => {
+            option.addEventListener('click', () => {
+                select.querySelectorAll('.custom-select__option')
+                    .forEach(o => o.classList.remove('is-selected'));
+                option.classList.add('is-selected');
+                select.querySelector('.custom-select__label').textContent = option.textContent;
+                filterValues[id] = option.dataset.value;
+                applyFilters();
+                closeAllDropdowns();
+            });
+        });
+    }
+
+    function closeAllDropdowns() {
+        document.querySelectorAll('.custom-select.is-open').forEach(s => {
+            s.classList.remove('is-open');
+            const t = s.querySelector('.custom-select__trigger');
+            if (t) t.setAttribute('aria-expanded', 'false');
+        });
+    }
+
+    // Init all dropdowns on page load
+    document.querySelectorAll('.custom-select').forEach(attachDropdownListeners);
+    document.addEventListener('click', closeAllDropdowns);
+
+    /* ================================================================
+       SEARCH
+    ================================================================ */
+    (function initSearch() {
+        const input = $id('searchInput');
+        if (!input) return;
+        input.addEventListener('input', applyFilters);
+    })();
+
+    /* ================================================================
+       FILTER LOGIC — operates on allResults, updates filtered
+    ================================================================ */
+    function matchesCreditsFilter(r, band) {
+        if (!band) return true;
+        const missing = creditsMissing(r);
+        if (band === '0')    return missing === 0;
+        if (band === '1-10') return missing >= 1  && missing <= 10;
+        if (band === '11-20') return missing >= 11 && missing <= 20;
+        if (band === '21-30') return missing >= 21 && missing <= 30;
+        if (band === '31+')  return missing >= 31;
+        return true;
+    }
+
+    function applyFilters() {
+        const searchEl    = $id('searchInput');
+        const search      = searchEl ? searchEl.value.toLowerCase() : '';
+        const programme   = filterValues.filterProgramme   || '';
+        const major       = filterValues.filterMajor       || '';
+        const eligibility = filterValues.filterEligibility || '';
+        const credits     = filterValues.filterCredits     || '';
+
+        filtered = allResults.filter(r => {
+            const nameMatch   = (r.name           || '').toLowerCase().includes(search);
+            const idMatch     = (r.student_number || '').toLowerCase().includes(search);
+            const matchSearch = nameMatch || idMatch;
+
+            const matchProgramme   = !programme   || r.programme === programme;
+            const matchMajor       = !major       || r.major     === major;
+            const matchEligibility = !eligibility
+                || (eligibility === 'eligible'     &&  r.can_graduate)
+                || (eligibility === 'not_eligible' && !r.can_graduate);
+            const matchCredits = matchesCreditsFilter(r, credits);
+
+            return matchSearch && matchProgramme && matchMajor && matchEligibility && matchCredits;
+        });
+
+        currentPage = 1;
+        render();
+    }
+
+    /* ================================================================
+       RENDER STUDENT CARDS
+    ================================================================ */
+    function renderCards() {
+        const grid = $id('studentGrid');
+        if (!grid) return;
+
+        const start = (currentPage - 1) * PER_PAGE;
+        const page  = filtered.slice(start, start + PER_PAGE);
+
+        if (!page.length) {
+            grid.innerHTML = '<p class="no-results">No students found.</p>';
+            return;
+        }
+
+        grid.innerHTML = page.map(r => {
+            const ok      = r.can_graduate;
+            const gpa     = parseFloat(r.gpa || 0).toFixed(2);
+            const missing = creditsMissing(r);
+
+            // Title-case the student name (e.g. "KAREEM FARRELL" → "Kareem Farrell")
+            const titleCaseName = (r.name || '—').toLowerCase()
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+
+            return `
+                <a href="${STUDENT_URL}${r.student_number}/" class="student-card ${ok ? 'eligible' : 'not-eligible'}">
+                    <div class="student-card-top">
+                        <h3>${titleCaseName}</h3>
+                        <p class="student-id">${r.student_number || '—'}</p>
+                    </div>
+                    <div class="student-card-mid">
+                        <div class="student-row">
+                            <span class="row-label">Programme</span>
+                            <span class="row-value">${r.programme || '—'}</span>
+                        </div>
+                        <div class="student-row">
+                            <span class="row-label">Major</span>
+                            <span class="row-value bold">${r.major || '—'}</span>
+                        </div>
+                        <div class="student-row">
+                            <span class="row-label">Credits Missing</span>
+                            <span class="row-value bold">${missing}</span>
+                        </div>
+                    </div>
+                    <div class="student-card-bottom">
+                        <span class="gpa-label">GPA <strong>${gpa}</strong></span>
+                        <span class="badge ${ok ? 'badge-eligible' : 'badge-not-eligible'}">${ok ? 'Eligible' : 'Not Eligible'}</span>
+                    </div>
+                </a>`;
+        }).join('');
+    }
+
+    /* ================================================================
+       RENDER PAGINATION
+    ================================================================ */
+    function renderPagination() {
+        const pag = $id('pagination');
+        if (!pag) return;
+
+        const total = Math.ceil(filtered.length / PER_PAGE);
+        if (total <= 1) { pag.innerHTML = ''; return; }
+
+        const MAX_VISIBLE = 6;
+        let pages = [];
+
+        if (total <= MAX_VISIBLE) {
+            for (let i = 1; i <= total; i++) pages.push(i);
+        } else {
+            const left  = Math.max(2, currentPage - 1);
+            const right = Math.min(total - 1, currentPage + 1);
+            pages.push(1);
+            if (left > 2) pages.push('…');
+            for (let i = left; i <= right; i++) pages.push(i);
+            if (right < total - 1) pages.push('…');
+            pages.push(total);
+        }
+
+        let html = `
+            <button class="pag-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goPage(${currentPage - 1})">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                Previous
+            </button>`;
+
+        pages.forEach(p => {
+            html += p === '…'
+                ? `<span class="pag-ellipsis">…</span>`
+                : `<button class="pag-num ${p === currentPage ? 'active' : ''}" onclick="goPage(${p})">${p}</button>`;
+        });
+
+        html += `
+            <button class="pag-btn" ${currentPage === total ? 'disabled' : ''} onclick="goPage(${currentPage + 1})">
+                Next
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>`;
+
+        pag.innerHTML = html;
+    }
+
+    function goPage(page) {
+        currentPage = page;
+        render();
+    }
+
+    /* ================================================================
+       MAIN RENDER
+    ================================================================ */
+    function render() {
+        renderCards();
+        renderPagination();
+    }
+
+    /* ================================================================
+       INITIAL LOAD — restore session data if present
+    ================================================================ */
+    (function init() {
+        const sessionResults = document.getElementById('session-results');
+        const sessionSummary = document.getElementById('session-summary');
+
+        if (sessionResults) {
+            try { allResults = JSON.parse(sessionResults.textContent || '[]'); } catch (e) { allResults = []; }
+        }
+
+        let summary = {};
+        if (sessionSummary) {
+            try { summary = JSON.parse(sessionSummary.textContent || '{}'); } catch (e) { summary = {}; }
+        }
+
+        if (allResults.length) {
+            renderSummary(summary);
+            buildDynamicFilters();
+            applyFilters();
+        }
+    })();
+</script>
+{% endblock %}
