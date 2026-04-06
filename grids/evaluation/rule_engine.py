@@ -8,7 +8,7 @@ from collections import defaultdict
 from pydantic import BaseModel, Field
 
 from ..models import Bucket, Major, Degree, StudentData, StudentCourse, Course
-from ..models.evaluation import FOREIGN_LANGUAGES, FLR_APPROVED_COURSES
+from ..models.evaluation import BUCKETS
 from .filters import CourseFilter
 
 
@@ -39,6 +39,7 @@ class BucketResult(BaseModel):
     is_met: bool
     credits_earned: float
     credits_required: float
+    contributes_to_degree_gpa: bool = True
     rule_results: List[RequirementResult] = Field(default_factory=list)
     overall_progress: str
     # Exemption tracking (aggregated from rules)
@@ -211,6 +212,7 @@ def _evaluate_x_of(
     rule_data: Dict[str, Any],
     used_courses: Set[str],
     courses: List[Course],
+    flr_override: bool = False,
 ) -> RequirementResult:
     required_count = int(rule_data.get("x", 1))
     options = rule_data.get("options", [])
@@ -231,6 +233,13 @@ def _evaluate_x_of(
 
     for i, option in enumerate(options):
         option_name = option.get("name", f"Option {i + 1}")
+
+        # When the admin override is active the student is NOT eligible for the
+        # foreign language requirement, so they must take FOUN 1101 instead of
+        # an FL substitute.  Skip the FL option entirely.
+        if flr_override and "foreign language" in option_name.lower():
+            continue
+
         min_credits = float(option.get("min_credits", 0.0))
 
         if "list" in option:
@@ -376,14 +385,13 @@ def _find_course(student: StudentData, course_code: str) -> Optional[StudentCour
 
 
 def _evaluate_foreign_language_requirement(student: StudentData, rule_data: Dict[str, Any], used_courses: Set[str], courses: List[Course], flr_override: bool = False) -> RequirementResult:
-    """Evaluate foreign language requirement for students admitted in 2023 or later.
+    """Evaluate foreign language requirement.
 
-    Uses a hybrid strategy:
-      \u2022 Method 1 \u2013 Heuristic Proxy: if the student passed FOUN 1101 we infer
-        they held the CSEC/CAPE qualification upon admission and treat the FLR
-        as satisfied (XOR rule with a foreign-language replacement course).
-      \u2022 Method 2 \u2013 Human-in-the-Loop: if an advisor has manually verified the
-        CSEC/CAPE exemption (flr_override=True), the requirement is met.
+    By default every student admitted 2023+ is expected to complete an approved
+    foreign-language course.  If an admin has reviewed the student's lower-level
+    records and determined they are NOT eligible for the FLR (flr_override=True),
+    the requirement is waived and the student must instead take FOUN 1101 in the
+    Foundation bucket.
     """
     result = RequirementResult(
         requirement_type="foreign_language_requirement",
@@ -399,15 +407,22 @@ def _evaluate_foreign_language_requirement(student: StudentData, rule_data: Dict
         result.progress = "N/A"
         return result
 
-    # \u2500\u2500 Method 2: Advisor override \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+    # Admin override: student is NOT eligible for FLR
     if flr_override:
         result.is_met = True
-        result.details = "CSEC/CAPE exemption verified by advisor"
-        result.progress = "Verified"
+        result.details = "Student not eligible for foreign language requirement (verified by admin)"
+        result.progress = "Exempt"
         return result
 
     # Get all passed courses (including EX exemptions)
     passed_courses = _get_effective_passed_courses(student)
+
+    # Resolve approved courses from the rule's JSON data.
+    # Every FLR bucket in buckets.json defines its own approved_courses list.
+    # Hardcoded fallback only as a safety net for malformed bucket data.
+    approved_courses = set(rule_data.get('approved_courses', []))
+    if not approved_courses:
+        approved_courses = {'CHIN 1007', 'FREN 1009', 'JAPA 1007', 'SPAN 1007', 'COCR 1052'}
 
     # Single pass: classify FL courses and accumulate credits in one loop
     # Only specific approved courses satisfy the FLR
@@ -416,7 +431,7 @@ def _evaluate_foreign_language_requirement(student: StudentData, rule_data: Dict
     exemptions = []
 
     for course in passed_courses:
-        if course.course_code not in FLR_APPROVED_COURSES:
+        if course.course_code not in approved_courses:
             continue
         if course.grade.upper() == "EX":
             exemptions.append(course.course_code)
@@ -426,26 +441,16 @@ def _evaluate_foreign_language_requirement(student: StudentData, rule_data: Dict
 
     has_any_foreign_language = bool(courses_used) or bool(exemptions)
 
-    # \u2500\u2500 Method 1: Heuristic Proxy (FOUN 1101 XOR) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-    foun_1101_inferred = False
-    if not has_any_foreign_language:
-        foun_1101 = _find_course(student, "FOUN 1101")
-        if foun_1101 and foun_1101.grade.upper() not in ("F", "EX", "D", "D+", "D-"):
-            foun_1101_inferred = True
-
     # Track exemptions separately
     result.exemptions_without_credits = exemptions
     result.exemption_mappings = [{"course": code, "reason": "Foreign Language Exemption"} for code in exemptions]
 
-    result.is_met = has_any_foreign_language or foun_1101_inferred
+    result.is_met = has_any_foreign_language
     result.courses_used = courses_used
     result.credits_earned = total_credits
-    result.credits_required = rule_data.get('credits', 3.0)  # Default 3 credits
-    
-    if foun_1101_inferred:
-        result.progress = "Inferred (FOUN 1101)"
-        result.details = "CSEC/CAPE exemption inferred: student passed FOUN 1101 (Caribbean Civilisation)"
-    elif has_any_foreign_language:
+    result.credits_required = rule_data.get('credits', 3.0)
+
+    if has_any_foreign_language:
         if exemptions:
             result.progress = f"Exempted ({len(exemptions)} EX course(s))"
             result.details = f"Exempted from foreign language requirement via {len(exemptions)} EX course(s)"
@@ -680,6 +685,7 @@ class RequirementEvaluator:
             is_met=False,
             credits_earned=0.0,
             credits_required=bucket.credits_required,
+            contributes_to_degree_gpa=bucket.contributes_to_degree_gpa,
             overall_progress="",
         )
 
@@ -688,14 +694,17 @@ class RequirementEvaluator:
             result.rule_results.append(rule_result)
 
             # Foreign language requirement is a pass/fail check, not credit-based.
-            # FL courses that satisfy the FLR must still be marked as used so
-            # they are not double-counted as electives elsewhere.
+            # FL courses are NOT locked into used_courses here — they will be
+            # consumed by the Foundation x_of bucket where they actually contribute
+            # credits.  This prevents the "double-consumption" bug where the FLR
+            # bucket would steal the course before the Foundation bucket runs.
+            # We also clear courses_used so the UI doesn't display them twice
+            # (once in the FLR gate and again in the Foundation bucket).
             if rule_result.requirement_type == "foreign_language_requirement":
                 result.credits_earned = max(
                     result.credits_earned, rule_result.credits_earned or 0.0
                 )
-                for course_code in rule_result.courses_used:
-                    used_courses.add(course_code)
+                rule_result.courses_used = []
                 continue
 
             # Track exactly what was consumed to prevent phantom frontend renders
@@ -756,7 +765,7 @@ class RequirementEvaluator:
                 student, rule_data, used_courses, self.courses
             )
         elif rule_type == "x_of":
-            return _evaluate_x_of(student, rule_data, used_courses, self.courses)
+            return _evaluate_x_of(student, rule_data, used_courses, self.courses, flr_override=self._flr_override)
         elif rule_type == 'foreign_language_requirement':
             return _evaluate_foreign_language_requirement(student, rule_data, used_courses, self.courses, flr_override=self._flr_override)
         raise ValueError(f"Unknown rule type: {rule_type}")

@@ -143,18 +143,18 @@ def test_foreign_language_requirement():
     else:
         print("✗ Test 7 failed: Student with failing approved language course should not meet requirement")
 
-    # ── Hybrid Method 1: Heuristic Proxy (FOUN 1101 XOR) ─────
+    # ── FOUN 1101 does NOT auto-satisfy FLR (heuristic removed) ─────
     # Test 8: Student who passed FOUN 1101 but has NO foreign language course
-    #         → FLR should be inferred as met (CSEC/CAPE holder took Caribbean Civ)
+    #         → FLR should NOT be met (heuristic proxy removed; only admin override exempts)
     total_tests += 1
     courses_list = [create_course("FOUN", 1101, "Caribbean Civilisation", "B+")]
     student = create_student(admit_term="2023/2024 Semester I", courses=courses_list)
     result = _evaluate_foreign_language_requirement(student, rule_data, set(), courses)
-    if result.is_met and "FOUN 1101" in result.details:
-        print("✓ Test 8 passed: FOUN 1101 heuristic proxy infers CSEC/CAPE exemption")
+    if not result.is_met:
+        print("✓ Test 8 passed: FOUN 1101 alone does NOT satisfy FLR (heuristic removed)")
         tests_passed += 1
     else:
-        print(f"✗ Test 8 failed: FOUN 1101 heuristic should infer exemption (is_met={result.is_met}, details={result.details})")
+        print(f"✗ Test 8 failed: FOUN 1101 alone should NOT satisfy FLR (is_met={result.is_met}, details={result.details})")
 
     # Test 9: Student who FAILED FOUN 1101 and has no FL course → should NOT meet
     total_tests += 1
@@ -167,16 +167,16 @@ def test_foreign_language_requirement():
     else:
         print("✗ Test 9 failed: Failing FOUN 1101 should not trigger heuristic")
 
-    # ── Hybrid Method 2: Advisor Override ─────────────────────
-    # Test 10: Advisor override should immediately satisfy FLR
+    # ── Admin Override ─────────────────────────────────────
+    # Test 10: Admin override should mark student as exempt (NOT eligible for FLR)
     total_tests += 1
     student = create_student(admit_term="2023/2024 Semester I")
     result = _evaluate_foreign_language_requirement(student, rule_data, set(), courses, flr_override=True)
-    if result.is_met and "verified by advisor" in result.details.lower():
-        print("✓ Test 10 passed: Advisor override satisfies FLR")
+    if result.is_met and "verified by admin" in result.details.lower():
+        print("✓ Test 10 passed: Admin override exempts student from FLR")
         tests_passed += 1
     else:
-        print(f"✗ Test 10 failed: Advisor override should satisfy FLR (is_met={result.is_met}, details={result.details})")
+        print(f"✗ Test 10 failed: Admin override should exempt student from FLR (is_met={result.is_met}, details={result.details})")
 
     # Test 11: Advisor override=False with no courses → should NOT meet
     total_tests += 1
@@ -240,6 +240,34 @@ def test_foreign_language_requirement():
             tests_passed += 1
         else:
             print(f"✗ Test 14 ({code}) failed: Non-approved language course should NOT meet requirement (is_met={result.is_met}, courses_used={result.courses_used})")
+
+    # ── Faculty-Specific Approved Courses ─────────────────────
+    # Test 15: Medical Sciences only accepts SPAN 1013, NOT the standard SPAN 1007
+    medsci_rule_data = {
+        'description': 'Foreign Language Requirement (Medical Sciences)',
+        'credits': 3.0,
+        'approved_courses': ['SPAN 1013']
+    }
+
+    total_tests += 1
+    courses_list = [create_course("SPAN", 1013, "Spanish for Medical Sciences I", "B")]
+    student = create_student(admit_term="2023/2024 Semester I", courses=courses_list)
+    result = _evaluate_foreign_language_requirement(student, medsci_rule_data, set(), courses)
+    if result.is_met and "SPAN 1013" in result.courses_used:
+        print("✓ Test 15 passed: MedSci accepts SPAN 1013")
+        tests_passed += 1
+    else:
+        print(f"✗ Test 15 failed: MedSci should accept SPAN 1013 (is_met={result.is_met}, courses_used={result.courses_used})")
+
+    total_tests += 1
+    courses_list = [create_course("SPAN", 1007, "Spanish for Beginners I (Blended)", "A")]
+    student = create_student(admit_term="2023/2024 Semester I", courses=courses_list)
+    result = _evaluate_foreign_language_requirement(student, medsci_rule_data, set(), courses)
+    if not result.is_met:
+        print("✓ Test 16 passed: MedSci rejects standard SPAN 1007")
+        tests_passed += 1
+    else:
+        print(f"✗ Test 16 failed: MedSci should reject SPAN 1007 (is_met={result.is_met}, courses_used={result.courses_used})")
 
     print("=" * 60)
     print(f"Tests passed: {tests_passed}/{total_tests}")
