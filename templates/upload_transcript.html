@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}Upload Transcript{% endblock title %}
+
+
+{% block extra_css %}
+    <!-- STYLESHEET -->
+    <link rel="stylesheet" href="{% static 'css/upload_transcript.css' %}">
+
+    <!-- PDF-LIB -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- ==================== MAIN ==================== -->
+    <main>
+
+        <!-- BACK LINK -->
+        <a href="{% url 'home' %}" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+            Back to Dashboard
+        </a>
+
+        <!-- PAGE HEADER -->
+        <header>
+            <figure class="img-container">
+                <img src="{% static 'img/upload_transcript/file.svg' %}" alt="Transcript Icon">
+            </figure>
+            <h1>Upload Transcript</h1>
+            <p>Upload a student transcript to automatically extract their academic details and view their full evaluation.</p>
+        </header>
+
+        <!-- ALERT CONTAINER -->
+        <div id="alert-container"></div>
+
+        <!-- UPLOAD SECTION -->
+        <section id="upload-section">
+
+            <!-- PROGRESS UI -->
+            <div id="processing-ui" class="processing-ui d-none">
+                <p id="status-text" class="status-text">Initialising…</p>
+                <div class="progress-track">
+                    <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <!-- DRAG & DROP ZONE -->
+            <div id="drop-zone" class="drop-zone">
+                <figure class="img-container">
+                    <img src="{% static 'img/upload_transcript/upload.svg' %}" alt="Upload Icon">
+                </figure>
+                <p id="dropLabel">Drag &amp; drop your transcript here</p>
+                <p class="drop-sub">PDF or TXT files supported · Max 50 MB</p>
+                <p class="section-divider">or</p>
+                <input type="file" id="file-input" accept=".pdf,.txt" hidden>
+                <button class="browse-btn" id="browseBtn" type="button">Browse Files</button>
+            </div>
+
+        </section>
+
+    </main>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+
+    // ----- CONFIG -----
+    const CSRF_TOKEN = '{{ csrf_token }}';
+    const UPLOAD_URL = '{% url "transcript_grid" %}';
+    const EXTRACT_URL = '/performance/api/extract-chunk/';
+    const STUDENT_URL = '/performance/transcript/';
+
+
+    // ----- DOM HELPERS -----
+    function $id(id) { return document.getElementById(id) || null; }
+    function setText(id, val) { const el = $id(id); if (el) el.textContent = val; }
+    function show(id) { const el = $id(id); if (el) el.classList.remove('d-none'); }
+    function hide(id) { const el = $id(id); if (el) el.classList.add('d-none'); }
+    function setWidth(id, pct) { const el = $id(id); if (el) el.style.width = pct + '%'; }
+
+
+    // ----- NAVBAR -----
+    (function initNav() {
+        const toggler = document.querySelector('.navbar-toggler');
+        const menu = $id('navMenu');
+        if (!toggler || !menu) return;
+        toggler.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menu.classList.toggle('active');
+            toggler.classList.toggle('active');
+        });
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('nav.banner')) {
+                menu.classList.remove('active');
+                toggler.classList.remove('active');
+            }
+        });
+    })();
+
+
+    // ----- DROP ZONE -----
+    (function initDropZone() {
+        const dropZone = $id('drop-zone');
+        const fileInput = $id('file-input');
+        const browseBtn = $id('browseBtn');
+        if (!dropZone || !fileInput) return;
+
+        dropZone.addEventListener('click', (e) => {
+            if (e.target === browseBtn || browseBtn.contains(e.target)) return;
+            fileInput.click();
+        });
+
+        browseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                fileInput.files = dt.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+    })();
+
+
+    // ----- ALERTS -----
+    function showAlert(type, title, message) {
+        const c = $id('alert-container');
+        if (!c) return;
+        c.innerHTML = `
+            <div class="app-alert app-alert--${type}">
+                <strong>${title}</strong> ${message}
+                <button class="app-alert__close" onclick="this.parentElement.remove()" aria-label="Close">&times;</button>
+            </div>`;
+    }
+
+    function clearAlerts() {
+        const c = $id('alert-container');
+        if (c) c.innerHTML = '';
+    }
+
+
+    // ----- FILE INPUT — VALIDATION & ROUTING -----
+    (function initFileInput() {
+        const fileInput = $id('file-input');
+        const dropLabel = $id('dropLabel');
+        if (!fileInput) return;
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            if (dropLabel) dropLabel.textContent = file.name;
+
+            if (file.size > 50 * 1024 * 1024) {
+                showAlert('danger', 'Upload Cancelled!', 'File size exceeds the 50 MB limit.');
+                fileInput.value = '';
+                if (dropLabel) dropLabel.textContent = 'Drag & drop your transcript here';
+                return;
+            }
+
+            const name = file.name.toLowerCase();
+            if (!name.endsWith('.pdf') && !name.endsWith('.txt')) {
+                showAlert('danger', 'Upload Cancelled!', 'Unsupported file type. Please upload a .pdf or .txt file.');
+                fileInput.value = '';
+                if (dropLabel) dropLabel.textContent = 'Drag & drop your transcript here';
+                return;
+            }
+
+            clearAlerts();
+
+            if (name.endsWith('.pdf')) {
+                handlePdfUpload(file);
+            } else {
+                handleStandardUpload(file);
+            }
+        });
+    })();
+
+
+    // ----- PDF UPLOAD — CHUNK EXTRACTION → BACKEND EVALUATION -----
+    async function handlePdfUpload(file) {
+        const fileInput = $id('file-input');
+        const dropLabel = $id('dropLabel');
+
+        if (fileInput) fileInput.disabled = true;
+        show('processing-ui');
+        setWidth('progress-bar', 0);
+
+        try {
+            setText('status-text', 'Loading PDF securely in browser…');
+
+            const arrayBuffer = await file.arrayBuffer();
+            const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+            const totalPages = pdfDoc.getPageCount();
+
+            const CHUNK_SIZE = 20;
+            let fullExtractedText = '';
+            let detectedIsTranscript = false;
+
+            for (let i = 0; i < totalPages; i += CHUNK_SIZE) {
+                const endPage = Math.min(i + CHUNK_SIZE, totalPages);
+                setText('status-text', `Extracting text: pages ${i + 1}–${endPage} of ${totalPages}…`);
+
+                const chunkPdf = await PDFLib.PDFDocument.create();
+                const pageIndices = Array.from({ length: endPage - i }, (_, idx) => i + idx);
+                const copied = await chunkPdf.copyPages(pdfDoc, pageIndices);
+                copied.forEach(p => chunkPdf.addPage(p));
+
+                const chunkBytes = await chunkPdf.save();
+                const chunkBlob = new Blob([chunkBytes], { type: 'application/pdf' });
+
+                const formData = new FormData();
+                formData.append('pdf_chunk', chunkBlob, `chunk_${i}.pdf`);
+                formData.append('chunk_index', i.toString());
+                if (i > 0) formData.append('is_transcript', detectedIsTranscript ? 'true' : 'false');
+
+                const response = await fetch(EXTRACT_URL, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-CSRFToken': CSRF_TOKEN }
+                });
+
+                const ct = response.headers.get('content-type') || '';
+                if (!ct.includes('application/json')) {
+                    throw new Error('Server returned an invalid non-JSON response during chunk extraction.');
+                }
+
+                const data = await response.json();
+                if (!response.ok || data.error) throw new Error(data.error || 'Server failed to parse a chunk.');
+
+                fullExtractedText += data.text + '\n\n';
+                if (i === 0 && data.is_transcript) detectedIsTranscript = true;
+
+                setWidth('progress-bar', Math.round((endPage / totalPages) * 75));
+            }
+
+            setText('status-text', 'Evaluating academic rules (this may take a moment)…');
+            setWidth('progress-bar', 85);
+
+            const textBlob = new Blob([fullExtractedText], { type: 'text/plain' });
+            const textFile = new File([textBlob], file.name.replace('.pdf', '') + '_extracted.txt', { type: 'text/plain' });
+
+            await performBackendUpload(textFile);
+
+        } catch (error) {
+            console.error(error);
+            showAlert('danger', 'Upload Failed!', error.message);
+            hide('processing-ui');
+            if (fileInput) { fileInput.disabled = false; fileInput.value = ''; }
+            if ($id('dropLabel')) $id('dropLabel').textContent = 'Drag & drop your transcript here';
+        }
+    }
+
+
+    // ----- STANDARD TXT UPLOAD -----
+    function handleStandardUpload(file) {
+        performBackendUpload(file).catch(error => {
+            showAlert('danger', 'Upload Failed!', error.message);
+            hide('processing-ui');
+        });
+    }
+
+
+    // ----- BACKEND UPLOAD — REDIRECT TO STUDENT PROFILE ON SUCCESS -----
+    async function performBackendUpload(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const res = await fetch(UPLOAD_URL, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': CSRF_TOKEN },
+            body: formData
+        });
+
+        const ct = res.headers.get('content-type') || '';
+        if (!ct.includes('application/json')) {
+            throw new Error('Server returned an invalid response. The degree evaluation endpoint failed.');
+        }
+
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+            showAlert('danger', 'Upload Failed!', data.error || 'An unknown error occurred.');
+            hide('processing-ui');
+            const fileInput = $id('file-input');
+            if (fileInput) { fileInput.disabled = false; fileInput.value = ''; }
+            return;
+        }
+
+        const results = data.results || [];
+
+        if (!results.length) {
+            showAlert('danger', 'No Data Found!', 'The transcript was processed but no student data could be extracted.');
+            hide('processing-ui');
+            return;
+        }
+
+        const studentNumber = results[0].student_number;
+
+        setWidth('progress-bar', 100);
+        setText('status-text', 'Done! Redirecting to student profile…');
+
+        // Brief pause so the user sees 100% before navigating
+        setTimeout(() => {
+            window.location.href = `${STUDENT_URL}${studentNumber}/`;
+        }, 800);
+    }
+
+</script>
+{% endblock %}

@@ -1,3 +1,5 @@
+
+{% comment %}
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
@@ -18,3 +20,123 @@
   </div>
 </div>
 {% endblock %}
+{% endcomment %}
+
+
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+</head>
+
+<body>
+  <div class="login-card">
+    <header class="card-header">
+      <h1>Student Grids</h1>
+      <h2>Create Account</h2>
+      <p>Sign up to continue</p>
+    </header>
+
+    <form method="post" autocomplete="off">
+      {% csrf_token %}
+
+      <!-- Username -->
+      <label for="id_username">Username</label>
+      <div class="input-container">
+        <img src="{% static 'img/login/email.svg' %}" alt="User icon">
+        <input type="text" name="username" id="id_username" placeholder="Enter your username" maxlength="150"
+          value="{{ form.username.value|default_if_none:'' }}" autocomplete="off" required>
+      </div>
+      <div class="field-help">
+        Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
+      </div>
+      {% if form.username.errors %}
+      <div class="field-error">
+        {% for error in form.username.errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Email -->
+      <label for="id_email">Email</label>
+      <div class="input-container">
+        <img src="{% static 'img/login/email.svg' %}" alt="Email icon">
+        <input type="email" name="email" id="id_email" placeholder="Enter your email"
+          value="{{ form.email.value|default_if_none:'' }}" autocomplete="off">
+      </div>
+      {% if form.email.errors %}
+      <div class="field-error">
+        {% for error in form.email.errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Password -->
+      <label for="id_password1">Password</label>
+      <div class="input-container">
+        <img src="{% static 'img/login/lock.svg' %}" alt="Lock icon">
+        <input type="password" name="password1" id="id_password1" placeholder="Enter your password"
+          autocomplete="new-password" required>
+      </div>
+      <div class="field-help">
+        <ul>
+          <li>Your password can't be too similar to your other personal information.</li>
+          <li>Your password must contain at least 8 characters.</li>
+          <li>Your password can't be a commonly used password.</li>
+          <li>Your password can't be entirely numeric.</li>
+        </ul>
+      </div>
+      {% if form.password1.errors %}
+      <div class="field-error">
+        {% for error in form.password1.errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Confirm Password -->
+      <label for="id_password2">Confirm Password</label>
+      <div class="input-container">
+        <img src="{% static 'img/login/lock.svg' %}" alt="Lock icon">
+        <input type="password" name="password2" id="id_password2" placeholder="Confirm your password"
+          autocomplete="new-password" required>
+      </div>
+      <div class="field-help">
+        Enter the same password as before, for verification.
+      </div>
+      {% if form.password2.errors %}
+      <div class="field-error">
+        {% for error in form.password2.errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if form.non_field_errors %}
+      <div class="field-error">
+        {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <button type="submit">Sign Up ➜</button>
+    </form>
+
+    <p class="create-account">
+      Already have an account? <a href="{% url 'login' %}">Log In</a>
+    </p>
+
+  </div>
+</body>
+
+</html>

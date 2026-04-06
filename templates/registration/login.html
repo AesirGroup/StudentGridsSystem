@@ -4,26 +4,49 @@
 <html lang="en">
 
 <head>
+
+  <!-- METADATA & TITLE -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Log In</title>
+
+
+  <!-- GOOGLE FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+
+  <!-- STYLESHEET -->
   <link rel="stylesheet" href="{% static 'css/login.css' %}">
+
 </head>
 
 <body>
+
+  <!-- LOGIN CARD -->
   <div class="login-card">
+
+    <!-- CARD HEADER -->
     <header class="card-header">
+
+      <!-- APP NAME & LOGO -->
       <div class="app-name">
         <img src="{% static 'img/login/logo.svg' %}" alt="A graduation cap">
         <h1>Student Grids</h1>
       </div>
+
       <h2>Welcome</h2>
       <p>Sign into your account to continue</p>
+
     </header>
 
+
+    <!-- LOGIN FORM -->
     <form method="post">
       {% csrf_token %}
 
+      <!-- NON-FIELD ERRORS -->
       {% if form.non_field_errors %}
       <div class="form-errors">
         {% for error in form.non_field_errors %}
@@ -32,7 +55,8 @@
       </div>
       {% endif %}
 
-      <!-- Username Field -->
+
+      <!-- USERNAME FIELD -->
       <label for="id_username">Username</label>
       <div class="email-container">
         <img src="{% static 'img/login/email.svg' %}" alt="User icon">
@@ -40,6 +64,7 @@
           value="{{ form.username.value|default_if_none:'' }}" autocomplete="off" required>
       </div>
 
+      <!-- USERNAME ERRORS -->
       {% if form.username.errors %}
       <div class="field-error">
         {% for error in form.username.errors %}
@@ -48,7 +73,8 @@
       </div>
       {% endif %}
 
-      <!-- Password Field -->
+
+      <!-- PASSWORD FIELD -->
       <div class="password-header">
         <label for="id_password">Password</label>
         <a href="{% url 'password_reset' %}" tabindex="-1">Forgot password?</a>
@@ -61,6 +87,7 @@
         <img src="{% static 'img/login/eye-open.svg' %}" alt="Toggle password" id="togglePassword">
       </div>
 
+      <!-- PASSWORD ERRORS -->
       {% if form.password.errors %}
       <div class="field-error">
         {% for error in form.password.errors %}
@@ -69,15 +96,23 @@
       </div>
       {% endif %}
 
-      <button type="submit">Sign In ➜</button>
+
+      <!-- SUBMIT BUTTON -->
+      <button type="submit">Sign In</button>
+
     </form>
 
+
+    <!-- CREATE ACCOUNT LINK -->
     <p class="create-account">
       Don't have an account?
       <a href="{% url 'signup' %}">Create one</a>
     </p>
+
   </div>
 
+
+  <!-- PASSWORD TOGGLE SCRIPT -->
   <script>
     const password = document.getElementById('id_password');
     const toggle = document.getElementById('togglePassword');
@@ -91,6 +126,7 @@
         : "{% static 'img/login/eye-close.svg' %}";
     });
   </script>
+
 </body>
 
 </html>

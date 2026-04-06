@@ -2,11 +2,13 @@ import os
 import io
 import json
 import re
+import logging
 import pdfplumber
 from functools import lru_cache
 
 from django.conf import settings
 from django.db import transaction
+from django.db.models import Prefetch
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
@@ -17,7 +19,11 @@ from grids.models import Degree, Course
 from grids.evaluation.rule_engine import RequirementEvaluator, _find_course
 from .models import StudentProfile, AuditRecord, BucketResult
 
+logger = logging.getLogger(__name__)
+
+
 # --- HELPER FUNCTIONS ---
+
 
 def extract_text_from_grid_pdf(file_obj):
     """Parses the 3-column PDF directly from memory"""
@@ -38,13 +44,16 @@ def extract_text_from_grid_pdf(file_obj):
                 text_mid = page.crop(box_mid).extract_text()
                 text_right = page.crop(box_right).extract_text()
 
-                if text_left: all_text.append(text_left)
-                if text_mid: all_text.append(text_mid)
-                if text_right: all_text.append(text_right)
+                if text_left:
+                    all_text.append(text_left)
+                if text_mid:
+                    all_text.append(text_mid)
+                if text_right:
+                    all_text.append(text_right)
             except Exception as e:
                 print(f"Error on PDF extraction: {e}")
-                
-    return "\n".join(all_text) 
+
+    return "\n".join(all_text)
 
 
 def extract_text_from_transcript_pdf(file_obj):
@@ -52,9 +61,8 @@ def extract_text_from_transcript_pdf(file_obj):
     all_text = []
     with pdfplumber.open(file_obj) as pdf:
         for page in pdf.pages:
-            clean_page = page.filter(lambda obj: 
-                obj.get("object_type") != "char" or 
-                obj.get("size", 0) <= 20
+            clean_page = page.filter(
+                lambda obj: obj.get("object_type") != "char" or obj.get("size", 0) <= 20
             )
             text = clean_page.extract_text()
             if text:
@@ -70,16 +78,16 @@ def is_valid_student_text(text):
     return bool(has_student_number and has_record_of)
 
 
-@lru_cache(maxsize=1) # Caches the JSON in RAM for performance boost
+@lru_cache(maxsize=1)  # Caches the JSON in RAM for performance boost
 def load_catalog_courses():
     json_path = os.path.join(settings.BASE_DIR, "grids", "data", "course_listing.json")
-    
+
     if not os.path.exists(json_path):
         return []
-    
+
     with open(json_path, "r", encoding="utf-8") as f:
         data = json.load(f)
-    
+
     courses = []
     for subject, levels in data.items():
         for level_name, clist in levels.items():
@@ -88,9 +96,9 @@ def load_catalog_courses():
                 parts = c["code"].split()
                 subj_code = parts[0] if len(parts) > 0 else "UNKNOWN"
                 num_code = parts[1] if len(parts) > 1 else "0000"
-                
+
                 # Strip non-numeric characters from num_code just in case
-                clean_num = ''.join(filter(str.isdigit, num_code))
+                clean_num = "".join(filter(str.isdigit, num_code))
                 final_num = int(clean_num) if clean_num else 0
 
                 courses.append(
@@ -104,8 +112,16 @@ def load_catalog_courses():
     return tuple(courses)
 
 
-def build_student_result_dict(student_number, name, programme, major, gpa, can_graduate):
-    """helper to prevent duplicating dictionary creation"""
+def build_student_result_dict(
+    student_number,
+    name,
+    programme,
+    major,
+    gpa,
+    can_graduate,
+    credits_earned=0,
+    credits_required=0,
+):
     return {
         "student_number": student_number,
         "name": name,
@@ -113,6 +129,8 @@ def build_student_result_dict(student_number, name, programme, major, gpa, can_g
         "major": major,
         "gpa": gpa,
         "can_graduate": can_graduate,
+        "credits_earned": credits_earned,
+        "credits_required": credits_required,
         "detail_url": f"/grid/{student_number}/",
     }
 
@@ -131,16 +149,26 @@ def save_bucket_to_db(audit, component_name, b_result, student):
         for code in rule.courses_used:
             sc = _find_course(student, code)
             if sc:
-                completed_courses.append({
-                    "code": sc.course_code,
-                    "grade": sc.grade,
-                    "credits": sc.credits,
-                })
+                completed_courses.append(
+                    {
+                        "code": sc.course_code,
+                        "grade": sc.grade,
+                        "credits": sc.credits,
+                    }
+                )
 
         # Collect exemption mappings (EX course → replacement course)
         for mapping in rule.exemption_mappings:
             if "replacement_course" in mapping:
                 exemption_mappings.append(mapping)
+
+
+    # FLR rule is skipped via `continue` in _evaluate_bucket so its
+    # courses_needed never gets picked up in the loop above — catch it here
+
+    for rule in b_result.rule_results:
+        if rule.requirement_type == "foreign_language_requirement" and not rule.is_met:
+            courses_needed.extend(rule.courses_needed)
 
     BucketResult.objects.create(
         audit=audit,
@@ -156,24 +184,24 @@ def save_bucket_to_db(audit, component_name, b_result, student):
     )
 
 
-from django.db.models import Prefetch
-
 # --- CLASS BASED VIEWS ---
 
+
 class ExtractTextChunkView(View):
-    """ Receives a chunked PDF, runs pdfplumber on it, returns formatted text """
+    """Receives a chunked PDF, runs pdfplumber on it, returns formatted text"""
+
     def post(self, request, *args, **kwargs):
-        chunk_file = request.FILES.get('pdf_chunk')
+        chunk_file = request.FILES.get("pdf_chunk")
         if not chunk_file:
             return JsonResponse({"error": "No file chunk provided."}, status=400)
 
-        chunk_index = int(request.POST.get('chunk_index', 0))
-        is_transcript_override = request.POST.get('is_transcript') == 'true'
+        chunk_index = int(request.POST.get("chunk_index", 0))
+        is_transcript_override = request.POST.get("is_transcript") == "true"
 
         try:
             pdf_io = io.BytesIO(chunk_file.read())
             is_transcript = is_transcript_override
-            
+
             # If it's the first chunk, peek at page 0 to automatically detect document type
             if chunk_index == 0 and not is_transcript_override:
                 with pdfplumber.open(pdf_io) as peek_pdf:
@@ -182,35 +210,35 @@ class ExtractTextChunkView(View):
                         if "UNOFFICIAL TRANSCRIPT" in first_page_text:
                             is_transcript = True
                 pdf_io.seek(0)
-                        
+
             if is_transcript:
                 extracted_text = extract_text_from_transcript_pdf(pdf_io)
             else:
                 extracted_text = extract_text_from_grid_pdf(pdf_io)
 
-            return JsonResponse({
-                "status": "success", 
-                "text": extracted_text,
-                "is_transcript": is_transcript
-            })
-        
+            return JsonResponse(
+                {
+                    "status": "success",
+                    "text": extracted_text,
+                    "is_transcript": is_transcript,
+                }
+            )
+
         except Exception as e:
-            import logging
-            logger = logging.getLogger(__name__)
             logger.error(f"Chunk extraction failed: {str(e)}")
             return JsonResponse({"error": "Failed to parse PDF chunk."}, status=500)
 
 
 class UploadGridView(LoginRequiredMixin, View):
-    template_name = "upload.html"
+    template_name = "upload_grid.html"
 
     def get(self, request, *args, **kwargs):
-        # Prefetch grabs all related audits in a single bulk database query, 
+        # Prefetch grabs all related audits in a single bulk database query,
         # rather than querying the database 1,000 times for 1,000 students.
         profiles = StudentProfile.objects.prefetch_related(
-            Prefetch('audits', queryset=AuditRecord.objects.order_by("-audit_date"))
+            Prefetch("audits", queryset=AuditRecord.objects.order_by("-audit_date"))
         )
-        
+
         results = []
         can_graduate_count = 0
         cannot_graduate_count = 0
@@ -224,10 +252,18 @@ class UploadGridView(LoginRequiredMixin, View):
                 else:
                     cannot_graduate_count += 1
 
-                results.append(build_student_result_dict(
-                    profile.student_number, profile.name, profile.programme, 
-                    profile.major, profile.overall_gpa, latest_audit.can_graduate
-                ))
+                results.append(
+                    build_student_result_dict(
+                        profile.student_number,
+                        profile.name,
+                        profile.programme,
+                        profile.major,
+                        profile.overall_gpa,
+                        latest_audit.can_graduate,
+                        credits_earned=latest_audit.total_credits_earned,
+                        credits_required=latest_audit.total_credits_required,
+                    )
+                )
 
         summary = {
             "total_students": len(profiles),
@@ -235,11 +271,14 @@ class UploadGridView(LoginRequiredMixin, View):
             "cannot_graduate": cannot_graduate_count,
         }
 
-        return render(request, self.template_name, {
-            "last_results": results,
-            "last_summary": summary,
-        })
-
+        return render(
+            request,
+            self.template_name,
+            {
+                "last_results": results,
+                "last_summary": summary,
+            },
+        )
 
     def post(self, request, *args, **kwargs):
         uploaded_file = request.FILES.get("file")
@@ -249,12 +288,17 @@ class UploadGridView(LoginRequiredMixin, View):
         # Prevents Out-Of-Memory (OOM) Denial of Service attacks
         MAX_UPLOAD_SIZE = 50 * 1024 * 1024  # 50 MB Limit
         if uploaded_file.size > MAX_UPLOAD_SIZE:
-            return JsonResponse({"error": "File size exceeds the 5MB limit. Please upload a smaller document."}, status=400)
+            return JsonResponse(
+                {
+                    "error": "File size exceeds the 5MB limit. Please upload a smaller document."
+                },
+                status=400,
+            )
 
         try:
             filename = uploaded_file.name.lower()
             raw_text = ""
-            
+
             # Read the file bytes safely into memory once
             file_bytes = uploaded_file.read()
 
@@ -262,23 +306,31 @@ class UploadGridView(LoginRequiredMixin, View):
             if filename.endswith(".pdf"):
                 # Check PDF Magic Bytes to prevent renamed malware files
                 if not file_bytes.startswith(b"%PDF"):
-                    return JsonResponse({"error": "Invalid file format. The uploaded file is not a valid PDF document."}, status=400)
-                
+                    return JsonResponse(
+                        {
+                            "error": "Invalid file format. The uploaded file is not a valid PDF document."
+                        },
+                        status=400,
+                    )
+
                 pdf_io = io.BytesIO(file_bytes)
                 is_transcript = False
-                
+
                 # Peek safely
                 with pdfplumber.open(pdf_io) as pdf:
                     # Guard against 0-page/corrupt PDFs
                     if not pdf.pages:
-                        return JsonResponse({"error": "The uploaded PDF contains no readable pages."}, status=400)
-                        
+                        return JsonResponse(
+                            {"error": "The uploaded PDF contains no readable pages."},
+                            status=400,
+                        )
+
                     first_page_text = pdf.pages[0].extract_text() or ""
                     if "UNOFFICIAL TRANSCRIPT" in first_page_text:
                         is_transcript = True
-                
+
                 pdf_io.seek(0)
-                
+
                 if is_transcript:
                     raw_text = extract_text_from_transcript_pdf(pdf_io)
                 else:
@@ -288,15 +340,28 @@ class UploadGridView(LoginRequiredMixin, View):
                 try:
                     raw_text = file_bytes.decode("utf-8")
                 except UnicodeDecodeError:
-                    return JsonResponse({"error": "Text file must be UTF-8 encoded. If using Windows, save as UTF-8."}, status=400)
+                    return JsonResponse(
+                        {
+                            "error": "Text file must be UTF-8 encoded. If using Windows, save as UTF-8."
+                        },
+                        status=400,
+                    )
             else:
-                return JsonResponse({"error": "Unsupported file type. Please upload a .pdf or .txt file."}, status=400)
+                return JsonResponse(
+                    {
+                        "error": "Unsupported file type. Please upload a .pdf or .txt file."
+                    },
+                    status=400,
+                )
 
             # 2. VALIDATION
             if not is_valid_student_text(raw_text):
-                return JsonResponse({
-                    "error": "The uploaded file appears to be redacted or is missing critical student identification data (Student Number, Name). Please upload an unredacted PDF or a formatted TXT file."
-                }, status=400)
+                return JsonResponse(
+                    {
+                        "error": "The uploaded file appears to be redacted or is missing critical student identification data (Student Number, Name). Please upload an unredacted PDF or a formatted TXT file."
+                    },
+                    status=400,
+                )
 
             # 3. PROCEED TO PARSING
             try:
@@ -309,9 +374,12 @@ class UploadGridView(LoginRequiredMixin, View):
             # Prevent server lockup from massive batch files
             MAX_BATCH_SIZE = 300
             if len(students) > MAX_BATCH_SIZE:
-                return JsonResponse({
-                    "error": f"File contains {len(students)} students. The maximum allowed per upload is {MAX_BATCH_SIZE}. Please split the file and try again."
-                }, status=400)
+                return JsonResponse(
+                    {
+                        "error": f"File contains {len(students)} students. The maximum allowed per upload is {MAX_BATCH_SIZE}. Please split the file and try again."
+                    },
+                    status=400,
+                )
 
             # VIRTUAL CATALOG INJECTION
             catalog_courses = list(load_catalog_courses())
@@ -369,6 +437,7 @@ class UploadGridView(LoginRequiredMixin, View):
                             "programme": prog_name,
                             "major": major_name,
                             "overall_gpa": student.overall_gpa,
+                            "raw_transcript_text": raw_text,
                         },
                     )
 
@@ -388,16 +457,28 @@ class UploadGridView(LoginRequiredMixin, View):
                     # 3. Save Buckets
                     for major in result.major_results:
                         for b_result in major.bucket_results:
-                            save_bucket_to_db(audit, major.component_name, b_result, student)
+                            save_bucket_to_db(
+                                audit, major.component_name, b_result, student
+                            )
 
                     for g_result in result.general_requirements:
-                        save_bucket_to_db(audit, "General Requirements", g_result, student)
+                        save_bucket_to_db(
+                            audit, "General Requirements", g_result, student
+                        )
 
                 # Use the dictionary helper outside the transaction
-                results.append(build_student_result_dict(
-                    student.student_number, student.name, prog_name, major_name, 
-                    student.overall_gpa, can_graduate
-                ))
+                results.append(
+                    build_student_result_dict(
+                        student.student_number,
+                        student.name,
+                        prog_name,
+                        major_name,
+                        student.overall_gpa,
+                        can_graduate,
+                        credits_earned=result.total_credits_earned,
+                        credits_required=result.total_credits_required,
+                    )
+                )
 
             summary = {
                 "total_students": len(students),
@@ -408,13 +489,13 @@ class UploadGridView(LoginRequiredMixin, View):
             return JsonResponse({"summary": summary, "results": results})
 
         except Exception as e:
-            import logging
-            logger = logging.getLogger(__name__)
             logger.error(f"CRITICAL PARSE ERROR: {str(e)}", exc_info=True)
-            
-            return JsonResponse({
-                "error": "An unexpected system error occurred while processing the document. Please ensure the file is a valid format."
-            }, status=500)
+            return JsonResponse(
+                {
+                    "error": "An unexpected system error occurred while processing the document. Please ensure the file is a valid format."
+                },
+                status=500,
+            )
 
 
 class StudentDetailView(LoginRequiredMixin, View):
@@ -424,21 +505,30 @@ class StudentDetailView(LoginRequiredMixin, View):
         # Prefetch the audits here, ensuring we only make one query for the audit list
         profile = get_object_or_404(
             StudentProfile.objects.prefetch_related(
-                Prefetch('audits', queryset=AuditRecord.objects.order_by("-audit_date"))
-            ), 
-            student_number=student_number
+                Prefetch("audits", queryset=AuditRecord.objects.order_by("-audit_date"))
+            ),
+            student_number=student_number,
         )
-        
+
         audit = profile.audits.first()
-        
+
         if not audit:
             return redirect("upload_grid")
 
-        return render(request, self.template_name, {"student": profile, "audit": audit})
+        return render(
+            request,
+            self.template_name,
+            {
+                "student": profile,
+                "audit": audit,
+                "bucket_results": list(audit.bucket_results.all()),
+            },
+        )
 
 
 class StudentPortalView(View):
-    """ Completely public and unauthenticated endpoint for rendering the student UI """
+    """Completely public and unauthenticated endpoint for rendering the student UI"""
+
     template_name = "student_portal.html"
 
     def get(self, request, *args, **kwargs):
@@ -447,9 +537,10 @@ class StudentPortalView(View):
 
 class EphemeralEvaluationView(View):
     """
-    Stateless evaluation endpoint for unauthenticated users. 
+    Stateless evaluation endpoint for unauthenticated users.
     Strictly air-gapped from the database and guarantees PII sanitization.
     """
+
     def post(self, request, *args, **kwargs):
         uploaded_file = request.FILES.get("file")
         if not uploaded_file:
@@ -462,18 +553,29 @@ class EphemeralEvaluationView(View):
         try:
             filename = uploaded_file.name.lower()
             if not filename.endswith(".txt"):
-                return JsonResponse({"error": "This endpoint requires aggregated text."}, status=400)
+                return JsonResponse(
+                    {"error": "This endpoint requires aggregated text."}, status=400
+                )
 
             raw_text = uploaded_file.read().decode("utf-8")
-            
+
             if not is_valid_student_text(raw_text):
-                return JsonResponse({"error": "Missing critical student data."}, status=400)
+                return JsonResponse(
+                    {"error": "Missing critical student data."}, status=400
+                )
 
             detected_dtype = identify_doc_type(raw_text)
             students = parse_text(raw_text, dtype=detected_dtype)
 
-            if len(students) > 10: # Only allow small batches for ephemeral eval to prevent abuse
-                return JsonResponse({"error": "Excessive student transcript counts are not supported here."}, status=400)
+            if (
+                len(students) > 10
+            ):  # Only allow small batches for ephemeral eval to prevent abuse
+                return JsonResponse(
+                    {
+                        "error": "Excessive student transcript counts are not supported here."
+                    },
+                    status=400,
+                )
 
             # Virtual Catalog
             catalog_courses = list(load_catalog_courses())
@@ -484,9 +586,12 @@ class EphemeralEvaluationView(View):
                     for sc in term.courses:
                         if sc.course_code not in existing_codes:
                             virtual_course = Course(
-                                subject=sc.subject, number=sc.number,
-                                title=sc.title, credits=sc.credits,
-                                code=sc.course_code, level=sc.level
+                                subject=sc.subject,
+                                number=sc.number,
+                                title=sc.title,
+                                credits=sc.credits,
+                                code=sc.course_code,
+                                level=sc.level,
                             )
                             catalog_courses.append(virtual_course)
                             existing_codes.add(sc.course_code)
@@ -506,15 +611,23 @@ class EphemeralEvaluationView(View):
                             for code in rule.courses_used:
                                 sc = _find_course(student, code)
                                 if sc:
-                                    completed.append({"code": sc.course_code, "grade": sc.grade, "credits": sc.credits})
-                        major_buckets.append({
-                            "component": major.component_name,
-                            "bucket_name": b_result.bucket_name,
-                            "is_met": b_result.is_met,
-                            "credits_earned": b_result.credits_earned,
-                            "credits_required": b_result.credits_required,
-                            "completed_courses": completed,
-                        })
+                                    completed.append(
+                                        {
+                                            "code": sc.course_code,
+                                            "grade": sc.grade,
+                                            "credits": sc.credits,
+                                        }
+                                    )
+                        major_buckets.append(
+                            {
+                                "component": major.component_name,
+                                "bucket_name": b_result.bucket_name,
+                                "is_met": b_result.is_met,
+                                "credits_earned": b_result.credits_earned,
+                                "credits_required": b_result.credits_required,
+                                "completed_courses": completed,
+                            }
+                        )
 
                 gen_buckets = []
                 for g_result in result.general_requirements:
@@ -523,50 +636,150 @@ class EphemeralEvaluationView(View):
                         for code in rule.courses_used:
                             sc = _find_course(student, code)
                             if sc:
-                                completed.append({"code": sc.course_code, "grade": sc.grade, "credits": sc.credits})
-                    gen_buckets.append({
-                        "bucket_name": g_result.bucket_name,
-                        "is_met": g_result.is_met,
-                        "credits_earned": g_result.credits_earned,
-                        "credits_required": g_result.credits_required,
-                        "completed_courses": completed,
-                    })
+                                completed.append(
+                                    {
+                                        "code": sc.course_code,
+                                        "grade": sc.grade,
+                                        "credits": sc.credits,
+                                    }
+                                )
+                    gen_buckets.append(
+                        {
+                            "bucket_name": g_result.bucket_name,
+                            "is_met": g_result.is_met,
+                            "credits_earned": g_result.credits_earned,
+                            "credits_required": g_result.credits_required,
+                            "completed_courses": completed,
+                        }
+                    )
 
                 # SANITIZED DICTIONARY (NO PII)
-                results.append({
-                    "programme": student.programme.programme if student.programme else "Unknown",
-                    "major": student.programme.major if student.programme else "Unknown",
-                    "overall_gpa": student.overall_gpa,
-                    "can_graduate": len(result.unmet_requirements) == 0,
-                    "total_credits_earned": result.total_credits_earned,
-                    "total_credits_required": result.total_credits_required,
-                    "overall_progress": result.overall_progress,
-                    "unmet_requirements": result.unmet_requirements,
-                    "major_buckets": major_buckets,
-                    "general_buckets": gen_buckets,
-                })
+                results.append(
+                    {
+                        "programme": (
+                            student.programme.programme
+                            if student.programme
+                            else "Unknown"
+                        ),
+                        "major": (
+                            student.programme.major if student.programme else "Unknown"
+                        ),
+                        "overall_gpa": student.overall_gpa,
+                        "can_graduate": len(result.unmet_requirements) == 0,
+                        "total_credits_earned": result.total_credits_earned,
+                        "total_credits_required": result.total_credits_required,
+                        "overall_progress": result.overall_progress,
+                        "unmet_requirements": result.unmet_requirements,
+                        "major_buckets": major_buckets,
+                        "general_buckets": gen_buckets,
+                    }
+                )
 
             return JsonResponse({"results": results})
 
         except ValueError as e:
             return JsonResponse({"error": str(e)}, status=400)
         except Exception as e:
-            import logging
-            logger = logging.getLogger(__name__)
             logger.error(f"Stateless evaluation failed: {e}", exc_info=True)
-            return JsonResponse({"error": "Unable to process transcript. Please ensure it is an official, unmodified document."}, status=500)
+            return JsonResponse(
+                {
+                    "error": "Unable to process transcript. Please ensure it is an official, unmodified document."
+                },
+                status=500,
+            )
 
+
+# class ToggleFLRExemptionView(LoginRequiredMixin, View):
+    """Admin override: toggle whether the student is eligible for the foreign language requirement."""
+
+    # def post(self, request, student_number, *args, **kwargs):
+    #     profile = get_object_or_404(StudentProfile, student_number=student_number)
+    #     profile.flr_exempt_verified = not profile.flr_exempt_verified
+    #     profile.save(update_fields=["flr_exempt_verified"])
+    #     return redirect("student_detail", student_number=student_number)
 
 class ToggleFLRExemptionView(LoginRequiredMixin, View):
-    """Admin override: toggle whether the student is eligible for the foreign language requirement."""
+    """Admin override: toggle FLR exemption and immediately re-evaluate the student."""
 
     def post(self, request, student_number, *args, **kwargs):
         profile = get_object_or_404(StudentProfile, student_number=student_number)
+
+        # 1. Flip the flag
         profile.flr_exempt_verified = not profile.flr_exempt_verified
         profile.save(update_fields=["flr_exempt_verified"])
+
+        # 2. Re-evaluate if we have stored transcript text
+        if not profile.raw_transcript_text:
+            # No transcript on file — just redirect, old audit stays
+            return redirect("student_detail", student_number=student_number)
+
+        try:
+            detected_dtype = identify_doc_type(profile.raw_transcript_text)
+            students = parse_text(profile.raw_transcript_text, dtype=detected_dtype)
+
+            # Find this specific student in the parsed results
+            student = next(
+                (s for s in students if str(s.student_number) == str(student_number)),
+                None,
+            )
+            if not student:
+                return redirect("student_detail", student_number=student_number)
+
+            # Build virtual catalog (same logic as UploadGridView)
+            catalog_courses = list(load_catalog_courses())
+            existing_codes = {c.code for c in catalog_courses}
+            for term in student.terms:
+                for sc in term.courses:
+                    if sc.course_code not in existing_codes:
+                        catalog_courses.append(Course(
+                            subject=sc.subject,
+                            number=sc.number,
+                            title=sc.title,
+                            credits=sc.credits,
+                            code=sc.course_code,
+                            level=sc.level,
+                        ))
+                        existing_codes.add(sc.course_code)
+
+            evaluator = RequirementEvaluator(courses=catalog_courses)
+            degree = Degree.from_student_data(student)
+            result = evaluator.evaluate_degree(
+                student, degree, flr_override=profile.flr_exempt_verified
+            )
+
+            can_graduate = len(result.unmet_requirements) == 0
+            prog_name = student.programme.programme if student.programme else ""
+            major_name = student.programme.major if student.programme else ""
+
+            with transaction.atomic():
+                audit = AuditRecord.objects.create(
+                    student=profile,
+                    evaluated_programme=prog_name,
+                    evaluated_major=major_name,
+                    can_graduate=can_graduate,
+                    total_credits_earned=result.total_credits_earned,
+                    total_credits_required=result.total_credits_required,
+                    overall_progress=result.overall_progress,
+                    unmet_requirements_json=result.unmet_requirements,
+                    next_steps_json=result.next_steps,
+                )
+                for major in result.major_results:
+                    for b_result in major.bucket_results:
+                        save_bucket_to_db(audit, major.component_name, b_result, student)
+                for g_result in result.general_requirements:
+                    save_bucket_to_db(audit, "General Requirements", g_result, student)
+
+        except Exception as e:
+            logger.error(f"FLR re-evaluation failed for {student_number}: {e}", exc_info=True)
+            # Don't crash — the flag was already saved, just skip re-audit
+
         return redirect("student_detail", student_number=student_number)
     
-##Report views 
+
+
+    
+# --- REPORT VIEWS ---
+
 
 class ReportView(LoginRequiredMixin, View):
     def get(self, request):
@@ -674,4 +887,324 @@ class StudentReportDataView(LoginRequiredMixin, View):
                 "unmet_requirements": audit.unmet_requirements_json,
                 "next_steps": audit.next_steps_json,
             }
+        )
+
+
+
+
+# class ReportStudentsView(LoginRequiredMixin, View):
+#     def get(self, request):
+#         profiles = StudentProfile.objects.prefetch_related(
+#             Prefetch("audits", queryset=AuditRecord.objects.order_by("-audit_date"))
+#         ).order_by("name")
+
+#         data = []
+#         for s in profiles:
+#             latest_audit = s.audits.first()
+#             data.append(
+#                 {
+#                     "student_number": s.student_number,
+#                     "name": s.name,
+#                     "programme": s.programme,
+#                     "major": s.major,
+#                     "gpa": s.overall_gpa,
+#                     "can_graduate": (
+#                         latest_audit.can_graduate if latest_audit else False
+#                     ),
+#                     "credits_earned": (
+#                         latest_audit.total_credits_earned if latest_audit else 0
+#                     ),
+#                     "credits_required": (
+#                         latest_audit.total_credits_required if latest_audit else 0
+#                     ),
+#                 }
+#             )
+
+#         return JsonResponse({"students": data})
+
+
+# --- TRANSCRIPT VIEWS (NO DATABASE) ---
+
+
+def build_bucket_dict(component_name, b_result, student):
+    """
+    No-DB equivalent of save_bucket_to_db.
+    Mirrors the BucketResult model fields as a plain dict so the
+    student_details.html template can consume it without any DB reads.
+    """
+    completed_courses = []
+    courses_needed = []
+    is_all_req = False
+
+    for rule in b_result.rule_results:
+        if rule.requirement_type == "all_credits_from":
+            is_all_req = True
+        courses_needed.extend(rule.courses_needed)
+        for code in rule.courses_used:
+            sc = _find_course(student, code)
+            if sc:
+                completed_courses.append(
+                    {
+                        "code": sc.course_code,
+                        "grade": sc.grade,
+                        "credits": sc.credits,
+                    }
+                )
+
+    return {
+        "component_name": component_name,
+        "bucket_name": b_result.bucket_name,
+        "is_met": b_result.is_met,
+        "credits_earned": b_result.credits_earned,
+        "credits_required": b_result.credits_required,
+        "is_all_required": is_all_req,
+        "courses_completed_json": completed_courses,
+        "courses_needed_json": courses_needed,
+    }
+
+
+class TranscriptGridView(LoginRequiredMixin, View):
+    """
+    Upload and evaluate a student grid or transcript without persisting
+    anything to the database. Results are stored in the session only.
+    """
+
+    template_name = "upload_transcript.html"
+
+    MAX_UPLOAD_SIZE = 50 * 1024 * 1024  # 50 MB
+    MAX_BATCH_SIZE = 300
+
+    def get(self, request, *args, **kwargs):
+        last_results = request.session.get("last_results", [])
+        last_summary = request.session.get("last_summary", {})
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "last_results": last_results,
+                "last_summary": last_summary,
+            },
+        )
+
+    def post(self, request, *args, **kwargs):
+        uploaded_file = request.FILES.get("file")
+        if not uploaded_file:
+            return JsonResponse({"error": "No file uploaded"}, status=400)
+
+        if uploaded_file.size > self.MAX_UPLOAD_SIZE:
+            return JsonResponse(
+                {
+                    "error": "File size exceeds the 50 MB limit. Please upload a smaller document."
+                },
+                status=400,
+            )
+
+        try:
+            filename = uploaded_file.name.lower()
+            file_bytes = uploaded_file.read()
+            raw_text = ""
+
+            # 1. ROUTING
+            if filename.endswith(".pdf"):
+                if not file_bytes.startswith(b"%PDF"):
+                    return JsonResponse(
+                        {
+                            "error": "Invalid file format. The uploaded file is not a valid PDF document."
+                        },
+                        status=400,
+                    )
+
+                pdf_io = io.BytesIO(file_bytes)
+                is_transcript = False
+
+                with pdfplumber.open(pdf_io) as pdf:
+                    if not pdf.pages:
+                        return JsonResponse(
+                            {"error": "The uploaded PDF contains no readable pages."},
+                            status=400,
+                        )
+                    first_page_text = pdf.pages[0].extract_text() or ""
+                    if "UNOFFICIAL TRANSCRIPT" in first_page_text:
+                        is_transcript = True
+
+                pdf_io.seek(0)
+                raw_text = (
+                    extract_text_from_transcript_pdf(pdf_io)
+                    if is_transcript
+                    else extract_text_from_grid_pdf(pdf_io)
+                )
+
+            elif filename.endswith(".txt"):
+                try:
+                    raw_text = file_bytes.decode("utf-8")
+                except UnicodeDecodeError:
+                    return JsonResponse(
+                        {
+                            "error": "Text file must be UTF-8 encoded. If using Windows, save as UTF-8."
+                        },
+                        status=400,
+                    )
+            else:
+                return JsonResponse(
+                    {
+                        "error": "Unsupported file type. Please upload a .pdf or .txt file."
+                    },
+                    status=400,
+                )
+
+            # 2. VALIDATION
+            if not is_valid_student_text(raw_text):
+                return JsonResponse(
+                    {
+                        "error": "The uploaded file appears to be redacted or is missing critical student identification data (Student Number, Name). Please upload an unredacted PDF or a formatted TXT file."
+                    },
+                    status=400,
+                )
+
+            # 3. PARSING
+            try:
+                detected_dtype = identify_doc_type(raw_text)
+            except ValueError as e:
+                return JsonResponse({"error": str(e)}, status=400)
+
+            students = parse_text(raw_text, dtype=detected_dtype)
+
+            if len(students) > self.MAX_BATCH_SIZE:
+                return JsonResponse(
+                    {
+                        "error": f"File contains {len(students)} students. The maximum allowed per upload is {self.MAX_BATCH_SIZE}. Please split the file and try again."
+                    },
+                    status=400,
+                )
+
+            # 4. VIRTUAL CATALOG INJECTION
+            catalog_courses = list(load_catalog_courses())
+            existing_codes = {c.code for c in catalog_courses}
+
+            for student in students:
+                for term in student.terms:
+                    for sc in term.courses:
+                        if sc.course_code not in existing_codes:
+                            virtual_course = Course(
+                                subject=sc.subject,
+                                number=sc.number,
+                                title=sc.title,
+                                credits=sc.credits,
+                                code=sc.course_code,
+                                level=sc.level,
+                            )
+                            catalog_courses.append(virtual_course)
+                            existing_codes.add(sc.course_code)
+
+            # 5. EVALUATION
+            evaluator = RequirementEvaluator(courses=catalog_courses)
+            results = []
+            preview_students = {}
+            can_graduate_count = 0
+            cannot_graduate_count = 0
+
+            for student in students:
+                degree = Degree.from_student_data(student)
+                result = evaluator.evaluate_degree(student, degree)
+
+                can_graduate = len(result.unmet_requirements) == 0
+                if can_graduate:
+                    can_graduate_count += 1
+                else:
+                    cannot_graduate_count += 1
+
+                prog_name = student.programme.programme if student.programme else ""
+                major_name = student.programme.major if student.programme else ""
+
+                buckets = []
+                for major in result.major_results:
+                    for b_result in major.bucket_results:
+                        buckets.append(
+                            build_bucket_dict(major.component_name, b_result, student)
+                        )
+                for g_result in result.general_requirements:
+                    buckets.append(
+                        build_bucket_dict("General Requirements", g_result, student)
+                    )
+
+                # Full student record stored in session for the detail view
+                preview_students[str(student.student_number)] = {
+                    "student_number": student.student_number,
+                    "name": student.name,
+                    "overall_gpa": student.overall_gpa,
+                    "audit": {
+                        "evaluated_programme": prog_name,
+                        "evaluated_major": major_name,
+                        "can_graduate": can_graduate,
+                        "total_credits_earned": result.total_credits_earned,
+                        "total_credits_required": result.total_credits_required,
+                        "unmet_requirements_json": result.unmet_requirements,
+                        "next_steps_json": result.next_steps,
+                        "bucket_results": buckets,
+                    },
+                }
+
+                student_dict = build_student_result_dict(
+                    student.student_number,
+                    student.name,
+                    prog_name,
+                    major_name,
+                    student.overall_gpa,
+                    can_graduate,
+                )
+                student_dict["detail_url"] = (
+                    f"/performance/transcript/{student.student_number}/"
+                )
+                student_dict["unmet_requirements"] = result.unmet_requirements
+                results.append(student_dict)
+
+            summary = {
+                "total_students": len(students),
+                "can_graduate": can_graduate_count,
+                "cannot_graduate": cannot_graduate_count,
+            }
+
+            # 6. SESSION PERSISTENCE (no DB writes)
+            request.session["last_uploaded_text"] = raw_text
+            request.session["last_results"] = results
+            request.session["last_summary"] = summary
+            request.session["preview_students"] = preview_students
+
+            return JsonResponse({"summary": summary, "results": results})
+
+        except Exception as e:
+            logger.error("CRITICAL PARSE ERROR: %s", str(e), exc_info=True)
+            return JsonResponse(
+                {
+                    "error": "An unexpected system error occurred while processing the document. Please ensure the file is a valid format."
+                },
+                status=500,
+            )
+
+
+class TranscriptStudentDetailView(LoginRequiredMixin, View):
+    """
+    Renders the student detail page using session data only.
+    No StudentProfile, AuditRecord, or BucketResult DB reads.
+    """
+
+    template_name = "student_details.html"
+
+    def get(self, request, student_number, *args, **kwargs):
+        preview_students = request.session.get("preview_students", {})
+        student_data = preview_students.get(str(student_number))
+
+        if not student_data:
+            # Session has expired or user navigated here directly
+            return redirect("transcript_grid")
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "student": student_data,
+                "audit": student_data["audit"],
+                "bucket_results": student_data["audit"]["bucket_results"],
+            },
         )

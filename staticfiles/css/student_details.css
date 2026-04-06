@@ -1,67 +1,441 @@
-body {
-    font-family: Arial, sans-serif;
-    background: #f9f9f9;
-    margin: 0;
-    padding: 20px;
-}
-.container {
-    max-width: 900px;
-    margin: auto;
-}
-.title {
-    margin-bottom: 20px;
-    color: #2f855a;
-}
-.card {
-    background: #fff;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+:root {
+    /* ================ COLORS ================ */
+    --clr-primary: #2BA384;
+
+    /* Font Colors */
+    --text-primary: #111827;
+    --text-secondary: #718096;
+    --text-tertiary: #fff;
+
+    --clr-card-background: #fff;
+    --clr-border: #E2E8F0;
+
+    --body-bg: #f5f5f5;
+    --icon-bg: #e5f1ed;
+
+    /* ============ FONT FAMILY ============ */
+    --ff-base: Arial, Helvetica, sans-serif;
+    --ff-heading: "Space Grotesk", sans-serif;
+
+    /* ============ FONT SIZES ============ */
+    --fs-3xs: 0.625rem;  /* 10px */
+    --fs-2xs: 0.75rem;   /* 12px */
+    --fs-xs: 0.875rem;   /* 14px */
+    --fs-sm: 1rem;       /* 16px */
+    --fs-md: 1.125rem;   /* 18px */
+    --fs-lg: 1.25rem;    /* 20px */
+    --fs-xl: 1.5rem;     /* 24px */
+    --fs-2xl: 1.875rem;  /* 30px */
+    --fs-3xl: 2.25rem;   /* 36px */
+    --fs-4xl: 3rem;      /* 48px */
+
+    /* ============ FONT WEIGHTS ============ */
+    --fw-thin: 100;
+    --fw-extralight: 200;
+    --fw-light: 300;
+    --fw-regular: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    --fw-black: 800;
+
+    /* ============ SPACING ============ */
+    --space-xs: 0.25rem;   /* 4px */
+    --space-sm: 0.5rem;    /* 8px */
+    --space-md: 1rem;      /* 16px */
+    --space-lg: 2rem;      /* 32px */
+    --space-xl: 3rem;      /* 48px */
+    --space-2xl: 4rem;     /* 64px */
+    --space-3xl: 5rem;     /* 80px */
+
+    /* ============ BORDER RADIUS ============ */
+    --radius-sm: 0.25rem;  /* 4px */
+    --radius-md: 0.5rem;   /* 8px */
+    --radius-lg: 0.75rem;  /* 12px */
+    --radius-xl: 1rem;     /* 16px */
 }
 
-/* Bucket cards */
-.bucket-card {
-    background: #fff;
-    border: 2px solid #2f855a; /* green outline */
-    border-radius: 10px;
-    margin-bottom: 15px;
+/* ================= RESET ================= */
+
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
 }
-.bucket-header {
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+img, svg, label {
+    display: inline-block;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* ================= BODY ================= */
+body {
+    font-family: var(--ff-base);
+    background-color: var(--body-bg);
+    min-height: 100vh;
+}
+
+/* ================= MAIN ================= */
+main {
+    padding: 2rem 1rem;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* ============ PAGE ACTIONS ============ */
+.home-hero {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 15px;
-    cursor: pointer;
-    font-weight: bold;
-    user-select: none;
 }
 
-.bucket-arrow {
+.home-hero a {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--text-secondary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    padding: var(--space-sm) 0;
+    cursor: pointer;
+}
+
+.home-hero a img {
+    width: 20px;
+}
+
+.home-hero button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--text-tertiary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    background-color: var(--clr-primary);
+    border-radius: var(--radius-md);
+    border: none;
+    padding: var(--space-sm) var(--space-md);
+    cursor: pointer;
+}
+
+.home-hero button img {
+    width: 20px;
+}
+
+/* ================ GENERAL ================ */
+h1 {
+    font-size: var(--fs-2xl);
+    color: var(--text-primary);
+    font-weight: var(--fw-bold);
+    line-height: 2.25rem;
+    margin-top: var(--space-md);
+}
+
+section {
+    margin-top: var(--space-md);
+    width: 100%;
+}
+
+/* ============ STUDENT OVERVIEW ============ */
+.student-info {
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    background-color: var(--clr-card-background);
+}
+
+.student-info h2 {
+    color: var(--text-secondary);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-semibold);
+    line-height: 1rem;
+    letter-spacing: .025em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-md);
+}
+
+.student-details-container {
+    display: grid;
+    grid-template-columns: repeat(6, max-content);
+    gap: var(--space-md);
+    justify-content: space-between;
+}
+
+.student-details-container .app-card h4 {
+    color: var(--text-secondary);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-medium);
+    line-height: 1rem;
+    margin-bottom: var(--space-xs);
+}
+
+.student-details-container .app-card p {
+    color: var(--text-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    line-height: 1rem;
+    margin-bottom: var(--space-xs);
+}
+
+.student-details-container .app-card:nth-child(6) p {
+    color: #FF4D4D;
+}
+
+/* ============ BUCKETS TOGGLE BUTTON ============ */
+.bucket-toggle {
+    appearance: none;
+    border: none;
+    background: none;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-family: var(--ff-heading);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    background-color: var(--clr-card-background);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-lg);
+    text-align: left;
+    padding: var(--space-md);
+    margin-top: var(--space-md);
+}
+
+.bucket-toggle:focus {
+    background-color: var(--body-bg);
+}
+
+.bucket-toggle::after {
+    content: '';
+    position: absolute;
+    top: 49%;
+    right: var(--space-md);
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid var(--text-primary);
+    border-bottom: 2px solid var(--text-primary);
+    transform: translateY(-50%) rotate(45deg);
     transition: transform 0.3s ease;
 }
-.bucket-arrow.open {
-    transform: rotate(90deg);
-}
-.bucket-body {
-    display: none;
-    padding: 10px 15px 15px 15px;
-    border-top: 1px solid #e0e0e0;
+
+.bucket.is-open .bucket-toggle::after {
+    transform: translateY(-50%) rotate(-135deg);
 }
 
-.course {
-    padding: 5px 0;
-    border-bottom: 1px solid #eee;
+.bucket.is-open .bucket-toggle {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
-.course:last-child {
-    border-bottom: none;
+
+/* ============ BUCKET HEADER SPAN ============ */
+.bucket-toggle span {
+    color: var(--clr-primary);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-bold);
+    background-color: rgba(43, 161, 126, 0.1);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xs) var(--space-sm);
+    margin-left: var(--space-md);
 }
-.completed {
-    color: green;
+
+/* ============ BUCKET CONTENT ============ */
+.bucket-content {
+    overflow: hidden;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    padding: 0 var(--space-md) 0 var(--space-md);
+    max-height: 0;
+    transition: max-height 0.3s ease, padding-bottom 0.3s ease;
+    display: flow-root;
 }
-.missing {
-    color: red;
+
+.bucket-heading {
+    display: flex;
+    align-items: center;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    gap: var(--space-xs);
+    margin: var(--space-md) 0;
 }
-.courses-needed {
-    font-style: italic;
+
+.bucket-heading .heading-icon {
+    width: 20px;
+    margin-bottom: 2px;
+}
+
+.bucket.is-open .bucket-content {
+    background-color: var(--clr-card-background);
+    border-left: 1px solid var(--clr-border);
+    border-right: 1px solid var(--clr-border);
+    border-bottom: 1px solid var(--clr-border);
+    padding-bottom: var(--space-md);
+}
+
+/* ============ CARDS INSIDE BUCKET ============ */
+.bucket-content h3 {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
+    margin: var(--space-md) 0;
+}
+
+.bucket-content .uncompleted,
+.bucket-content .completed {
+    margin-bottom: var(--space-md);
+}
+
+.completed, .uncompleted {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-sm);
+}
+
+.bucket-content .app-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--body-bg);
+    border: 1px solid var(--clr-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+}
+
+.bucket-content .app-card div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+}
+
+.bucket-content .course-code {
+    color: var(--text-primary);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+}
+
+.bucket-content .credits {
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-medium);
+    color: var(--text-secondary);
+}
+
+.bucket-content .grade {
+    color: rgba(43, 163, 132, 1);
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-bold);
+    background-color: #2ba38433;
+    border-radius: var(--radius-lg);
+    padding: var(--space-xs) var(--space-sm);
+}
+
+.bucket-content .req {
+    color: #f59f0a;
+    font-size: var(--fs-2xs);
+    font-weight: var(--fw-bold);
+    background-color: #f59f0a33;
+    border-radius: var(--radius-lg);
+    padding: var(--space-xs) var(--space-md);
+}
+
+/* ============ UNMET REQUIREMENTS & NEXT STEPS ============ */
+.unmet-container ul,
+.suggested-container ul {
+    padding: var(--space-sm) 0;
+}
+
+.unmet-container li,
+.suggested-container li {
+    padding: var(--space-sm);
+    list-style-type: disc;
+    list-style-position: outside;
+    margin-left: var(--space-md);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1024px) {
+    .student-details-container {
+        grid-template-columns: repeat(3, max-content);
+    }
+
+    .completed, .uncompleted {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .student-details-container {
+        grid-template-columns: repeat(2, max-content);
+    }
+
+    .completed, .uncompleted {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    .bucket-toggle span {
+        display: block;
+        width: fit-content;
+        margin-left: 0;
+        margin-top: var(--space-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    .student-details-container {
+        grid-template-columns: repeat(1, max-content);
+    }
 }
