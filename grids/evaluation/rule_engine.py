@@ -1,6 +1,5 @@
 # Degree requirement evaluation engine
 # Evaluates student progress against bucket and major requirements
-# from .equivalencies import get_equivalent_codes # Added
 
 from grids.parsing.grades import grade_to_quality_points, GRADE_SYNONYMS
 from grids.evaluation.equivalencies import get_equivalent_codes
@@ -9,6 +8,7 @@ from collections import defaultdict
 from pydantic import BaseModel, Field
 
 from ..models import Bucket, Major, Degree, StudentData, StudentCourse, Course
+from ..models.evaluation import BUCKETS
 from .filters import CourseFilter
 
 
@@ -39,6 +39,7 @@ class BucketResult(BaseModel):
     is_met: bool
     credits_earned: float
     credits_required: float
+    contributes_to_degree_gpa: bool = True
     rule_results: List[RequirementResult] = Field(default_factory=list)
     overall_progress: str
     # Exemption tracking (aggregated from rules)
@@ -211,6 +212,7 @@ def _evaluate_x_of(
     rule_data: Dict[str, Any],
     used_courses: Set[str],
     courses: List[Course],
+    flr_override: bool = False,
 ) -> RequirementResult:
     required_count = int(rule_data.get("x", 1))
     options = rule_data.get("options", [])
@@ -231,6 +233,13 @@ def _evaluate_x_of(
 
     for i, option in enumerate(options):
         option_name = option.get("name", f"Option {i + 1}")
+
+        # When the admin override is active the student is NOT eligible for the
+        # foreign language requirement, so they must take FOUN 1101 instead of
+        # an FL substitute.  Skip the FL option entirely.
+        if flr_override and "foreign language" in option_name.lower():
+            continue
+
         min_credits = float(option.get("min_credits", 0.0))
 
         if "list" in option:
@@ -296,6 +305,21 @@ def _evaluate_x_of(
     return result
 
 
+def _get_admit_year(student: StudentData) -> Optional[int]:
+    """Extract the admit year from student's programme data"""
+    if not student.programme or not student.programme.admit_term:
+        return None
+
+    admit_term = student.programme.admit_term
+    # Admit term format is like "2023/2024 Semester I"
+    # Extract the first year
+    try:
+        year_str = admit_term.split('/')[0]
+        return int(year_str)
+    except (ValueError, IndexError):
+        return None
+
+
 def _calculate_gpa(courses: List[StudentCourse]) -> float:
     """
     Calculate GPA strictly using the UWI grading scheme established in grades.py.
@@ -358,6 +382,86 @@ def _find_course(student: StudentData, course_code: str) -> Optional[StudentCour
         if course.course_code == course_code:
             return course
     return None
+
+
+def _evaluate_foreign_language_requirement(student: StudentData, rule_data: Dict[str, Any], used_courses: Set[str], courses: List[Course], flr_override: bool = False) -> RequirementResult:
+    """Evaluate foreign language requirement.
+
+    By default every student admitted 2023+ is expected to complete an approved
+    foreign-language course.  If an admin has reviewed the student's lower-level
+    records and determined they are NOT eligible for the FLR (flr_override=True),
+    the requirement is waived and the student must instead take FOUN 1101 in the
+    Foundation bucket.
+    """
+    result = RequirementResult(
+        requirement_type="foreign_language_requirement",
+        requirement_name=rule_data.get('description', 'Foreign Language Requirement'),
+        is_met=False
+    )
+
+    # Check if student was admitted in 2023 or later, otherwise ignore this requirement
+    admit_year = _get_admit_year(student)
+    if admit_year is not None and admit_year < 2023:
+        result.is_met = True
+        result.details = f"Requirement does not apply (admit year: {admit_year})"
+        result.progress = "N/A"
+        return result
+
+    # Admin override: student is NOT eligible for FLR
+    if flr_override:
+        result.is_met = True
+        result.details = "Student not eligible for foreign language requirement (verified by admin)"
+        result.progress = "Exempt"
+        return result
+
+    # Get all passed courses (including EX exemptions)
+    passed_courses = _get_effective_passed_courses(student)
+
+    # Resolve approved courses from the rule's JSON data.
+    # Every FLR bucket in buckets.json defines its own approved_courses list.
+    # Hardcoded fallback only as a safety net for malformed bucket data.
+    approved_courses = set(rule_data.get('approved_courses', []))
+    if not approved_courses:
+        approved_courses = {'CHIN 1007', 'FREN 1009', 'JAPA 1007', 'SPAN 1007', 'COCR 1052'}
+
+    # Single pass: classify FL courses and accumulate credits in one loop
+    # Only specific approved courses satisfy the FLR
+    total_credits = 0.0
+    courses_used = []
+    exemptions = []
+
+    for course in passed_courses:
+        if course.course_code not in approved_courses:
+            continue
+        if course.grade.upper() == "EX":
+            exemptions.append(course.course_code)
+        else:
+            courses_used.append(course.course_code)
+            total_credits += course.credits
+
+    has_any_foreign_language = bool(courses_used) or bool(exemptions)
+
+    # Track exemptions separately
+    result.exemptions_without_credits = exemptions
+    result.exemption_mappings = [{"course": code, "reason": "Foreign Language Exemption"} for code in exemptions]
+
+    result.is_met = has_any_foreign_language
+    result.courses_used = courses_used
+    result.credits_earned = total_credits
+    result.credits_required = rule_data.get('credits', 3.0)
+
+    if has_any_foreign_language:
+        if exemptions:
+            result.progress = f"Exempted ({len(exemptions)} EX course(s))"
+            result.details = f"Exempted from foreign language requirement via {len(exemptions)} EX course(s)"
+        else:
+            result.progress = f"{total_credits:.1f}/{result.credits_required:.1f} credits"
+            result.details = f"Completed {len(courses_used)} foreign language course(s)"
+    else:
+        result.progress = f"0/{result.credits_required:.1f} credits"
+        result.details = "No foreign language courses completed"
+
+    return result
 
 
 def _calculate_applicable_credits(result) -> float:
@@ -504,13 +608,14 @@ class RequirementEvaluator:
         self.courses = courses
 
     def evaluate_degree(
-        self, student: StudentData, degree: Degree
+        self, student: StudentData, degree: Degree, flr_override: bool = False
     ) -> DegreeEvaluationResult:
         # Note: Course sorting by credits (descending) is now handled by the
         # all_passed_courses_best property in StudentData to ensure higher-credit
         # courses are matched first.
 
-
+        # Store override flag so rule evaluators can access it
+        self._flr_override = flr_override
 
         result = DegreeEvaluationResult(
             is_complete=False,
@@ -522,13 +627,15 @@ class RequirementEvaluator:
 
         used_courses = set()
 
-        for major in degree.majors:
-            major_result = self._evaluate_major(student, major, used_courses)
-            result.major_results.append(major_result)
-
+        # Evaluate general requirements (FLR) first so that foreign-language
+        # courses are added to used_courses before major/elective buckets run.
         for bucket in degree.general_requirements:
             bucket_result = self._evaluate_bucket(student, bucket, used_courses)
             result.general_requirements.append(bucket_result)
+
+        for major in degree.majors:
+            major_result = self._evaluate_major(student, major, used_courses)
+            result.major_results.append(major_result)
 
         # Map EX exemptions to replacement courses after all buckets evaluated
         all_bucket_results = []
@@ -578,12 +685,27 @@ class RequirementEvaluator:
             is_met=False,
             credits_earned=0.0,
             credits_required=bucket.credits_required,
+            contributes_to_degree_gpa=bucket.contributes_to_degree_gpa,
             overall_progress="",
         )
 
         for rule in bucket.rules:
             rule_result = self._evaluate_rule(student, rule, used_courses)
             result.rule_results.append(rule_result)
+
+            # Foreign language requirement is a pass/fail check, not credit-based.
+            # FL courses are NOT locked into used_courses here — they will be
+            # consumed by the Foundation x_of bucket where they actually contribute
+            # credits.  This prevents the "double-consumption" bug where the FLR
+            # bucket would steal the course before the Foundation bucket runs.
+            # We also clear courses_used so the UI doesn't display them twice
+            # (once in the FLR gate and again in the Foundation bucket).
+            if rule_result.requirement_type == "foreign_language_requirement":
+                result.credits_earned = max(
+                    result.credits_earned, rule_result.credits_earned or 0.0
+                )
+                rule_result.courses_used = []
+                continue
 
             # Track exactly what was consumed to prevent phantom frontend renders
             actually_consumed_for_rule = []
@@ -609,11 +731,19 @@ class RequirementEvaluator:
             rule_result.courses_used = actually_consumed_for_rule
 
         # Check if bucket is satisfied
-        result.is_met = result.credits_earned >= bucket.credits_required and all(
-            r.is_met
-            for r in result.rule_results
-            if r.requirement_type == "all_credits_from"
-        )
+        fl_rules = [
+            r for r in result.rule_results
+            if r.requirement_type == "foreign_language_requirement"
+        ]
+        if fl_rules:
+            # Foreign language bucket: use the rule's own pass/fail result
+            result.is_met = all(r.is_met for r in fl_rules)
+        else:
+            result.is_met = result.credits_earned >= bucket.credits_required and all(
+                r.is_met
+                for r in result.rule_results
+                if r.requirement_type == "all_credits_from"
+            )
 
         result.overall_progress = (
             f"{result.credits_earned:.1f}/{bucket.credits_required:.1f} credits"
@@ -635,7 +765,9 @@ class RequirementEvaluator:
                 student, rule_data, used_courses, self.courses
             )
         elif rule_type == "x_of":
-            return _evaluate_x_of(student, rule_data, used_courses, self.courses)
+            return _evaluate_x_of(student, rule_data, used_courses, self.courses, flr_override=self._flr_override)
+        elif rule_type == 'foreign_language_requirement':
+            return _evaluate_foreign_language_requirement(student, rule_data, used_courses, self.courses, flr_override=self._flr_override)
         raise ValueError(f"Unknown rule type: {rule_type}")
 
 

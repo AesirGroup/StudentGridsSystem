@@ -10,6 +10,10 @@ class StudentProfile(models.Model):
     major = models.CharField(max_length=255, blank=True, default="")
     overall_gpa = models.FloatField(null=True, blank=True)
 
+    # Human-in-the-Loop override: an advisor has verified the student holds
+    # a CSEC/CAPE foreign-language qualification and is exempt from the FLR.
+    flr_exempt_verified = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -61,6 +65,10 @@ class BucketResult(models.Model):
     # Store the exact courses they took, and what they still need
     courses_completed_json = models.JSONField(default=list)
     courses_needed_json = models.JSONField(default=list)
+
+    # Maps EX (exemption without credit) courses to their replacement courses
+    # e.g. [{"exempted_course": "MATH 1115", "replacement_course": "JAPA 1007", "credits": 3.0}]
+    exemption_mappings_json = models.JSONField(default=list)
 
     def __str__(self):
         return f"{self.bucket_name}: {'MET' if self.is_met else 'UNMET'}"

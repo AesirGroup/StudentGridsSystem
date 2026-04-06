@@ -58,6 +58,17 @@ def _extract_student_admit_terms(text: str) -> List[str]:
     return admit_terms
 
 
+def _looks_like_term(s: str) -> bool:
+    """Check whether a string looks like an academic term heading."""
+    return (
+        bool(re.search(r"\b20\d{2}/20\d{2}\s+Semester\s+[IV]+\b", s, re.IGNORECASE))
+        or bool(re.search(r"\b20\d{2}/20\d{2}\s+Summer\b", s, re.IGNORECASE))
+        or bool(re.search(r"\b20\d{4}\b", s))
+        or ("Semester" in s)
+        or ("Summer" in s)
+    )
+
+
 def _extract_programme_levels(text: str) -> List[str]:
     _known_levels = [
         "Undergraduate",
@@ -71,17 +82,6 @@ def _extract_programme_levels(text: str) -> List[str]:
     _LEVEL_PATTERN = re.compile(
         r"\b(" + "|".join(map(re.escape, _known_levels)) + r")\b", re.IGNORECASE
     )
-
-    def _looks_like_term(s: str) -> bool:
-        return (
-            bool(re.search(r"\b20\d{2}/20\d{2}\s+Semester\s+[IV]+\b", s, re.IGNORECASE))
-            or bool(re.search(r"\b20\d{2}/20\d{2}\s+Summer\b", s, re.IGNORECASE))
-            or bool(
-                re.search(r"\b20\d{4}\b", s)
-            )  # occasional OCR artifacts like a long year chunk
-            or ("Semester" in s)
-            or ("Summer" in s)
-        )
 
     results: List[str] = []
     if not text or not text.strip():
@@ -120,15 +120,6 @@ def _extract_programmes(text: str) -> List[str]:
 
     t = text.replace("\r\n", "\n").replace("\r", "\n")
 
-    def _looks_like_term(s: str) -> bool:
-        return (
-            bool(re.search(r"\b20\d{2}/20\d{2}\s+Semester\s+[IV]+\b", s, re.IGNORECASE))
-            or bool(re.search(r"\b20\d{2}/20\d{2}\s+Summer\b", s, re.IGNORECASE))
-            or bool(re.search(r"\b20\d{4}\b", s))
-            or ("Semester" in s)
-            or ("Summer" in s)
-        )
-
     for cc_match in re.finditer(r"CURRENT\s+CURRICULUM", t, re.IGNORECASE):
         tail = t[cc_match.end() :]
         lines = [ln.strip() for ln in tail.split("\n")[:12] if ln.strip()]
@@ -162,15 +153,6 @@ def _extract_faculties(text: str) -> List[str]:
         return results
 
     t = text.replace("\r\n", "\n").replace("\r", "\n")
-
-    def _looks_like_term(s: str) -> bool:
-        return (
-            bool(re.search(r"\b20\d{2}/20\d{2}\s+Semester\s+[IV]+\b", s, re.IGNORECASE))
-            or bool(re.search(r"\b20\d{2}/20\d{2}\s+Summer\b", s, re.IGNORECASE))
-            or bool(re.search(r"\b20\d{4}\b", s))
-            or ("Semester" in s)
-            or ("Summer" in s)
-        )
 
     for cc_match in re.finditer(r"CURRENT\s+CURRICULUM", t, re.IGNORECASE):
         tail = t[cc_match.end() :]
@@ -211,15 +193,6 @@ def _extract_departments(text: str) -> List[str]:
         return results
 
     t = text.replace("\r\n", "\n").replace("\r", "\n")
-
-    def _looks_like_term(s: str) -> bool:
-        return (
-            bool(re.search(r"\b20\d{2}/20\d{2}\s+Semester\s+[IV]+\b", s, re.IGNORECASE))
-            or bool(re.search(r"\b20\d{2}/20\d{2}\s+Summer\b", s, re.IGNORECASE))
-            or bool(re.search(r"\b20\d{4}\b", s))
-            or ("Semester" in s)
-            or ("Summer" in s)
-        )
 
     for cc_match in re.finditer(r"CURRENT\s+CURRICULUM", t, re.IGNORECASE):
         tail = t[cc_match.end() :]
@@ -265,14 +238,6 @@ def _extract_majors(text: str) -> List[str]:
         return []
 
     t = text.replace("\r\n", "\n").replace("\r", "\n")
-
-    def _looks_like_term(s: str) -> bool:
-        return (
-            bool(re.search(r"\b20\d{2}/20\d{2}\s+Semester\s+[IV]+\b", s, re.IGNORECASE))
-            or bool(re.search(r"\b20\d{2}/20\d{2}\s+Summer\b", s, re.IGNORECASE))
-            or ("Semester" in s)
-            or ("Summer" in s)
-        )
 
     # patterns for skipping
     _level_pat = re.compile(
@@ -326,15 +291,6 @@ def _extract_degree_gpas(text: str) -> List[float]:
         return []
 
     t = text.replace("\r\n", "\n").replace("\r", "\n")
-
-    def _looks_like_term(s: str) -> bool:
-        return (
-            bool(re.search(r"\b20\d{2}/20\d{2}\s+Semester\s+[IV]+\b", s, re.IGNORECASE))
-            or bool(re.search(r"\b20\d{2}/20\d{2}\s+Summer\b", s, re.IGNORECASE))
-            or bool(re.search(r"\b20\d{4}\b", s))
-            or ("Semester" in s)
-            or ("Summer" in s)
-        )
 
     # Programme level keywords (to skip)
     _level_pat = re.compile(
@@ -451,14 +407,6 @@ def _extract_curriculum_blocks_data(text: str) -> List[Dict[str, Any]]:
         if ":" in line:
             return line.split(":", 1)[1].strip()
         return line.strip()
-
-    def _looks_like_term(s: str) -> bool:
-        return (
-            bool(re.search(r"\b20\d{2}/20\d{2}\s+Semester\s+[IV]+\b", s, re.IGNORECASE))
-            or bool(re.search(r"\b20\d{2}/20\d{2}\s+Summer\b", s, re.IGNORECASE))
-            or ("Semester" in s)
-            or ("Summer" in s)
-        )
 
     _level_pat = re.compile(
         r"(Undergraduate|Postgraduate|Graduate|Certificate|Diploma|MPhil|PhD)",

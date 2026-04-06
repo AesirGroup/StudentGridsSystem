@@ -121,6 +121,7 @@ def save_bucket_to_db(audit, component_name, b_result, student):
     """Extracted from post() to improve readability and testing"""
     completed_courses = []
     courses_needed = []
+    exemption_mappings = []
     is_all_req = False
 
     for rule in b_result.rule_results:
@@ -136,6 +137,11 @@ def save_bucket_to_db(audit, component_name, b_result, student):
                     "credits": sc.credits,
                 })
 
+        # Collect exemption mappings (EX course → replacement course)
+        for mapping in rule.exemption_mappings:
+            if "replacement_course" in mapping:
+                exemption_mappings.append(mapping)
+
     BucketResult.objects.create(
         audit=audit,
         component_name=component_name,
@@ -146,6 +152,7 @@ def save_bucket_to_db(audit, component_name, b_result, student):
         is_all_required=is_all_req,
         courses_completed_json=completed_courses,
         courses_needed_json=courses_needed,
+        exemption_mappings_json=exemption_mappings,
     )
 
 
@@ -330,7 +337,18 @@ class UploadGridView(LoginRequiredMixin, View):
 
             for student in students:
                 degree = Degree.from_student_data(student)
-                result = evaluator.evaluate_degree(student, degree)
+
+                # Check if an advisor has previously verified the FLR exemption
+                flr_override = False
+                try:
+                    existing_profile = StudentProfile.objects.get(
+                        student_number=student.student_number
+                    )
+                    flr_override = existing_profile.flr_exempt_verified
+                except StudentProfile.DoesNotExist:
+                    pass
+
+                result = evaluator.evaluate_degree(student, degree, flr_override=flr_override)
 
                 can_graduate = len(result.unmet_requirements) == 0
                 if can_graduate:
@@ -537,3 +555,13 @@ class EphemeralEvaluationView(View):
             logger = logging.getLogger(__name__)
             logger.error(f"Stateless evaluation failed: {e}", exc_info=True)
             return JsonResponse({"error": "Unable to process transcript. Please ensure it is an official, unmodified document."}, status=500)
+
+
+class ToggleFLRExemptionView(LoginRequiredMixin, View):
+    """Admin override: toggle whether the student is eligible for the foreign language requirement."""
+
+    def post(self, request, student_number, *args, **kwargs):
+        profile = get_object_or_404(StudentProfile, student_number=student_number)
+        profile.flr_exempt_verified = not profile.flr_exempt_verified
+        profile.save(update_fields=["flr_exempt_verified"])
+        return redirect("student_detail", student_number=student_number)

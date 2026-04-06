@@ -24,6 +24,7 @@ class Bucket(BaseModel):
     id: str
     name: str
     credits_required: float
+    contributes_to_degree_gpa: bool = True
     description: Optional[str] = None
     rules: List[Any] = Field(default_factory=list)
 
@@ -31,6 +32,7 @@ class Bucket(BaseModel):
 class Major(BaseModel):
     id: str
     name: str
+    faculty: Optional[str] = None
     total_credits: float
     description: Optional[str] = None
     bucket_ids: List[str] = Field(default_factory=list)
@@ -102,13 +104,43 @@ def _load_majors(path: str) -> dict[Any, Major]:
     return {m['id']: Major(**m) for m in data['majors']}
 
 
+
+# ── Faculty name normalisation ───────────────────────────────
+# Transcript text may say "Science and Technology" while bucket IDs use "FST".
+_FACULTY_ALIASES: Dict[str, str] = {
+    "science and technology": "FST",
+    "fst": "FST",
+    "engineering": "ENG",
+    "eng": "ENG",
+    "humanities and education": "FHE",
+    "fhe": "FHE",
+    "food and agriculture": "FFA",
+    "ffa": "FFA",
+    "social sciences": "FSS",
+    "fss": "FSS",
+    "medical sciences": "MEDSCI",
+    "medsci": "MEDSCI",
+    "fms": "MEDSCI",
+    "law": "LAW",
+    "sport": "SPORT",
+}
+
+
+def _normalise_faculty(raw: str) -> Optional[str]:
+    """Map free-text faculty names to canonical bucket-ID suffixes."""
+    if not raw:
+        return None
+    key = raw.strip().lower()
+    return _FACULTY_ALIASES.get(key, raw.upper())
+
+
 # Define BASEDIR as the grids package data directory
 # BASEDIR = Path(__file__).parent.parent / 'data'
 
 # CHANGE: Safely anchors to the project root while maintaining the Pathlib object type
 BASEDIR = settings.BASE_DIR / 'grids' / 'data'
 
-# Try to load buckets and majors, but handle missing files gracefully
+# Try to load buckets, majors, and foreign languages, but handle missing files gracefully
 try:
     BUCKETS = _load_buckets(str(BASEDIR / 'buckets.json'))
     MAJORS = _load_majors(str(BASEDIR / 'majors.json'))
@@ -135,6 +167,23 @@ class Degree(BaseModel):
         for major in list(MAJORS.values()):
             if programme.major == major.name:
                 majors.append(major.model_copy(deep=True))
+
+        # ── Faculty-based general requirements ────────────────────
+        # Resolve the faculty from the matched major or the programme data.
+        faculty = None
+        if majors and majors[0].faculty:
+            faculty = majors[0].faculty
+        elif programme.faculty:
+            faculty = _normalise_faculty(programme.faculty)
+
+        # Look up the faculty-specific FLR bucket from buckets.json.
+        flr_bucket_id = f"FLR_{faculty}" if faculty else None
+        if flr_bucket_id and flr_bucket_id in BUCKETS:
+            general_requirements.append(BUCKETS[flr_bucket_id].model_copy(deep=True))
+        else:
+            # Fallback: use FST rules when faculty is unknown (preserves old behaviour)
+            if "FLR_FST" in BUCKETS:
+                general_requirements.append(BUCKETS["FLR_FST"].model_copy(deep=True))
 
         total_credits = 93
 

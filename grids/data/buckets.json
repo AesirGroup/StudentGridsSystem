@@ -4,12 +4,361 @@
       "id": "FOUNDATIONS",
       "name": "Foundation Courses",
       "credits_required": 9,
-      "description": "Core foundation courses required for all degrees",
+      "contributes_to_degree_gpa": false,
+      "description": "Legacy bucket kept for backwards compatibility. Use faculty-specific buckets for new evaluations.",
       "rules": [
         {
           "type": "all_credits_from",
           "description": "Complete all foundation courses",
           "list": ["FOUN 1101", "FOUN 1105", "FOUN 1301"]
+        }
+      ]
+    },
+
+    {
+      "id": "FOUNDATIONS_FST",
+      "name": "Foundation Courses (FST)",
+      "credits_required": 9,
+      "contributes_to_degree_gpa": false,
+      "description": "FST requires FOUN 1105, FOUN 1301, and either FOUN 1101 (if CSEC/CAPE FL held) or an approved FL course replacing FOUN 1101.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete mandatory foundation courses",
+          "list": ["FOUN 1105", "FOUN 1301"]
+        },
+        {
+          "type": "x_of",
+          "x": 1,
+          "description": "Complete FOUN 1101 OR an approved foreign language course",
+          "options": [
+            {
+              "name": "Caribbean Civilisation",
+              "list": ["FOUN 1101"]
+            },
+            {
+              "name": "Foreign Language Substitute",
+              "list": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"],
+              "min_credits": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FLR_FST",
+      "name": "Foreign Language Requirement (FST)",
+      "credits_required": 0,
+      "contributes_to_degree_gpa": false,
+      "description": "Pass/fail gate: student must have CSEC/CAPE FL, completed an approved FL course, or passed FOUN 1101 (heuristic proxy).",
+      "rules": [
+        {
+          "type": "foreign_language_requirement",
+          "description": "Foreign language requirement for FST students admitted 2023+",
+          "credits": 3.0,
+          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"]
+        }
+      ]
+    },
+
+    {
+      "id": "FOUNDATIONS_SPORT",
+      "name": "Foundation Courses (Sport - St. Augustine)",
+      "credits_required": 9,
+      "contributes_to_degree_gpa": true,
+      "description": "Sport (StA) requires FOUN 1101, FOUN 1105, and either FOUN 1210 (if CSEC/CAPE FL held) or an approved FL course replacing FOUN 1210.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete mandatory foundation courses",
+          "list": ["FOUN 1101", "FOUN 1105"]
+        },
+        {
+          "type": "x_of",
+          "x": 1,
+          "description": "Complete FOUN 1210 OR an approved foreign language course",
+          "options": [
+            {
+              "name": "Science, Medicine and Technology in Society",
+              "list": ["FOUN 1210"]
+            },
+            {
+              "name": "Foreign Language Substitute",
+              "list": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"],
+              "min_credits": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FLR_SPORT",
+      "name": "Foreign Language Requirement (Sport)",
+      "credits_required": 0,
+      "contributes_to_degree_gpa": false,
+      "description": "Pass/fail gate for Sport faculty students admitted 2022+.",
+      "rules": [
+        {
+          "type": "foreign_language_requirement",
+          "description": "Foreign language requirement for Sport students",
+          "credits": 3.0,
+          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"]
+        }
+      ]
+    },
+
+    {
+      "id": "FOUNDATIONS_FHE",
+      "name": "Foundation Courses (Humanities & Education)",
+      "credits_required": 12,
+      "contributes_to_degree_gpa": false,
+      "description": "FHE requires 12 credits of Foundation courses. FL course can substitute any one of FOUN 1101, 1210, or 1301.",
+      "rules": [
+        {
+          "type": "x_of",
+          "x": 1,
+          "description": "Complete English foundation (FOUN 1001 or FOUN 1106)",
+          "options": [
+            { "name": "English for Academic Purposes", "list": ["FOUN 1001"] },
+            { "name": "Academic English for Research", "list": ["FOUN 1106"] }
+          ]
+        },
+        {
+          "type": "x_of",
+          "x": 1,
+          "description": "Complete a discipline-specific writing course",
+          "options": [
+            { "name": "Writing about Literature", "list": ["FOUN 1104"] },
+            { "name": "Writing in Visual/Performing Arts", "list": ["FOUN 1107"] },
+            { "name": "Argument and Report Writing", "list": ["FOUN 1103"] },
+            { "name": "Scientific and Technical Writing", "list": ["FOUN 1105"] }
+          ]
+        },
+        {
+          "type": "x_of",
+          "x": 2,
+          "description": "Complete 2 of the following: FOUN 1101, FOUN 1210, FOUN 1301, or an approved FL course",
+          "options": [
+            { "name": "Caribbean Civilisation", "list": ["FOUN 1101"] },
+            { "name": "Science, Medicine and Technology", "list": ["FOUN 1210"] },
+            { "name": "Law, Governance, Economy and Society", "list": ["FOUN 1301"] },
+            {
+              "name": "Foreign Language Substitute",
+              "list": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"],
+              "min_credits": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FLR_FHE",
+      "name": "Foreign Language Requirement (Humanities & Education)",
+      "credits_required": 0,
+      "contributes_to_degree_gpa": false,
+      "description": "Pass/fail gate for FHE students admitted 2022+.",
+      "rules": [
+        {
+          "type": "foreign_language_requirement",
+          "description": "Foreign language requirement for FHE students",
+          "credits": 3.0,
+          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"]
+        }
+      ]
+    },
+
+    {
+      "id": "FOUNDATIONS_FFA",
+      "name": "Foundation Courses (Food & Agriculture)",
+      "credits_required": 6,
+      "contributes_to_degree_gpa": true,
+      "description": "FFA requires 6 credits: FOUN 1105 (or AGRI 1102) + FOUN 1101 or FOUN 1301. FL-exempt students must take FOUN 1301.",
+      "rules": [
+        {
+          "type": "x_of",
+          "x": 1,
+          "description": "Complete writing foundation (FOUN 1105 or AGRI 1102)",
+          "options": [
+            { "name": "Scientific and Technical Writing", "list": ["FOUN 1105"] },
+            { "name": "Critical Thinking (Agriculture)", "list": ["AGRI 1102"] }
+          ]
+        },
+        {
+          "type": "x_of",
+          "x": 1,
+          "description": "Complete FOUN 1101 or FOUN 1301",
+          "options": [
+            { "name": "Caribbean Civilisation", "list": ["FOUN 1101"] },
+            { "name": "Law, Governance, Economy and Society", "list": ["FOUN 1301"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FLR_FFA",
+      "name": "Foreign Language Requirement (Food & Agriculture)",
+      "credits_required": 0,
+      "contributes_to_degree_gpa": false,
+      "description": "FFA: student must complete an FL course or hold CSEC/CAPE exemption (exempt students take FOUN 1301 instead). No COCR 1052 accepted.",
+      "rules": [
+        {
+          "type": "foreign_language_requirement",
+          "description": "Foreign language requirement for FFA students",
+          "credits": 3.0,
+          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007"]
+        }
+      ]
+    },
+
+    {
+      "id": "FOUNDATIONS_FSS",
+      "name": "Foundation Courses (Social Sciences)",
+      "credits_required": 6,
+      "contributes_to_degree_gpa": true,
+      "description": "FSS requires 6 credits: English foundation + FOUN 1210 or FOUN 1101. FOUN 1301 does NOT count unless Dean approves.",
+      "rules": [
+        {
+          "type": "x_of",
+          "x": 1,
+          "description": "Complete English foundation (FOUN 1001 or FOUN 1106)",
+          "options": [
+            { "name": "English for Academic Purposes", "list": ["FOUN 1001"] },
+            { "name": "Academic English for Research", "list": ["FOUN 1106"] }
+          ]
+        },
+        {
+          "type": "x_of",
+          "x": 1,
+          "description": "Complete FOUN 1210 or FOUN 1101, or an approved FL course if non-exempt",
+          "options": [
+            { "name": "Science, Medicine and Technology", "list": ["FOUN 1210"] },
+            { "name": "Caribbean Civilisation", "list": ["FOUN 1101"] },
+            {
+              "name": "Foreign Language Substitute",
+              "list": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"],
+              "min_credits": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FLR_FSS",
+      "name": "Foreign Language Requirement (Social Sciences)",
+      "credits_required": 0,
+      "contributes_to_degree_gpa": false,
+      "description": "Pass/fail gate for FSS students admitted 2023+.",
+      "rules": [
+        {
+          "type": "foreign_language_requirement",
+          "description": "Foreign language requirement for FSS students",
+          "credits": 3.0,
+          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"]
+        }
+      ]
+    },
+
+    {
+      "id": "FOUNDATIONS_MEDSCI",
+      "name": "Foundation Courses (Medical Sciences)",
+      "credits_required": 9,
+      "contributes_to_degree_gpa": false,
+      "description": "Medical Sciences requires PECH 1001, PECH 1101, PECH 1102 (or programme-specific substitutions for Nursing/DVM).",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Medical Sciences foundation courses",
+          "list": ["PECH 1001", "PECH 1101", "PECH 1102"]
+        }
+      ]
+    },
+    {
+      "id": "FLR_MEDSCI",
+      "name": "Foreign Language Requirement (Medical Sciences)",
+      "credits_required": 0,
+      "contributes_to_degree_gpa": false,
+      "description": "Medical Sciences requires specifically SPAN 1013 (Spanish for Medical Sciences). Standard FL courses are NOT accepted.",
+      "rules": [
+        {
+          "type": "foreign_language_requirement",
+          "description": "Foreign language requirement for Medical Sciences students",
+          "credits": 3.0,
+          "approved_courses": ["SPAN 1013"]
+        }
+      ]
+    },
+
+    {
+      "id": "FOUNDATIONS_LAW",
+      "name": "Foundation Courses (Law)",
+      "credits_required": 9,
+      "contributes_to_degree_gpa": false,
+      "description": "Law requires FOUN 1210, FOUN 1101, and a Foundation English course.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete required Law foundation courses",
+          "list": ["FOUN 1210", "FOUN 1101"]
+        },
+        {
+          "type": "x_of",
+          "x": 1,
+          "description": "Complete Foundation English",
+          "options": [
+            { "name": "English for Academic Purposes", "list": ["FOUN 1001"] },
+            { "name": "Academic English for Research", "list": ["FOUN 1106"] },
+            { "name": "Argument and Report Writing", "list": ["FOUN 1103"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FLR_LAW",
+      "name": "Foreign Language Requirement (Law)",
+      "credits_required": 0,
+      "contributes_to_degree_gpa": false,
+      "description": "Pass/fail gate for Law students admitted 2022+.",
+      "rules": [
+        {
+          "type": "foreign_language_requirement",
+          "description": "Foreign language requirement for Law students",
+          "credits": 3.0,
+          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"]
+        }
+      ]
+    },
+
+    {
+      "id": "FOUNDATIONS_ENG",
+      "name": "Foundation Courses (Engineering)",
+      "credits_required": 3,
+      "contributes_to_degree_gpa": false,
+      "description": "Engineering treats FL as a standard Level 1 requirement, not a Foundation substitution. Foundation is minimal.",
+      "rules": [
+        {
+          "type": "x_of",
+          "x": 1,
+          "description": "Complete a foundation/out-of-department course",
+          "options": [
+            { "name": "Caribbean Civilisation", "list": ["FOUN 1101"] },
+            { "name": "Science, Medicine and Technology", "list": ["FOUN 1210"] },
+            { "name": "Law, Governance, Economy and Society", "list": ["FOUN 1301"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "FLR_ENG",
+      "name": "Foreign Language Requirement (Engineering)",
+      "credits_required": 0,
+      "contributes_to_degree_gpa": false,
+      "description": "Engineering: FL is a standard Level 1 credit requirement, not an XOR substitution.",
+      "rules": [
+        {
+          "type": "foreign_language_requirement",
+          "description": "Foreign language requirement for Engineering students",
+          "credits": 3.0,
+          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007"]
         }
       ]
     },
@@ -22,7 +371,7 @@
         {
           "type": "all_credits_from",
           "description": "Complete all Level 1 CS core courses",
-          "list": ["COMP 1600", "COMP 1601", "COMP 1602", "COMP 1603"]
+          "list": ["COMP 1600", "COMP 1601", "COMP 1602", "COMP 1604"]
         }
       ]
     },
