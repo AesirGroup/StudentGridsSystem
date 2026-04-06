@@ -330,7 +330,18 @@ class UploadGridView(LoginRequiredMixin, View):
 
             for student in students:
                 degree = Degree.from_student_data(student)
-                result = evaluator.evaluate_degree(student, degree)
+
+                # Check if an advisor has previously verified the FLR exemption
+                flr_override = False
+                try:
+                    existing_profile = StudentProfile.objects.get(
+                        student_number=student.student_number
+                    )
+                    flr_override = existing_profile.flr_exempt_verified
+                except StudentProfile.DoesNotExist:
+                    pass
+
+                result = evaluator.evaluate_degree(student, degree, flr_override=flr_override)
 
                 can_graduate = len(result.unmet_requirements) == 0
                 if can_graduate:
@@ -537,3 +548,13 @@ class EphemeralEvaluationView(View):
             logger = logging.getLogger(__name__)
             logger.error(f"Stateless evaluation failed: {e}", exc_info=True)
             return JsonResponse({"error": "Unable to process transcript. Please ensure it is an official, unmodified document."}, status=500)
+
+
+class ToggleFLRExemptionView(LoginRequiredMixin, View):
+    """Advisor override: toggle the CSEC/CAPE foreign-language exemption flag."""
+
+    def post(self, request, student_number, *args, **kwargs):
+        profile = get_object_or_404(StudentProfile, student_number=student_number)
+        profile.flr_exempt_verified = not profile.flr_exempt_verified
+        profile.save(update_fields=["flr_exempt_verified"])
+        return redirect("student_detail", student_number=student_number)

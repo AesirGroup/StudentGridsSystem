@@ -22,7 +22,7 @@
         {
           "type": "all_credits_from",
           "description": "Complete all Level 1 CS core courses",
-          "list": ["COMP 1600", "COMP 1601", "COMP 1602", "COMP 1603"]
+          "list": ["COMP 1600", "COMP 1601", "COMP 1602", "COMP 1604"]
         }
       ]
     },
