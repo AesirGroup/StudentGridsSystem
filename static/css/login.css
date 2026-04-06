@@ -1,21 +1,30 @@
 :root {
 
-    /* Main Color */
-    --clr-primary: #2BA384; 
+    /* ----- COLORS ----- */
+    --clr-primary: #2ba384;
+    --clr-border: #e2e8f0;
+    --clr-danger: #ff4d4d;
 
-    /* Font Colors */
+    --body-bg: #f5f5f5;
+    --card-bg: #ffffff;
+    --icon-bg: #e5f1ed;
+    
     --text-primary: #111827;
     --text-secondary: #718096;
+    --text-tertiary: #ffffff;
 
-    --clr-card-background: #fff;
-    --clr-border: #E2E8F0;
+    --clr-primary-light: rgba(43, 163, 132, 0.12);
+    --clr-primary-ring: rgba(43, 163, 132, 0.2);
+    --clr-danger-light: rgba(255, 77, 77, 0.12);
 
-    /* Font Family */
-    --ff-base: Arial, Helvetica, sans-serif;
+
+    /* ----- FONTS ----- */
+    /* --ff-base: Arial, Helvetica, sans-serif; */
     --ff-heading: "Space Grotesk", sans-serif;
+    --ff-base: "Space Grotesk", sans-serif;
 
 
-    /* Font Size  */
+    /* ----- FONT SIZES ----- */
     --fs-3xs: 0.625rem;  /* 10px */
     --fs-2xs: 0.75rem;   /* 12px */
     --fs-xs: 0.875rem;   /* 14px */
@@ -27,246 +36,335 @@
     --fs-3xl: 2.25rem;   /* 36px */
     --fs-4xl: 3rem;      /* 48px */
 
-
-    /* Font Weights */
-    --fw-thin: 100;   
-    --fw-extralight: 200;    
+    /* ----- FONT WEIGHTS ----- */
+    --fw-thin: 100;
+    --fw-extralight: 200;
     --fw-light: 300;
     --fw-regular: 400;
     --fw-medium: 500;
     --fw-semibold: 600;
     --fw-bold: 700;
     --fw-black: 800;
+
+    /* ----- SPACING ----- */
+    --space-xs: 0.25rem;   /* 4px */
+    --space-sm: 0.5rem;    /* 8px */
+    --space-md: 1rem;      /* 16px */
+    --space-lg: 2rem;      /* 32px */
+    --space-xl: 3rem;      /* 48px */
+    --space-2xl: 4rem;     /* 64px */
+    --space-3xl: 5rem;     /* 80px */
+
+    /* ----- RADIUS ----- */
+    --radius-sm: 0.25rem;   /* 4px */
+    --radius-md: 0.5rem;    /* 8px */
+    --radius-lg: 0.75rem;   /* 12px */
+    --radius-xl: 1rem;      /* 16px */
+    --radius-3xl: 3rem;      /* 16px */
+
+    --card-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+
+
+
+
+
+
+
+
+
 }
 
-/* Resets */
+
+/* ----- RESETS ----- */
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 img, svg, label {
-    display: inline-block;
+  display: inline-block;
 }
 
 li {
-    list-style: none;
+  list-style: none;
 }
 
 
-/* --- Page Setup --- */
+
+
+/* ----- PAGE SETUP ----- */
+
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f5f5f5;
-    font-family: var(--ff-base);
-    margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--body-bg);
+  font-family: var(--ff-base);
+  padding: var(--space-md);
 }
-
 
 *:focus {
-    outline: none;
-    box-shadow: none;
-    border: none; /* optional if you also have border changes on focus */
+  outline: none;
+  box-shadow: none;
+  border: none; 
 }
 
 
 
-/* --- Card Container --- */
+/* ----- CARD CONTAINER ----- */
 .login-card {
-    background-color: var(--clr-card-background);
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 450px;
-    text-align: center;
-    margin: 1rem 0;
+  background-color: var(--card-bg);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
 }
 
 
 
-/* --- Heading --- */
-
+/* ----- HEADER ----- */
 .card-header h1 {
-    color: var(--text-primary);
-    color: var(--clr-primary);
-    font-size: var(--fs-3xl);
+  font-size: clamp(var(--fs-2xl), 2vw, var(--fs-3xl));
+  color: var(--clr-primary);
+  font-family: var(--ff-heading);
 }
 
 .card-header .app-name {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: var(--space-md);
 }
 
 .app-name img {
-    width: 5rem;
+  width: var(--space-2xl);
 }
 
 .card-header h2 {
-    color: var(--text-primary);
-    font-size: var(--fs-2xl);
-    text-align: center;
-    margin-bottom: .25rem;
+  color: var(--text-primary);
+  font-size: var(--fs-2xl);
+  text-align: center;
+  margin-bottom: 0.25rem;
 }
 
 .card-header p {
-    color: var(--text-secondary);
-    font-weight: var(--fw-medium);
-    text-align: center;
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
 }
 
 
 
-
-
-/* --- Form --- */
-
+/* ----- FORM ----- */
 form {
-    margin-top: 1.5rem;
+  margin-top: var(--space-md);
 }
 
+
+
+/* ----- GLOBAL ERRORS ----- */
+.form-errors {
+  color: var(--clr-danger);
+  font-size: var(--fs-xs);
+  text-align: left;
+
+  padding: var(--space-sm);
+  margin-bottom: var(--space-md);
+
+  background-color: #fff5f5;
+  border-left: 4px solid var(--clr-danger);
+  border-radius: var(--radius-sm);
+}
+
+
+
+/* ----- INPUT CONTAINERS ----- */
 .email-container, .password-container {
-    display: flex;
-    align-items: center;
-    border: 1px solid var(--clr-border);
-    padding: .25rem .5rem;
-    border-radius: .5rem;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--clr-border);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-md);
+  transition: all 0.3s ease;
 }
 
 .email-container:focus-within, .password-container:focus-within {
-    box-shadow: 0 0 6px 1px rgba(43, 163, 132, 0.25);
-    border: 1px solid var(--clr-primary);
-}
-
-.form-errors p{
-    text-align: left;
-    color: red;
-    margin-bottom: 1rem;
-    width: 100%;
+  border: 1px solid var(--clr-primary);
+  box-shadow: 0 0 0 3px rgba(43, 163, 132, 0.1);
 }
 
 .login-card form img {
-    width: 20px;
+  width: 20px;
 }
 
 .email-container img {
-    margin-bottom: 3px;
+  margin-bottom: 3px;
 }
 
-/* --- Labels --- */
+.password-container {
+  position: relative;
+}
 
 
-form label{
-    margin-bottom: 0.3rem;
-    width: 100%;
-    text-align: left;
-    color: var(--text-primary);
-    margin-bottom: 0.3rem;
-    font-weight: var(--fw-bold);
+
+
+
+
+/* ----- LABELS ----- */
+form label {
+  color: var(--text-primary);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-sm);
+
+  
+  margin-bottom: var(--space-xs);
+  text-align: left;
+  display: block;
 }
 
 .password-header {
-    display: flex;
-    justify-content: space-between;
-    width: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.password-header label{
-    width: auto;
+.password-header label {
+  width: auto;
 }
 
-.password-header a{
-    font-size: var(--fs-2xs);
-    text-decoration: none;
-    color: var(--clr-primary);
-    width: fit-content;
+
+
+
+/* ----- LINK STYLES & FOCUS ----- */
+.password-header a, .create-account a {
+  font-size: var(--fs-2xs);
+  color: var(--clr-primary);
+  font-weight: var(--fw-semibold);
+  transition: all 0.2s ease;
+  text-decoration: none; 
 }
+
+
+/* Combine Hover and Focus to look the same */
+.password-header a:hover,  .password-header a:focus,
+.create-account a:hover, .create-account a:focus {
+  opacity: 0.8;
+  text-decoration: underline;
+  outline: none;
+}
+
+
 
 
 /* --- Inputs --- */
+
 .login-card input {
-    width: 100%;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: none;
-    color: var(--text-secondary);
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: none;
+  color: var(--text-secondary);
 }
 
 .login-card input:focus {
-    border: none;
-    outline: none;
+  border: none;
+  outline: none;
 }
 
-#togglePassword{
-    cursor: pointer;
+#togglePassword {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+#togglePassword:hover {
+  opacity: 1;
 }
 
 
 
-
-/* --- Submit Button --- */
-
+/* ----- SUBMIT BUTTON ----- */
 .login-card button {
-    width: 100%;
-    padding: 0.7rem;
-    background-color: var(--clr-primary);
-    color: var(--clr-card-background);
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: var(--fw-bold);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 1rem 0;
+  width: 100%;
+  padding: var(--space-sm);
+  background-color: var(--clr-primary);
+  color: var(--text-tertiary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: var(--space-md) 0;
 }
 
 .login-card button:hover {
-    transform: scale(1.01);   
-    opacity: .95; 
+  background-color: #248a6f;
+  transform: translateY(-1px);
 }
 
+
+.login-card button:focus {
+  outline: 2px solid var(--clr-primary);
+  outline-offset: 2px;
+}
+
+
+
+/* ----- CREATE ACCOUNT LINK ----- */
 .create-account {
-    color: var(--text-secondary);
-    font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
 }
 
 .create-account a {
-    text-decoration: none;
-    color: var(--clr-primary);
-    font-weight: var(--fw-bold);
-    margin-left: .5rem;
+  margin-left: var(--space-sm);
 }
 
 
 
-/* --- Non-field Errors --- */
-
-
-
-
-
-
-/* --- Responsive --- */
-@media (min-width: 600px) {
-    .login-card {
-        width: 80%;
-        padding: 2rem;
-    }
+/* ----- FIELD ERRORS ----- */
+.field-error {
+  position: absolute;
+  bottom: -23px;
+  left: 0;
+  color: var(--clr-error);
+  font-size: var(--fs-2xs);
+  font-weight: var(--fw-regular);
 }
 
-/* For larger screens (desktop) */
-@media (min-width: 900px) {
-    .login-card {
-        width: 450px; /* max width already handled */
-        padding: 2rem;
-    }
+.field-error p {
+  color: var(--clr-danger);
+  font-size: var(--fs-xs);
+  text-align: left;
+  margin-top: -0.75rem;
+  font-weight: var(--fw-regular);
+}
+
+.form-errors p {
+  color: var(--clr-danger);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+}
+
+
+
+
+/* ----- RESPONSIVE ----- */
+@media (max-width: 600px) {
+
+  .login-card {
+    padding: var(--space-md);
+    box-shadow: none;
+    background-color: transparent;
+  }
+  
+  body {
+    background-color: var(--card-bg); 
+  }
 }
