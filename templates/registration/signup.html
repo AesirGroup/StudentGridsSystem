@@ -1,53 +1,46 @@
-
-{% comment %}
-{% extends "base.html" %}
-{% load crispy_forms_tags %}
-
-{% block title %}Sign Up{% endblock %}
-
-{% block content %}
-<div class="d-flex justify-content-center align-items-center mt-5">
-  <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px; border-radius: 0.75rem;">
-    <h2 class="card-title text-center mb-4">Sign Up</h2>
-    <form method="post">
-      {% csrf_token %}
-      {{ form|crispy }}
-      <button type="submit" class="btn btn-primary w-100 mt-3">Sign Up</button>
-    </form>
-    <div class="text-center mt-3">
-      <small>Already have an account? <a href="{% url 'login' %}">Log In</a></small>
-    </div>
-  </div>
-</div>
-{% endblock %}
-{% endcomment %}
-
-
-
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
+  <!-- METADATA & TITLE -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up</title>
+
+
+  <!-- GOOGLE FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+
+  <!-- STYLESHEET -->
   <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+
 </head>
 
 <body>
-  <div class="login-card">
+
+  <!-- SIGNUP CARD -->
+  <div class="create-card">
+
+    <!-- CARD HEADER -->
     <header class="card-header">
       <h1>Student Grids</h1>
       <h2>Create Account</h2>
       <p>Sign up to continue</p>
     </header>
 
+
+    <!-- SIGNUP FORM -->
     <form method="post" autocomplete="off">
       {% csrf_token %}
 
-      <!-- Username -->
+
+      <!-- USERNAME FIELD -->
       <label for="id_username">Username</label>
       <div class="input-container">
         <img src="{% static 'img/login/email.svg' %}" alt="User icon">
@@ -57,6 +50,8 @@
       <div class="field-help">
         Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
       </div>
+
+      <!-- USERNAME ERRORS -->
       {% if form.username.errors %}
       <div class="field-error">
         {% for error in form.username.errors %}
@@ -65,13 +60,16 @@
       </div>
       {% endif %}
 
-      <!-- Email -->
+
+      <!-- EMAIL FIELD -->
       <label for="id_email">Email</label>
       <div class="input-container">
         <img src="{% static 'img/login/email.svg' %}" alt="Email icon">
         <input type="email" name="email" id="id_email" placeholder="Enter your email"
           value="{{ form.email.value|default_if_none:'' }}" autocomplete="off">
       </div>
+
+      <!-- EMAIL ERRORS -->
       {% if form.email.errors %}
       <div class="field-error">
         {% for error in form.email.errors %}
@@ -80,7 +78,8 @@
       </div>
       {% endif %}
 
-      <!-- Password -->
+
+      <!-- PASSWORD FIELD -->
       <label for="id_password1">Password</label>
       <div class="input-container">
         <img src="{% static 'img/login/lock.svg' %}" alt="Lock icon">
@@ -95,6 +94,8 @@
           <li>Your password can't be entirely numeric.</li>
         </ul>
       </div>
+
+      <!-- PASSWORD ERRORS -->
       {% if form.password1.errors %}
       <div class="field-error">
         {% for error in form.password1.errors %}
@@ -103,7 +104,8 @@
       </div>
       {% endif %}
 
-      <!-- Confirm Password -->
+
+      <!-- CONFIRM PASSWORD FIELD -->
       <label for="id_password2">Confirm Password</label>
       <div class="input-container">
         <img src="{% static 'img/login/lock.svg' %}" alt="Lock icon">
@@ -113,6 +115,8 @@
       <div class="field-help">
         Enter the same password as before, for verification.
       </div>
+
+      <!-- CONFIRM PASSWORD ERRORS -->
       {% if form.password2.errors %}
       <div class="field-error">
         {% for error in form.password2.errors %}
@@ -121,6 +125,8 @@
       </div>
       {% endif %}
 
+
+      <!-- NON-FIELD ERRORS -->
       {% if form.non_field_errors %}
       <div class="field-error">
         {% for error in form.non_field_errors %}
@@ -129,14 +135,21 @@
       </div>
       {% endif %}
 
-      <button type="submit">Sign Up ➜</button>
+
+      <!-- SUBMIT BUTTON -->
+      <button type="submit">Sign Up</button>
+
     </form>
 
-    <p class="create-account">
-      Already have an account? <a href="{% url 'login' %}">Log In</a>
+
+    <!-- LOGIN LINK -->
+    <p class="have-account">
+      Already have an account?
+      <a href="{% url 'login' %}">Log In</a>
     </p>
 
   </div>
+
 </body>
 
 </html>

@@ -3,62 +3,108 @@
 <html lang="en">
 
 <head>
+
+    <!-- METADATA & TITLES -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
     <title>{% block title %}Student Grids System{% endblock %}</title>
 
-    <!-- Bootstrap 5.3.8 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
-    <!-- Your custom CSS comes after Bootstrap -->
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+    <!-- STYLESHEET -->
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 
     {% block extra_css %}{% endblock %}
+
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-sm banner">
-        <div class="container-fluid px-0 px-sm-4">
 
-            <a href="{% url 'home' %}" class="logo navbar-brand">
+    <!-- NAVIGATION BAR -->
+    <nav class="banner">
+        <div class="nav-container">
+
+            <!-- LOGO -->
+            <a href="{% url 'home' %}" class="logo">
                 <img src="{% static 'img/home/logo.svg' %}" alt="Icon of logo">
                 <p>Student Grids</p>
             </a>
 
             {% if user.is_authenticated %}
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
-                aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            {% endif %}
 
-            <div class="collapse navbar-collapse justify-content-end" id="navMenu">
-                <div class="nav-actions">
-                    {% if user.is_authenticated %}
-                    <form method="post" action="{% url 'logout' %}" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="logout-btn">Logout</button>
-                    </form>
-                    <a href="{% url 'password_change' %}" class="change-pw-btn">Change Password</a>
-                    {% else %}
-                    {# <a href="{% url 'login' %}" class="login-btn">Log in</a> #}
-                    {# <a href="{% url 'signup' %}" class="signup-btn">Sign up</a> #}
-                    {% endif %}
+                <!-- BASE ACTIONS -->
+                <div>
+
+                    <!-- MOBILE HAMBURGER BUTTON -->
+                    <button class="navbar-toggler" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                        <span class="navbar-toggler-icon"></span>
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+
+                    <!-- NAVIGATION LINKS & ACTIONS -->
+                    <div class="nav-menu">
+                        <div class="nav-actions">
+
+                            <!-- LOGOUT FORM -->
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="logout-btn">Logout</button>
+                            </form>
+
+                            <!-- CHANGE PASSWORD -->
+                            <a href="{% url 'password_change' %}" class="change-pw-btn">Change Password</a>
+
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+            {% endif %}
 
         </div>
     </nav>
 
+
+
+    <!-- INHERITED PAGE CONTENT -->
     {% block content %}
     {% endblock %}
 
-    <!-- Bootstrap 5.3.8 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
-        </script>
+    
+    <script>
+        // ----- NAVBAR -----
+        const navToggler = document.querySelector('.navbar-toggler');
+        const navMenu = document.querySelector('.nav-menu');
 
+        // Only run if the toggler exists (i.e. user is authenticated)
+        if (navToggler) {
+
+            // ----- TOGGLE MENU FUNCTION -----
+            navToggler.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                navToggler.classList.toggle('active');
+            });
+
+            // ----- CLOSE ON OUTSIDE CLICK -----
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('nav.banner')) {
+                    navMenu.classList.remove('active');
+                    navToggler.classList.remove('active');
+                }
+            });
+        }
+    </script>
+
+
+    <!-- INHERITED PAGE SCRIPTS -->
     {% block extra_js %}
-
     {% endblock %}
+
+</body>
+
+</html>

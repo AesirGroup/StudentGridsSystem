@@ -177,7 +177,7 @@
         <!-- ==================== REPORT ACTIONS ==================== -->
         <div class="generate-actions">
 
-            <!-- BUTTON 1: Generate Report — triggers the Web Worker PDF build -->
+            <!-- BUTTON 1: Generate Report -->
             <button id="generateBtn" class="generate-btn" disabled>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
@@ -189,7 +189,7 @@
                 Generate Report
             </button>
 
-            <!-- BUTTON 2: Add Student — redirects to the upload grid to find and add students -->
+            <!-- BUTTON 2: Add Student -->
             <a href="{% url 'upload_grid' %}" class="generate-btn generate-btn--secondary">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="12" y1="5" x2="12" y2="19"/>
@@ -198,7 +198,7 @@
                 Add Student
             </a>
 
-            <!-- BUTTON 3: Clear All — wipes localStorage queue and resets the page -->
+            <!-- BUTTON 3: Clear All -->
             <button id="clearBtn" class="generate-btn generate-btn--danger">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"/>
@@ -214,9 +214,7 @@
 
 
         <!-- ==================== STUDENT CARD GRID ==================== -->
-        <div class="student-grid" id="studentGrid">
-            <!-- Cards are rendered here by JavaScript after reading localStorage -->
-        </div>
+        <div class="student-grid" id="studentGrid"></div>
 
         <!-- ==================== PAGINATION ==================== -->
         <div class="pagination" id="pagination"></div>
@@ -232,18 +230,18 @@
        CONSTANTS & CONFIG
     ================================================================ */
     const CSRF_TOKEN       = '{{ csrf_token }}';
-    const API_STUDENTS     = '{% url "report_students" %}';         // ?ids=1,2,3 — filtered endpoint
+    const API_STUDENTS     = '{% url "report_students" %}';
     const API_STUDENT_DATA = '/performance/api/student-report-data/';
     const STUDENT_URL      = '/performance/';
     const WORKER_URL       = '{% static "js/report_worker.js" %}';
-    const REPORT_KEY       = 'reportStudentIds';  // Must match the key used in student_details.html
+    const REPORT_KEY       = 'reportStudentIds';
     const PER_PAGE         = 6;
 
     /* ================================================================
        STATE
     ================================================================ */
-    let allStudents  = [];   // Students fetched from the API (only the queued ones)
-    let filtered     = [];   // After search/filter applied
+    let allStudents  = [];
+    let filtered     = [];
     let currentPage  = 1;
     let activeWorker = null;
     let isGenerating = false;
@@ -273,8 +271,6 @@
 
     /* ================================================================
        LOCAL STORAGE — READ QUEUED IDS
-       Reads the IDs that were saved by the "Add to Report" button on
-       the student details page. Returns an array of student_number strings.
     ================================================================ */
     function getQueuedIds() {
         try {
@@ -286,15 +282,11 @@
 
     /* ================================================================
        LOAD STUDENTS FROM API
-       Only fetches the specific students whose IDs are in localStorage.
-       If localStorage is empty, allStudents stays [] and the empty
-       state message is shown.
     ================================================================ */
     async function loadStudents() {
         const ids = getQueuedIds();
 
         if (ids.length === 0) {
-            // No students queued — show empty state immediately, no API call needed
             allStudents = [];
             renderStats([]);
             applyFilters();
@@ -302,9 +294,7 @@
         }
 
         try {
-            // Pass the queued IDs as a comma-separated query param so Django
-            // can filter: Student.objects.filter(student_number__in=id_list)
-            const url = `${API_STUDENTS}?ids=${ids.join(',')}`;
+            const url  = `${API_STUDENTS}?ids=${ids.join(',')}`;
             const res  = await fetch(url, { headers: { 'X-CSRFToken': CSRF_TOKEN } });
             const data = await res.json();
             allStudents = data.students || [];
@@ -477,17 +467,24 @@
         const page  = filtered.slice(start, start + PER_PAGE);
 
         if (!page.length && allStudents.length === 0) {
-            // Empty state — no students in localStorage at all
             grid.innerHTML = `
                 <div class="empty-state">
+                    <div class="empty-state__icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="12" y1="18" x2="12" y2="12"/>
+                            <line x1="9" y1="15" x2="15" y2="15"/>
+                        </svg>
+                    </div>
                     <p class="empty-state__title">No students queued</p>
                     <p class="empty-state__sub">Browse to any student's details page and click <strong>"Add to Report"</strong> to add them here.</p>
-                    <a href="{% url 'upload_grid' %}" class="generate-btn" style="margin-top: 1rem;">
+                    <a href="{% url 'upload_grid' %}" class="generate-btn generate-btn--secondary" style="margin-top: var(--space-sm);">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="5" x2="12" y2="19"/>
                             <line x1="5" y1="12" x2="19" y2="12"/>
                         </svg>
-                        Add Student
+                        Browse Students
                     </a>
                 </div>`;
             return;
@@ -606,28 +603,20 @@
 
     /* ================================================================
        CLEAR ALL BUTTON
-       Wipes the localStorage queue and resets the page to empty state.
-       Does NOT auto-clear after generation — user must click this.
     ================================================================ */
     (function initClearBtn() {
         const btn = $id('clearBtn');
         if (!btn) return;
         btn.addEventListener('click', () => {
-            if (allStudents.length === 0) return; // Nothing to clear
+            if (allStudents.length === 0) return;
             if (!confirm('Are you sure you want to remove all students from the report queue? This cannot be undone.')) return;
 
-            // Wipe localStorage
             localStorage.removeItem(REPORT_KEY);
-
-            // Reset all state
             allStudents = [];
             filtered    = [];
             currentPage = 1;
-
-            // Reset stats
             renderStats([]);
 
-            // Reset filters UI back to "All …" defaults
             document.querySelectorAll('.custom-select').forEach(select => {
                 const options = select.querySelectorAll('.custom-select__option');
                 options.forEach((o, i) => o.classList.toggle('is-selected', i === 0));
@@ -640,10 +629,8 @@
             const input = $id('searchInput');
             if (input) input.value = '';
 
-            // Re-render with empty state
             updateGenerateNote();
             render();
-
             showToastDone('Report queue cleared.');
         });
     })();
@@ -665,8 +652,6 @@
 
     /* ================================================================
        START GENERATION
-       Passes the full allStudents array to the Web Worker.
-       The worker fetches the detailed audit data itself.
     ================================================================ */
     function startGeneration() {
         if (!window.Worker) {
@@ -703,8 +688,6 @@
                 hideProgress(); enableGenerateBtn();
                 downloadPdf(msg.pdfBytes);
                 showToastDone('Report generated and downloaded successfully.');
-                // NOTE: Queue is intentionally NOT cleared here.
-                // The user must click "Clear All" when they are done.
             }
             if (msg.type === 'error') {
                 worker.terminate(); activeWorker = null; isGenerating = false;
@@ -783,7 +766,7 @@
     }
 
     /* ================================================================
-       INIT — load only the queued students from localStorage
+       INIT
     ================================================================ */
     loadStudents();
 </script>
