@@ -1,270 +1,175 @@
 {% extends "base.html" %}
 {% load static %}
 
-
 {% block title %}{{ student.name }} - Details{% endblock %}
 
-
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/student_details.css' %}">
+<link rel="stylesheet" href="{% static 'css/student_details.css' %}">
 {% endblock %}
-
 
 {% block content %}
+<main class="student-details-page">
 
-    <main class="student-details-page">
+    <!-- ==================== PAGE ACTIONS ==================== -->
+    <nav class="home-hero">
+        <a href="{% url 'upload_grid' %}">
+            <img src="{% static 'img/student_details/back-arrow-icon.svg' %}" alt="Back to students">
+            <span>Back to Students</span>
+        </a>
+        <button class="add-report-btn">
+            <img src="{% static 'img/student_details/add-report-icon.svg' %}" alt="Add to report">
+            <span>Add to Report</span>
+        </button>
+    </nav>
 
+    <h1>{{ student.name }}</h1>
 
-        <!-- ==================== BACK NAV ==================== -->
-        <nav class="home-hero">
+    <!-- ==================== STUDENT OVERVIEW ==================== -->
+    <section class="student-info">
+        <h2>Student Overview</h2>
+        <div class="student-details-container">
+            <div class="app-card">
+                <h4>Student ID</h4>
+                <p>{{ student.student_number }}</p>
+            </div>
+            <div class="app-card">
+                <h4>Programme</h4>
+                <p>{{ audit.evaluated_programme|default:"Unknown" }}</p>
+            </div>
+            <div class="app-card">
+                <h4>Major</h4>
+                <p>{{ audit.evaluated_major|default:"Unknown" }}</p>
+            </div>
+            <div class="app-card">
+                <h4>Cumulative GPA</h4>
+                <p>{{ student.overall_gpa|default:"N/A" }}</p>
+            </div>
+            <div class="app-card">
+                <h4>Credits</h4>
+                <p>
+                    {{ audit.total_credits_earned|default:0|floatformat:0 }} /
+                    {{ audit.total_credits_required|default:0|floatformat:0 }}
+                </p>
+            </div>
+            <div class="app-card">
+                <h4>Status</h4>
+                <p class="{% if audit.can_graduate %}eligible{% else %}not-eligible{% endif %}">
+                    {% if audit.can_graduate %}Eligible{% else %}Not Eligible{% endif %}
+                </p>
+            </div>
+        </div>
+    </section>
 
-            {% if request.resolver_match.url_name == 'report_student_detail' %}
-                <a href="{% url 'report' %}">
-                    <img src="{% static 'img/student_details/back-arrow-icon.svg' %}" alt="Back to Report">
-                    <span>Back to Report</span>
-                </a>
-            {% elif request.resolver_match.url_name == 'transcript_student_detail' %}
-                <a href="{% url 'transcript_grid' %}">
-                    <img src="{% static 'img/student_details/back-arrow-icon.svg' %}" alt="Back to Transcript">
-                    <span>Back to Transcript</span>
-                </a>
-            {% else %}
-                <a href="{% url 'upload_grid' %}">
-                    <img src="{% static 'img/student_details/back-arrow-icon.svg' %}" alt="Back to Students">
-                    <span>Back to Students</span>
-                </a>
-            {% endif %}
+    <!-- ==================== BUCKETS ==================== -->
+    <section class="bucket-container">
 
-            <!-- <button class="add-report-btn">
-                <img src="{% static 'img/student_details/add-report-icon.svg' %}" alt="Add to report">
-                <span>Add to Report</span>
-            </button> -->
-
-            <button class="add-report-btn" id="addReportBtn">
-                <img src="{% static 'img/student_details/add-report-icon.svg' %}" alt="Add to report">
-                <span id="addReportBtnText">Add to Report</span>
+        {% regroup audit.bucket_results.all by component_name as component_list %}
+        {% for component in component_list %}
+        {% for bucket in component.list %}
+        <div class="bucket">
+            <button class="bucket-toggle">
+                {{ bucket.bucket_name }}
+                <span>
+                    {{ bucket.credits_earned|default:0|floatformat:0 }} /
+                    {{ bucket.credits_required|default:0|floatformat:0 }} credits
+                </span>
             </button>
+            <div class="bucket-content">
 
-        </nav>
-
-
-        <!-- ==================== PAGE TITLE ==================== -->
-        <h1>{{ student.name|title }}</h1>
-
-
-        <!-- ==================== STUDENT OVERVIEW ==================== -->
-        <section class="student-info">
-            <h2>Student Overview</h2>
-
-            <div class="student-details-container">
-
-                <div class="app-card">
-                    <h4>Student ID</h4>
-                    <p>{{ student.student_number }}</p>
-                </div>
-
-                <div class="app-card">
-                    <h4>Programme</h4>
-                    <p>{{ audit.evaluated_programme|default:"Unknown" }}</p>
-                </div>
-
-                <div class="app-card">
-                    <h4>Major</h4>
-                    <p>{{ audit.evaluated_major|default:"Unknown" }}</p>
-                </div>
-
-                <div class="app-card">
-                    <h4>Cumulative GPA</h4>
-                    <p>{{ student.overall_gpa|default:"N/A" }}</p>
-                </div>
-
-                <div class="app-card">
-                    <h4>Credits</h4>
-                    <p>
-                        {{ audit.total_credits_earned|default:0|floatformat:0 }} /
-                        {{ audit.total_credits_required|default:0|floatformat:0 }}
-                    </p>
-                </div>
-
-                <div class="app-card">
-                    <h4>Status</h4>
-                    <p class="{% if audit.can_graduate %}eligible{% else %}not-eligible{% endif %}">
-                        {% if audit.can_graduate %}Eligible{% else %}Not Eligible{% endif %}
-                    </p>
-                </div>
-
-            </div>
-        </section>
-
-
-        <!-- ==================== FLR OVERRIDE CARD ==================== -->
-        <section class="flr-card">
-            <div class="flr-header">
-                <div>
-                    <h2>Foreign Language Requirement</h2>
-                    <p class="flr-status {% if student.flr_exempt_verified %}not-eligible{% else %}eligible{% endif %}">
-                        {% if student.flr_exempt_verified %}
-                            ✗ Not Eligible <span class="flr-verified-badge">Verified by Admin</span>
-                        {% else %}
-                            ✓ Eligible <span class="flr-default-badge">Default</span>
-                        {% endif %}
-                    </p>
-                </div>
-                <form method="post" action="{% url 'toggle_flr_exemption' student.student_number %}">
-                    {% csrf_token %}
-                    <button type="submit" class="flr-toggle-btn {% if student.flr_exempt_verified %}flr-restore{% else %}flr-revoke{% endif %}">
-                        {% if student.flr_exempt_verified %}
-                            Mark Eligible
-                        {% else %}
-                            Mark Not Eligible
-                        {% endif %}
-                    </button>
-                </form>
-            </div>
-            <p class="flr-note">
-                By default, students admitted 2023+ must complete a foreign language course.
-                Toggle this if the student's lower-level records confirm they are not eligible.
-                Re-upload the transcript after toggling to recalculate the evaluation.
-            </p>
-        </section>
-
-
-        <!-- ==================== REQUIREMENT BUCKETS ==================== -->
-        <section class="bucket-container">
-
-            {% regroup bucket_results by component_name as component_list %}
-
-            {% for component in component_list %}
-                {% for bucket in component.list %}
-                    {% if not bucket.bucket_name|slice:":28" == "Foreign Language Requirement" %}
-                        <div class="bucket">
-
-                            <button class="bucket-toggle">
-                                {{ bucket.bucket_name }}
-                                <span>
-                                    {{ bucket.credits_earned|default:0|floatformat:0 }} /
-                                    {{ bucket.credits_required|default:0|floatformat:0 }} credits
-                                </span>
-                            </button>
-
-                            <div class="bucket-content">
-
-                                <!-- COMPLETED COURSES -->
-                                {% if bucket.courses_completed_json %}
-                                    <h3 class="bucket-heading">
-                                        <img src="{% static 'img/student_details/completed-icon.svg' %}" alt="Completed Icon" class="heading-icon">
-                                        Completed
-                                    </h3>
-                                    <div class="completed">
-                                        {% for course in bucket.courses_completed_json %}
-                                            <div class="app-card">
-                                                <h5 class="course-code">{{ course.code|default:"N/A" }}</h5>
-                                                <div>
-                                                    <p class="credits">{{ course.credits|default:0|floatformat:0 }} credits</p>
-                                                    <p class="grade">{{ course.grade|default:"N/A" }}</p>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-
-                                <!-- EXEMPTION MAPPINGS -->
-                                {% if bucket.exemption_mappings_json %}
-                                    <h3 class="bucket-heading">
-                                        <img src="{% static 'img/student_details/completed-icon.svg' %}" alt="Exemption Icon" class="heading-icon">
-                                        Exemption Credit Replacements
-                                    </h3>
-                                    <div class="exemptions">
-                                        {% for m in bucket.exemption_mappings_json %}
-                                            <div class="app-card">
-                                                <div class="exemption-left">
-                                                    <h5 class="course-code">{{ m.exempted_course }}</h5>
-                                                    <span class="ex-badge">EX</span>
-                                                </div>
-                                                <div class="exemption-right">
-                                                    <p class="credits">{{ m.credits|floatformat:0 }} credits</p>
-                                                    <p class="replaced-by">→ {{ m.replacement_course }}</p>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-
-                                <!-- COURSES STILL NEEDED -->
-                                {% if bucket.courses_needed_json %}
-                                    <h3 class="bucket-heading">
-                                        <img src="{% static 'img/student_details/uncompleted-icon.svg' %}" alt="Uncompleted Icon" class="heading-icon">
-                                        Uncompleted
-                                    </h3>
-                                    <div class="uncompleted">
-                                        {% for course in bucket.courses_needed_json %}
-                                            <div class="app-card">
-                                                <h5 class="course-code">{{ course }}</h5>
-                                                <div>
-                                                    <p class="credits">3 credits</p>
-                                                    <p class="req">Required</p>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-
-                            </div>
+                {% if bucket.courses_completed_json %}
+                <h3 class="bucket-heading">
+                    <img src="{% static 'img/student_details/completed-icon.svg' %}" alt="Completed Icon"
+                        class="heading-icon">
+                    Completed
+                </h3>
+                <div class="completed">
+                    {% for course in bucket.courses_completed_json %}
+                    <div class="app-card">
+                        <h5 class="course-code">{{ course.code|default:"N/A" }}</h5>
+                        <div>
+                            <p class="credits">{{ course.credits|default:0|floatformat:0 }} credits</p>
+                            <p class="grade">{{ course.grade|default:"N/A" }}</p>
                         </div>
-                    {% endif %}
-                {% endfor %}
-            {% endfor %}
-
-
-            <!-- ==================== UNMET REQUIREMENTS ==================== -->
-            {% if audit.unmet_requirements_json %}
-                <section class="unmet-container bucket">
-                    <button class="bucket-toggle">Unmet Requirements</button>
-                    <div class="bucket-content">
-                        <ul>
-                            {% for req in audit.unmet_requirements_json %}
-                                <li>{{ req }}</li>
-                            {% endfor %}
-                        </ul>
                     </div>
-                </section>
-            {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
 
-
-            <!-- ==================== SUGGESTED NEXT STEPS ==================== -->
-            {% if audit.next_steps_json %}
-                <section class="suggested-container bucket">
-                    <button class="bucket-toggle">Suggested Next Steps</button>
-                    <div class="bucket-content">
-                        <ul>
-                            {% for step in audit.next_steps_json %}
-                                <li>{{ step }}</li>
-                            {% endfor %}
-                        </ul>
+                {% if bucket.courses_needed_json %}
+                <h3 class="bucket-heading">
+                    <img src="{% static 'img/student_details/uncompleted-icon.svg' %}" alt="Uncompleted Icon"
+                        class="heading-icon">
+                    Uncompleted
+                </h3>
+                <div class="uncompleted">
+                    {% for course in bucket.courses_needed_json %}
+                    <div class="app-card">
+                        <h5 class="course-code">{{ course }}</h5>
+                        <div>
+                            <p class="credits">3 credits</p>
+                            <p class="req">Required</p>
+                        </div>
                     </div>
-                </section>
-            {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
 
+            </div>
+        </div>
+        {% endfor %}
+        {% endfor %}
+
+        <!-- ==================== UNMET REQUIREMENTS ==================== -->
+        {% if audit.unmet_requirements_json %}
+        <section class="unmet-container bucket">
+            <button class="bucket-toggle">Unmet Requirements</button>
+            <div class="bucket-content">
+                <ul>
+                    {% for req in audit.unmet_requirements_json %}
+                    <li>{{ req }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
         </section>
-    </main>
+        {% endif %}
 
+        <!-- ==================== SUGGESTED NEXT STEPS ==================== -->
+        {% if audit.next_steps_json %}
+        <section class="suggested-container bucket">
+            <button class="bucket-toggle">Suggested Next Steps</button>
+            <div class="bucket-content">
+                <ul>
+                    {% for step in audit.next_steps_json %}
+                    <li>{{ step }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+        {% endif %}
+
+    </section>
+</main>
 {% endblock %}
+
+
+
 
 
 {% block extra_js %}
 <script>
-    // ----- BUCKET ACCORDION -----
     const buckets = document.querySelectorAll('.bucket');
 
     function updateBucketHeights() {
         buckets.forEach(bucket => {
             const content = bucket.querySelector('.bucket-content');
             if (bucket.classList.contains('is-open')) {
+                // Update max-height dynamically
                 content.style.maxHeight = content.scrollHeight + 'px';
             }
         });
     }
 
+    // Toggle logic
     buckets.forEach(toggle => {
         const button = toggle.querySelector('.bucket-toggle');
         button.addEventListener('click', () => {
@@ -278,38 +183,9 @@
         });
     });
 
-    window.addEventListener('resize', updateBucketHeights);
-
-
-    // ----- ADD TO REPORT -----
-    const REPORT_KEY = 'reportStudentIds';
-    const studentNumber = "{{ student.student_number }}";
-
-    function getReportIds() {
-        return JSON.parse(localStorage.getItem(REPORT_KEY) || '[]');
-    }
-
-    function updateAddBtn() {
-        const ids = getReportIds();
-        const inReport = ids.includes(studentNumber);
-        const btn = document.getElementById('addReportBtn');
-        const txt = document.getElementById('addReportBtnText');
-        if (!btn || !txt) return;
-        txt.textContent = inReport ? 'Remove from Report' : 'Add to Report';
-        btn.classList.toggle('in-report', inReport);
-    }
-
-    document.getElementById('addReportBtn').addEventListener('click', () => {
-        let ids = getReportIds();
-        if (ids.includes(studentNumber)) {
-            ids = ids.filter(id => id !== studentNumber);
-        } else {
-            ids.push(studentNumber);
-        }
-        localStorage.setItem(REPORT_KEY, JSON.stringify(ids));
-        updateAddBtn();
+    // Recalculate heights on window resize
+    window.addEventListener('resize', () => {
+        updateBucketHeights();
     });
-
-    updateAddBtn();
 </script>
 {% endblock %}

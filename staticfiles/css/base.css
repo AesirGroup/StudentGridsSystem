@@ -1,7 +1,6 @@
 :root {
-
-    /* Main Color */
-    --clr-primary: #2BA384; 
+    /* ================ COLORS ================ */
+    --clr-primary: #2BA384;
 
     /* Font Colors */
     --text-primary: #111827;
@@ -13,12 +12,11 @@
     --icon-bg: #e5f1ed;
     --body-bg: #f5f5f5;
 
-    /* Font Family */
+    /* ============ FONT FAMILY ============ */
     --ff-base: Arial, Helvetica, sans-serif;
     --ff-heading: "Space Grotesk", sans-serif;
 
-
-    /* Font Size  */
+    /* ============ FONT SIZES ============ */
     --fs-3xs: 0.625rem;  /* 10px */
     --fs-2xs: 0.75rem;   /* 12px */
     --fs-xs: 0.875rem;   /* 14px */
@@ -30,20 +28,33 @@
     --fs-3xl: 2.25rem;   /* 36px */
     --fs-4xl: 3rem;      /* 48px */
 
-
-    /* Font Weights */
-    --fw-thin: 100;   
-    --fw-extralight: 200;    
+    /* ============ FONT WEIGHTS ============ */
+    --fw-thin: 100;
+    --fw-extralight: 200;
     --fw-light: 300;
     --fw-regular: 400;
     --fw-medium: 500;
     --fw-semibold: 600;
     --fw-bold: 700;
     --fw-black: 800;
+
+    /* ============ SPACING ============ */
+    --space-xs: 0.25rem;   /* 4px */
+    --space-sm: 0.5rem;    /* 8px */
+    --space-md: 1rem;      /* 16px */
+    --space-lg: 2rem;      /* 32px */
+    --space-xl: 3rem;      /* 48px */
+    --space-2xl: 4rem;     /* 64px */
+    --space-3xl: 5rem;     /* 80px */
+
+    /* ============ BORDER RADIUS ============ */
+    --radius-sm: 0.25rem;  /* 4px */
+    --radius-md: 0.5rem;   /* 8px */
+    --radius-lg: 0.75rem;  /* 12px */
+    --radius-xl: 1rem;     /* 16px */
 }
 
-/* Resets */
-
+/* ================= RESET ================= */
 * {
     margin: 0;
     padding: 0;
@@ -62,96 +73,108 @@ a {
     text-decoration: none;
 }
 
-
-/* Body */
-
+/* ================= BODY ================= */
 body {
     font-family: var(--ff-base);
     background-color: var(--body-bg);
 }
 
-/* --- Banner --- */
-
-
-.banner {
+/* ================= BANNER ================= */
+nav.banner {
     background-color: var(--clr-primary);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: .5rem 3rem;
+    padding: 0.5rem 2rem;
 }
 
-.logo {
+/* ================= LOGO ================= */
+nav.banner .logo {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-.logo img {
+nav.banner .logo img {
     width: 50px;
     margin-bottom: 3px;
 }
 
-.logo p {
+nav.banner .logo p {
     font-size: var(--fs-xl);
-    font-weight: bold;
+    font-weight: var(--fw-bold);
     color: var(--clr-card-background);
     margin-bottom: 0;
 }
 
+/* ================= NAV ACTIONS ================= */
+nav.banner .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
 
-
-.logout-btn, .login-btn, .change-pw-btn, .signup-btn {
+/* ================= NAV BUTTONS ================= */
+nav.banner .logout-btn,
+nav.banner .login-btn,
+nav.banner .change-pw-btn,
+nav.banner .signup-btn {
+    display: inline-block;
     font-weight: var(--fw-bold);
-    border-radius: .5rem;
+    border-radius: var(--radius-md);
     border: 2px solid var(--clr-card-background);
     font-size: var(--fs-sm);
+    padding: 0.4rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
-
-.logout-btn, .login-btn, .signup-btn {
-    padding: .28rem 1rem;
-    color: var(--clr-card-background); 
+nav.banner .logout-btn,
+nav.banner .login-btn,
+nav.banner .signup-btn {
+    color: var(--clr-card-background);
     background-color: var(--clr-primary);
-    margin-right: 1rem;
-    height: fit-content;
 }
 
-.change-pw-btn {
-    padding: .5rem 1rem;
+nav.banner .change-pw-btn {
     color: var(--clr-primary);
     background-color: var(--clr-card-background);
 }
 
+/* ================= HAMBURGER ================= */
+nav.banner .navbar-toggler {
+    border-color: var(--clr-card-background);
+}
 
-/* --- Responsive --- */
-@media (max-width: 600px) {
+nav.banner .navbar-toggler-icon {
+    filter: brightness(0) invert(1);
+}
 
-    .banner {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: .5rem 1rem;
+
+nav.banner .navbar-toggler:focus {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4);
+    outline: none;
+}
+
+nav.banner .navbar-toggler:active {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 767px) {
+    nav.banner {
+        padding: 0.5rem 1rem;
     }
 
-    .logo p {
+    nav.banner .logo p {
         font-size: var(--fs-lg);
     }
 
-    .logo img {
+    nav.banner .logo img {
         width: 40px;
-        margin-bottom: 3px;
     }
 
-    .logout-btn, .change-pw-btn, .signup-btn {
-        padding: .3rem .6rem;  /* smaller padding */
-        font-size: var(--fs-xs);     /* smaller text */
+    nav.banner .nav-actions {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 0.5rem 0;
     }
-
-    .logout-btn {
-        color: var(--clr-card-background); 
-        margin-right: .5rem;
-        padding: .15rem .6rem;
-    }
-
 }
