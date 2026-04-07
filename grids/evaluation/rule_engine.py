@@ -6,7 +6,9 @@ from grids.evaluation.equivalencies import get_equivalent_codes
 from typing import Dict, Set, Any, Optional, List
 from collections import defaultdict
 from pydantic import BaseModel, Field
+import logging
 
+logger = logging.getLogger(__name__)
 from ..models import Bucket, Major, Degree, StudentData, StudentCourse, Course
 from ..models.evaluation import BUCKETS
 from .filters import CourseFilter
@@ -349,14 +351,16 @@ def _calculate_gpa(courses: List[StudentCourse]) -> float:
             
             # If it is a GPA-contributing grade (A+, B, F1, F3, FO, etc.)
             if canonical_grade not in NON_GPA_GRADES:
-                try:
-                    qp_multiplier = grade_to_quality_points(canonical_grade)
-                    total_points += (qp_multiplier * course.credits)
-                    gpa_hours += course.credits
-                except ValueError:
-                    # Failsafe logging could go here for unmapped grades
-                    continue
-
+                qp_multiplier = grade_to_quality_points(canonical_grade)
+                total_points += (qp_multiplier * course.credits)
+                gpa_hours += course.credits
+        else:
+            # Grade is not in GRADE_SYNONYMS at all — truly unknown
+            logger.warning(
+                f"Unrecognized grade '{grade}' on course {course.course_code}. "
+                f"Skipping — contributes 0 quality points to GPA."
+            )
+            
     return total_points / gpa_hours if gpa_hours > 0 else 0.0
 
 

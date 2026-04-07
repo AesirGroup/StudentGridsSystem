@@ -22,7 +22,6 @@
       "description": "General computer science major focusing on core programming, algorithms, and computing principles",
       "bucket_ids": [
         "CS_GEN_LEVEL1_CORE",
-        "CS_GEN_MATH_1115_ELECTIVE",
         "FOUNDATIONS_FST",
         "CS_GEN_LEVEL1_ELECTIVES",
         "CS_GEN_ADVANCED_COMP_CORE",
