@@ -15,8 +15,6 @@ class StudentProfile(models.Model):
     # a CSEC/CAPE foreign-language qualification and is exempt from the FLR.
     flr_exempt_verified = models.BooleanField(default=False)
 
-    raw_transcript_text = models.TextField(blank=True, default="")
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

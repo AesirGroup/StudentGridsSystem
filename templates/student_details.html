@@ -75,10 +75,7 @@
 
                 <div class="app-card">
                     <h4>Credits</h4>
-                    <p>
-                        {{ audit.total_credits_earned|default:0|floatformat:0 }} /
-                        {{ audit.total_credits_required|default:0|floatformat:0 }}
-                    </p>
+                    <p id="credits-display" data-raw="{{ audit.overall_progress|default:'' }}">N/A</p>
                 </div>
 
                 <div class="app-card">
@@ -109,7 +106,7 @@
                     {% csrf_token %}
                     <button type="submit" class="flr-toggle-btn {% if student.flr_exempt_verified %}flr-restore{% else %}flr-revoke{% endif %}">
                         {% if student.flr_exempt_verified %}
-                            Restore Requirement
+                            Mark Eligible
                         {% else %}
                             Mark Not Eligible
                         {% endif %}
@@ -321,5 +318,20 @@
     });
 
     window.addEventListener('resize', updateBucketHeights);
+
+    // ----- CREDITS DISPLAY -----
+    (function() {
+        const el = document.getElementById('credits-display');
+        if (!el) return;
+        const raw = el.dataset.raw;
+        const match = raw.match(/([\d.]+)\/([\d.]+)/);
+        if (match) {
+            const earned = Math.round(parseFloat(match[1]));
+            const required = Math.round(parseFloat(match[2]));
+            el.textContent = earned + '/' + required;
+        } else {
+            el.textContent = raw || 'N/A';
+        }
+    })();
 </script>
 {% endblock %}

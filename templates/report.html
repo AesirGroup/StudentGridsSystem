@@ -264,9 +264,13 @@
        CREDITS MISSING HELPER
     ================================================================ */
     function creditsMissing(s) {
-        const earned   = parseFloat(s.credits_earned   || 0);
-        const required = parseFloat(s.credits_required || 0);
-        return Math.max(0, required - earned);
+        const match = (s.overall_progress || '').match(/([\d.]+)\/([\d.]+)/);
+        if (match) {
+            const earned   = parseFloat(match[1]);
+            const required = parseFloat(match[2]);
+            return Math.max(0, required - earned);
+        }
+        return 0;
     }
 
     /* ================================================================

@@ -248,9 +248,13 @@
        CREDITS MISSING HELPER — computes gap from a result object
     ================================================================ */
     function creditsMissing(r) {
-        const earned   = parseFloat(r.credits_earned   || 0);
-        const required = parseFloat(r.credits_required || 0);
-        return Math.max(0, required - earned);
+        const match = (r.overall_progress || '').match(/([\d.]+)\/([\d.]+)/);
+        if (match) {
+            const earned   = parseFloat(match[1]);
+            const required = parseFloat(match[2]);
+            return Math.max(0, required - earned);
+        }
+        return 0;
     }
 
     /* ================================================================
@@ -616,6 +620,10 @@
         if (!input) return;
         input.addEventListener('input', applyFilters);
     })();
+
+
+
+
 
     /* ================================================================
        FILTER LOGIC — operates on allResults, updates filtered

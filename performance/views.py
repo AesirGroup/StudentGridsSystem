@@ -121,6 +121,7 @@ def build_student_result_dict(
     can_graduate,
     credits_earned=0,
     credits_required=0,
+    overall_progress="",
 ):
     return {
         "student_number": student_number,
@@ -131,6 +132,7 @@ def build_student_result_dict(
         "can_graduate": can_graduate,
         "credits_earned": credits_earned,
         "credits_required": credits_required,
+        "overall_progress": overall_progress,
         "detail_url": f"/grid/{student_number}/",
     }
 
@@ -262,6 +264,7 @@ class UploadGridView(LoginRequiredMixin, View):
                         latest_audit.can_graduate,
                         credits_earned=latest_audit.total_credits_earned,
                         credits_required=latest_audit.total_credits_required,
+                        overall_progress=latest_audit.overall_progress,
                     )
                 )
 
@@ -468,17 +471,18 @@ class UploadGridView(LoginRequiredMixin, View):
 
                 # Use the dictionary helper outside the transaction
                 results.append(
-                    build_student_result_dict(
-                        student.student_number,
-                        student.name,
-                        prog_name,
-                        major_name,
-                        student.overall_gpa,
-                        can_graduate,
-                        credits_earned=result.total_credits_earned,
-                        credits_required=result.total_credits_required,
-                    )
+                build_student_result_dict(
+                    student.student_number,
+                    student.name,
+                    prog_name,
+                    major_name,
+                    student.overall_gpa,
+                    can_graduate,
+                    credits_earned=result.total_credits_earned,
+                    credits_required=result.total_credits_required,
+                    overall_progress=result.overall_progress,
                 )
+            )
 
             summary = {
                 "total_students": len(students),
@@ -689,92 +693,14 @@ class EphemeralEvaluationView(View):
             )
 
 
-# class ToggleFLRExemptionView(LoginRequiredMixin, View):
-    """Admin override: toggle whether the student is eligible for the foreign language requirement."""
-
-    # def post(self, request, student_number, *args, **kwargs):
-    #     profile = get_object_or_404(StudentProfile, student_number=student_number)
-    #     profile.flr_exempt_verified = not profile.flr_exempt_verified
-    #     profile.save(update_fields=["flr_exempt_verified"])
-    #     return redirect("student_detail", student_number=student_number)
-
 class ToggleFLRExemptionView(LoginRequiredMixin, View):
-    """Admin override: toggle FLR exemption and immediately re-evaluate the student."""
+    """Admin override: toggle whether the student is eligible for the foreign language requirement."""
 
     def post(self, request, student_number, *args, **kwargs):
         profile = get_object_or_404(StudentProfile, student_number=student_number)
-
-        # 1. Flip the flag
         profile.flr_exempt_verified = not profile.flr_exempt_verified
         profile.save(update_fields=["flr_exempt_verified"])
-
-        # 2. Re-evaluate if we have stored transcript text
-        if not profile.raw_transcript_text:
-            # No transcript on file — just redirect, old audit stays
-            return redirect("student_detail", student_number=student_number)
-
-        try:
-            detected_dtype = identify_doc_type(profile.raw_transcript_text)
-            students = parse_text(profile.raw_transcript_text, dtype=detected_dtype)
-
-            # Find this specific student in the parsed results
-            student = next(
-                (s for s in students if str(s.student_number) == str(student_number)),
-                None,
-            )
-            if not student:
-                return redirect("student_detail", student_number=student_number)
-
-            # Build virtual catalog (same logic as UploadGridView)
-            catalog_courses = list(load_catalog_courses())
-            existing_codes = {c.code for c in catalog_courses}
-            for term in student.terms:
-                for sc in term.courses:
-                    if sc.course_code not in existing_codes:
-                        catalog_courses.append(Course(
-                            subject=sc.subject,
-                            number=sc.number,
-                            title=sc.title,
-                            credits=sc.credits,
-                            code=sc.course_code,
-                            level=sc.level,
-                        ))
-                        existing_codes.add(sc.course_code)
-
-            evaluator = RequirementEvaluator(courses=catalog_courses)
-            degree = Degree.from_student_data(student)
-            result = evaluator.evaluate_degree(
-                student, degree, flr_override=profile.flr_exempt_verified
-            )
-
-            can_graduate = len(result.unmet_requirements) == 0
-            prog_name = student.programme.programme if student.programme else ""
-            major_name = student.programme.major if student.programme else ""
-
-            with transaction.atomic():
-                audit = AuditRecord.objects.create(
-                    student=profile,
-                    evaluated_programme=prog_name,
-                    evaluated_major=major_name,
-                    can_graduate=can_graduate,
-                    total_credits_earned=result.total_credits_earned,
-                    total_credits_required=result.total_credits_required,
-                    overall_progress=result.overall_progress,
-                    unmet_requirements_json=result.unmet_requirements,
-                    next_steps_json=result.next_steps,
-                )
-                for major in result.major_results:
-                    for b_result in major.bucket_results:
-                        save_bucket_to_db(audit, major.component_name, b_result, student)
-                for g_result in result.general_requirements:
-                    save_bucket_to_db(audit, "General Requirements", g_result, student)
-
-        except Exception as e:
-            logger.error(f"FLR re-evaluation failed for {student_number}: {e}", exc_info=True)
-            # Don't crash — the flag was already saved, just skip re-audit
-
         return redirect("student_detail", student_number=student_number)
-    
 
 
     
@@ -825,10 +751,11 @@ class ReportStudentsView(LoginRequiredMixin, View):
                 "can_graduate": latest_audit.can_graduate if latest_audit else False,
                 "credits_earned": latest_audit.total_credits_earned if latest_audit else 0,
                 "credits_required": latest_audit.total_credits_required if latest_audit else 0,
+                "overall_progress": latest_audit.overall_progress if latest_audit else "",
             })
 
         return JsonResponse({"students": data})
-
+    
 
 class StudentReportDataView(LoginRequiredMixin, View):
     def get(self, request, student_number):

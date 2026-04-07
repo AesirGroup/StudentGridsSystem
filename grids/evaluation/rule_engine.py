@@ -460,7 +460,6 @@ def _evaluate_foreign_language_requirement(student: StudentData, rule_data: Dict
     else:
         result.progress = f"0/{result.credits_required:.1f} credits"
         result.details = "No foreign language courses completed"
-        result.courses_needed = sorted(approved_courses) 
 
     return result
 
