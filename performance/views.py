@@ -440,7 +440,6 @@ class UploadGridView(LoginRequiredMixin, View):
                             "programme": prog_name,
                             "major": major_name,
                             "overall_gpa": student.overall_gpa,
-                            "raw_transcript_text": raw_text,
                         },
                     )
 
