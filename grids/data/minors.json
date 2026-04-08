@@ -1,0 +1,134 @@
+{
+  "minors": [
+    {
+      "id": "MINOR_IND_CHEM",
+      "name": "Industrial Chemistry",
+      "faculty": "FST",
+      "total_credits": 15,
+      "description": "Minor in Industrial Chemistry. Must be pursued alongside a Major or Minor in Chemistry. Requires 5 specific advanced courses covering polymer chemistry, green chemistry, and industrial applications.",
+      "bucket_ids": [
+        "CHEM_MINOR_IND_CHEM_CORE"
+      ]
+    },
+    {
+      "id": "MINOR_ANAL_CHEM",
+      "name": "Analytical Chemistry",
+      "faculty": "FST",
+      "total_credits": 15,
+      "description": "Minor in Analytical Chemistry. Must be pursued alongside a Major, Minor, or BSc in Chemistry. Requires 4 core analytical courses and 1 approved elective.",
+      "bucket_ids": [
+        "CHEM_MINOR_ANAL_CHEM_CORE",
+        "CHEM_MINOR_ANAL_CHEM_ELECTIVE"
+      ]
+    },
+    {
+      "id": "MINOR_CHEM_BIO",
+      "name": "Chemical Biology",
+      "faculty": "FST",
+      "total_credits": 15,
+      "description": "Minor in Chemical Biology. Must be pursued alongside a Major or Minor in Chemistry. Requires 4 core courses (including CHEM 2471, CHEM 3564, CHEM 3870, CHEM 3871) and 1 approved elective.",
+      "bucket_ids": [
+        "CHEM_MINOR_CHEM_BIO_CORE",
+        "CHEM_MINOR_CHEM_BIO_ELECTIVE"
+      ]
+    },
+    {
+      "id": "MINOR_MAT_CHEM",
+      "name": "Materials Chemistry",
+      "faculty": "FST",
+      "total_credits": 15,
+      "description": "Minor in Materials Chemistry. Must be pursued alongside a Major or Minor in Chemistry. NOTE: Not offered in the 2025/2026 academic year. Requires CHEM 3162, CHEM 3163, CHEM 3564, PHYS 2165 (core) and one elective from CHEM 3578 or CHEM 3563.",
+      "bucket_ids": [
+        "CHEM_MINOR_MAT_CHEM_CORE",
+        "CHEM_MINOR_MAT_CHEM_ELECTIVE"
+      ]
+    },
+    {
+      "id": "MINOR_MATHEMATICS",
+      "name": "Mathematics",
+      "faculty": "FST",
+      "total_credits": 15,
+      "description": "Minor in Mathematics requiring 15 advanced credits. Must be pursued alongside a Major.",
+      "bucket_ids": [
+        "MATH_MINOR_CORE",
+        "MATH_MINOR_CORE_CHOICE",
+        "MATH_MINOR_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MINOR_STATISTICS",
+      "name": "Statistics",
+      "faculty": "FST",
+      "total_credits": 15,
+      "description": "Minor in Statistics requiring 15 advanced credits. Note: MATH 2275 overlap rules apply for Math Majors.",
+      "bucket_ids": [
+        "STAT_MINOR_REGRESSION_CHOICE",
+        "STAT_MINOR_CORE",
+        "STAT_MINOR_ELECTIVE"
+      ]
+    },
+    {
+      "id": "MINOR_ELECTRONICS",
+      "name": "Electronics",
+      "faculty": "FST",
+      "total_credits": 15,
+      "description": "Minor in Electronics from the Department of Physics. Requires 5 specific advanced courses (PHYS 2401, 2402, 3201, 3202, 3203). Not available to students pursuing the Major in Electronics. Students must register for PHYS 3202 (not PHYS 3163).",
+      "bucket_ids": [
+        "ELEC_MINOR_CORE"
+      ]
+    },
+    {
+      "id": "MINOR_ENV_PHYSICS",
+      "name": "Environmental Physics",
+      "faculty": "FST",
+      "total_credits": 15,
+      "description": "Minor in Environmental Physics from the Department of Physics. Requires the year-long Environmental Physics Laboratory (PHYS 3159) plus 4 electives from PHYS 2156, 2157, 3156, 3157, 3158.",
+      "bucket_ids": [
+        "ENV_PHYS_MINOR_CORE",
+        "ENV_PHYS_MINOR_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MINOR_MAT_SCI",
+      "name": "Materials Science",
+      "faculty": "FST",
+      "total_credits": 15,
+      "description": "Minor in Materials Science from the Department of Physics. Requires 5 specific advanced courses: PHYS 2165, 2166, 3164, 3165, and the year-long lab PHYS 3166.",
+      "bucket_ids": [
+        "MAT_SCI_MINOR_CORE"
+      ]
+    },
+    {
+      "id": "MINOR_MED_PHYS",
+      "name": "Medical Physics & Bioengineering",
+      "faculty": "FST",
+      "total_credits": 15,
+      "description": "Minor in Medical Physics & Bioengineering from the Department of Physics. Requires BMET 2001, BMET 2002, and PHYS 3160, 3167, 3168.",
+      "bucket_ids": [
+        "MED_PHYS_MINOR_CORE"
+      ]
+    },
+    {
+      "id": "MINOR_BIOCHEMISTRY",
+      "name": "Biochemistry",
+      "faculty": "FST",
+      "total_credits": 15,
+      "description": "Minor in Biochemistry from the Department of Life Sciences. Requires 9 credits core (BIOC 2061, 2069, 2161, 2169) and 6 credits from electives (BIOC 2162, 2262, 3062, 3262, 3364). Biology majors with this minor must NOT read BIOL 2360.",
+      "bucket_ids": [
+        "BIOC_MINOR_CORE",
+        "BIOC_MINOR_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MINOR_BIOLOGY",
+      "name": "Biology",
+      "faculty": "FST",
+      "total_credits": 15,
+      "description": "Minor in Biology from the Department of Life Sciences. Requires 6 credits core (BIOL 2061, 2262) and 9 credits from BIOL Level II/III electives. Biochemistry majors should NOT select BIOL 2360. Math majors or Stats minors should NOT take BIOL 2163.",
+      "bucket_ids": [
+        "BIOL_MINOR_CORE",
+        "BIOL_MINOR_ELECTIVES"
+      ]
+    }
+  ]
+}

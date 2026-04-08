@@ -10,11 +10,14 @@
         {
           "type": "all_credits_from",
           "description": "Complete all foundation courses",
-          "list": ["FOUN 1101", "FOUN 1105", "FOUN 1301"]
+          "list": [
+            "FOUN 1101",
+            "FOUN 1105",
+            "FOUN 1301"
+          ]
         }
       ]
     },
-
     {
       "id": "FOUNDATIONS_FST",
       "name": "Foundation Courses (FST)",
@@ -25,7 +28,10 @@
         {
           "type": "all_credits_from",
           "description": "Complete mandatory foundation courses",
-          "list": ["FOUN 1105", "FOUN 1301"]
+          "list": [
+            "FOUN 1105",
+            "FOUN 1301"
+          ]
         },
         {
           "type": "x_of",
@@ -34,11 +40,19 @@
           "options": [
             {
               "name": "Caribbean Civilisation",
-              "list": ["FOUN 1101"]
+              "list": [
+                "FOUN 1101"
+              ]
             },
             {
               "name": "Foreign Language Substitute",
-              "list": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"],
+              "list": [
+                "CHIN 1007",
+                "FREN 1009",
+                "JAPA 1007",
+                "SPAN 1007",
+                "COCR 1052"
+              ],
               "min_credits": 3
             }
           ]
@@ -56,11 +70,16 @@
           "type": "foreign_language_requirement",
           "description": "Foreign language requirement for FST students admitted 2023+",
           "credits": 3.0,
-          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"]
+          "approved_courses": [
+            "CHIN 1007",
+            "FREN 1009",
+            "JAPA 1007",
+            "SPAN 1007",
+            "COCR 1052"
+          ]
         }
       ]
     },
-
     {
       "id": "FOUNDATIONS_SPORT",
       "name": "Foundation Courses (Sport - St. Augustine)",
@@ -71,7 +90,10 @@
         {
           "type": "all_credits_from",
           "description": "Complete mandatory foundation courses",
-          "list": ["FOUN 1101", "FOUN 1105"]
+          "list": [
+            "FOUN 1101",
+            "FOUN 1105"
+          ]
         },
         {
           "type": "x_of",
@@ -80,11 +102,19 @@
           "options": [
             {
               "name": "Science, Medicine and Technology in Society",
-              "list": ["FOUN 1210"]
+              "list": [
+                "FOUN 1210"
+              ]
             },
             {
               "name": "Foreign Language Substitute",
-              "list": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"],
+              "list": [
+                "CHIN 1007",
+                "FREN 1009",
+                "JAPA 1007",
+                "SPAN 1007",
+                "COCR 1052"
+              ],
               "min_credits": 3
             }
           ]
@@ -102,11 +132,16 @@
           "type": "foreign_language_requirement",
           "description": "Foreign language requirement for Sport students",
           "credits": 3.0,
-          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"]
+          "approved_courses": [
+            "CHIN 1007",
+            "FREN 1009",
+            "JAPA 1007",
+            "SPAN 1007",
+            "COCR 1052"
+          ]
         }
       ]
     },
-
     {
       "id": "FOUNDATIONS_FHE",
       "name": "Foundation Courses (Humanities & Education)",
@@ -119,8 +154,18 @@
           "x": 1,
           "description": "Complete English foundation (FOUN 1001 or FOUN 1106)",
           "options": [
-            { "name": "English for Academic Purposes", "list": ["FOUN 1001"] },
-            { "name": "Academic English for Research", "list": ["FOUN 1106"] }
+            {
+              "name": "English for Academic Purposes",
+              "list": [
+                "FOUN 1001"
+              ]
+            },
+            {
+              "name": "Academic English for Research",
+              "list": [
+                "FOUN 1106"
+              ]
+            }
           ]
         },
         {
@@ -128,10 +173,30 @@
           "x": 1,
           "description": "Complete a discipline-specific writing course",
           "options": [
-            { "name": "Writing about Literature", "list": ["FOUN 1104"] },
-            { "name": "Writing in Visual/Performing Arts", "list": ["FOUN 1107"] },
-            { "name": "Argument and Report Writing", "list": ["FOUN 1103"] },
-            { "name": "Scientific and Technical Writing", "list": ["FOUN 1105"] }
+            {
+              "name": "Writing about Literature",
+              "list": [
+                "FOUN 1104"
+              ]
+            },
+            {
+              "name": "Writing in Visual/Performing Arts",
+              "list": [
+                "FOUN 1107"
+              ]
+            },
+            {
+              "name": "Argument and Report Writing",
+              "list": [
+                "FOUN 1103"
+              ]
+            },
+            {
+              "name": "Scientific and Technical Writing",
+              "list": [
+                "FOUN 1105"
+              ]
+            }
           ]
         },
         {
@@ -139,12 +204,33 @@
           "x": 2,
           "description": "Complete 2 of the following: FOUN 1101, FOUN 1210, FOUN 1301, or an approved FL course",
           "options": [
-            { "name": "Caribbean Civilisation", "list": ["FOUN 1101"] },
-            { "name": "Science, Medicine and Technology", "list": ["FOUN 1210"] },
-            { "name": "Law, Governance, Economy and Society", "list": ["FOUN 1301"] },
+            {
+              "name": "Caribbean Civilisation",
+              "list": [
+                "FOUN 1101"
+              ]
+            },
+            {
+              "name": "Science, Medicine and Technology",
+              "list": [
+                "FOUN 1210"
+              ]
+            },
+            {
+              "name": "Law, Governance, Economy and Society",
+              "list": [
+                "FOUN 1301"
+              ]
+            },
             {
               "name": "Foreign Language Substitute",
-              "list": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"],
+              "list": [
+                "CHIN 1007",
+                "FREN 1009",
+                "JAPA 1007",
+                "SPAN 1007",
+                "COCR 1052"
+              ],
               "min_credits": 3
             }
           ]
@@ -162,11 +248,16 @@
           "type": "foreign_language_requirement",
           "description": "Foreign language requirement for FHE students",
           "credits": 3.0,
-          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"]
+          "approved_courses": [
+            "CHIN 1007",
+            "FREN 1009",
+            "JAPA 1007",
+            "SPAN 1007",
+            "COCR 1052"
+          ]
         }
       ]
     },
-
     {
       "id": "FOUNDATIONS_FFA",
       "name": "Foundation Courses (Food & Agriculture)",
@@ -179,8 +270,18 @@
           "x": 1,
           "description": "Complete writing foundation (FOUN 1105 or AGRI 1102)",
           "options": [
-            { "name": "Scientific and Technical Writing", "list": ["FOUN 1105"] },
-            { "name": "Critical Thinking (Agriculture)", "list": ["AGRI 1102"] }
+            {
+              "name": "Scientific and Technical Writing",
+              "list": [
+                "FOUN 1105"
+              ]
+            },
+            {
+              "name": "Critical Thinking (Agriculture)",
+              "list": [
+                "AGRI 1102"
+              ]
+            }
           ]
         },
         {
@@ -188,8 +289,18 @@
           "x": 1,
           "description": "Complete FOUN 1101 or FOUN 1301",
           "options": [
-            { "name": "Caribbean Civilisation", "list": ["FOUN 1101"] },
-            { "name": "Law, Governance, Economy and Society", "list": ["FOUN 1301"] }
+            {
+              "name": "Caribbean Civilisation",
+              "list": [
+                "FOUN 1101"
+              ]
+            },
+            {
+              "name": "Law, Governance, Economy and Society",
+              "list": [
+                "FOUN 1301"
+              ]
+            }
           ]
         }
       ]
@@ -205,11 +316,15 @@
           "type": "foreign_language_requirement",
           "description": "Foreign language requirement for FFA students",
           "credits": 3.0,
-          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007"]
+          "approved_courses": [
+            "CHIN 1007",
+            "FREN 1009",
+            "JAPA 1007",
+            "SPAN 1007"
+          ]
         }
       ]
     },
-
     {
       "id": "FOUNDATIONS_FSS",
       "name": "Foundation Courses (Social Sciences)",
@@ -222,8 +337,18 @@
           "x": 1,
           "description": "Complete English foundation (FOUN 1001 or FOUN 1106)",
           "options": [
-            { "name": "English for Academic Purposes", "list": ["FOUN 1001"] },
-            { "name": "Academic English for Research", "list": ["FOUN 1106"] }
+            {
+              "name": "English for Academic Purposes",
+              "list": [
+                "FOUN 1001"
+              ]
+            },
+            {
+              "name": "Academic English for Research",
+              "list": [
+                "FOUN 1106"
+              ]
+            }
           ]
         },
         {
@@ -231,11 +356,27 @@
           "x": 1,
           "description": "Complete FOUN 1210 or FOUN 1101, or an approved FL course if non-exempt",
           "options": [
-            { "name": "Science, Medicine and Technology", "list": ["FOUN 1210"] },
-            { "name": "Caribbean Civilisation", "list": ["FOUN 1101"] },
+            {
+              "name": "Science, Medicine and Technology",
+              "list": [
+                "FOUN 1210"
+              ]
+            },
+            {
+              "name": "Caribbean Civilisation",
+              "list": [
+                "FOUN 1101"
+              ]
+            },
             {
               "name": "Foreign Language Substitute",
-              "list": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"],
+              "list": [
+                "CHIN 1007",
+                "FREN 1009",
+                "JAPA 1007",
+                "SPAN 1007",
+                "COCR 1052"
+              ],
               "min_credits": 3
             }
           ]
@@ -253,11 +394,16 @@
           "type": "foreign_language_requirement",
           "description": "Foreign language requirement for FSS students",
           "credits": 3.0,
-          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"]
+          "approved_courses": [
+            "CHIN 1007",
+            "FREN 1009",
+            "JAPA 1007",
+            "SPAN 1007",
+            "COCR 1052"
+          ]
         }
       ]
     },
-
     {
       "id": "FOUNDATIONS_MEDSCI",
       "name": "Foundation Courses (Medical Sciences)",
@@ -268,7 +414,11 @@
         {
           "type": "all_credits_from",
           "description": "Complete all Medical Sciences foundation courses",
-          "list": ["PECH 1001", "PECH 1101", "PECH 1102"]
+          "list": [
+            "PECH 1001",
+            "PECH 1101",
+            "PECH 1102"
+          ]
         }
       ]
     },
@@ -283,11 +433,12 @@
           "type": "foreign_language_requirement",
           "description": "Foreign language requirement for Medical Sciences students",
           "credits": 3.0,
-          "approved_courses": ["SPAN 1013"]
+          "approved_courses": [
+            "SPAN 1013"
+          ]
         }
       ]
     },
-
     {
       "id": "FOUNDATIONS_LAW",
       "name": "Foundation Courses (Law)",
@@ -298,16 +449,34 @@
         {
           "type": "all_credits_from",
           "description": "Complete required Law foundation courses",
-          "list": ["FOUN 1210", "FOUN 1101"]
+          "list": [
+            "FOUN 1210",
+            "FOUN 1101"
+          ]
         },
         {
           "type": "x_of",
           "x": 1,
           "description": "Complete Foundation English",
           "options": [
-            { "name": "English for Academic Purposes", "list": ["FOUN 1001"] },
-            { "name": "Academic English for Research", "list": ["FOUN 1106"] },
-            { "name": "Argument and Report Writing", "list": ["FOUN 1103"] }
+            {
+              "name": "English for Academic Purposes",
+              "list": [
+                "FOUN 1001"
+              ]
+            },
+            {
+              "name": "Academic English for Research",
+              "list": [
+                "FOUN 1106"
+              ]
+            },
+            {
+              "name": "Argument and Report Writing",
+              "list": [
+                "FOUN 1103"
+              ]
+            }
           ]
         }
       ]
@@ -323,11 +492,16 @@
           "type": "foreign_language_requirement",
           "description": "Foreign language requirement for Law students",
           "credits": 3.0,
-          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007", "COCR 1052"]
+          "approved_courses": [
+            "CHIN 1007",
+            "FREN 1009",
+            "JAPA 1007",
+            "SPAN 1007",
+            "COCR 1052"
+          ]
         }
       ]
     },
-
     {
       "id": "FOUNDATIONS_ENG",
       "name": "Foundation Courses (Engineering)",
@@ -340,9 +514,24 @@
           "x": 1,
           "description": "Complete a foundation/out-of-department course",
           "options": [
-            { "name": "Caribbean Civilisation", "list": ["FOUN 1101"] },
-            { "name": "Science, Medicine and Technology", "list": ["FOUN 1210"] },
-            { "name": "Law, Governance, Economy and Society", "list": ["FOUN 1301"] }
+            {
+              "name": "Caribbean Civilisation",
+              "list": [
+                "FOUN 1101"
+              ]
+            },
+            {
+              "name": "Science, Medicine and Technology",
+              "list": [
+                "FOUN 1210"
+              ]
+            },
+            {
+              "name": "Law, Governance, Economy and Society",
+              "list": [
+                "FOUN 1301"
+              ]
+            }
           ]
         }
       ]
@@ -358,7 +547,12 @@
           "type": "foreign_language_requirement",
           "description": "Foreign language requirement for Engineering students",
           "credits": 3.0,
-          "approved_courses": ["CHIN 1007", "FREN 1009", "JAPA 1007", "SPAN 1007"]
+          "approved_courses": [
+            "CHIN 1007",
+            "FREN 1009",
+            "JAPA 1007",
+            "SPAN 1007"
+          ]
         }
       ]
     },
@@ -371,7 +565,12 @@
         {
           "type": "all_credits_from",
           "description": "Complete all Level 1 CS core courses",
-          "list": ["COMP 1600", "COMP 1601", "COMP 1602", "COMP 1604"]
+          "list": [
+            "COMP 1600",
+            "COMP 1601",
+            "COMP 1602",
+            "COMP 1604"
+          ]
         }
       ]
     },
@@ -384,7 +583,9 @@
         {
           "type": "all_credits_from",
           "description": "Complete MATH 1115",
-          "list": ["MATH 1115"]
+          "list": [
+            "MATH 1115"
+          ]
         }
       ]
     },
@@ -401,7 +602,12 @@
           "filter": {
             "min_level": 1,
             "max_level": 1,
-            "exclude_codes": ["COMP 1011", "FOUN 1101", "FOUN 1105", "FOUN 1301"]
+            "exclude_codes": [
+              "COMP 1011",
+              "FOUN 1101",
+              "FOUN 1105",
+              "FOUN 1301"
+            ]
           }
         }
       ]
@@ -415,7 +621,14 @@
         {
           "type": "all_credits_from",
           "description": "Complete all advanced CS core courses",
-          "list": ["COMP 2601", "COMP 2602", "COMP 2603", "COMP 2604", "COMP 2605", "COMP 2611"]
+          "list": [
+            "COMP 2601",
+            "COMP 2602",
+            "COMP 2603",
+            "COMP 2604",
+            "COMP 2605",
+            "COMP 2611"
+          ]
         }
       ]
     },
@@ -430,7 +643,34 @@
           "credits": 12,
           "description": "Advanced COMP, INFO, or MATH courses",
           "filter": {
-            "subjects": ["COMP", "INFO", "MATH"],
+            "subjects": [
+              "COMP",
+              "INFO",
+              "MATH"
+            ],
+            "min_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "CS_COMP_MATH_DOUBLE_ELECTIVES",
+      "name": "Computer Science & Mathematics Double Advanced Electives",
+      "credits_required": 12,
+      "description": "Advanced electives in COMP, INFO, or MATH for CS/MATH Double Major",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 12,
+          "description": "Advanced COMP, INFO, or MATH courses",
+          "filter": {
+            "subjects": [
+              "COMP",
+              "INFO"
+            ],
+            "exclude_codes": [
+              "MATH 2250"
+            ],
             "min_level": 2
           }
         }
@@ -461,7 +701,15 @@
         {
           "type": "all_credits_from",
           "description": "Complete all Level 1 CS Special core courses",
-          "list": ["COMP 1600", "COMP 1601", "COMP 1602", "COMP 1603", "COMP 1604", "INFO 1600", "INFO 1601"]
+          "list": [
+            "COMP 1600",
+            "COMP 1601",
+            "COMP 1602",
+            "COMP 1603",
+            "COMP 1604",
+            "INFO 1600",
+            "INFO 1601"
+          ]
         }
       ]
     },
@@ -474,7 +722,9 @@
         {
           "type": "all_credits_from",
           "description": "Complete MATH 1115",
-          "list": ["MATH 1115"]
+          "list": [
+            "MATH 1115"
+          ]
         }
       ]
     },
@@ -487,7 +737,23 @@
         {
           "type": "all_credits_from",
           "description": "Complete all advanced CS Special core courses",
-          "list": ["COMP 2601", "COMP 2602", "COMP 2603", "COMP 2604", "COMP 2605", "COMP 2606", "COMP 2611", "INFO 2602", "INFO 2604", "COMP 3601", "COMP 3602", "COMP 3603", "INFO 3604", "COMP 3613", "MATH 2250"]
+          "list": [
+            "COMP 2601",
+            "COMP 2602",
+            "COMP 2603",
+            "COMP 2604",
+            "COMP 2605",
+            "COMP 2606",
+            "COMP 2611",
+            "INFO 2602",
+            "INFO 2604",
+            "COMP 3601",
+            "COMP 3602",
+            "COMP 3603",
+            "INFO 3604",
+            "COMP 3613",
+            "MATH 2250"
+          ]
         }
       ]
     },
@@ -502,7 +768,10 @@
           "credits": 15,
           "description": "Advanced COMP or INFO courses",
           "filter": {
-            "subjects": ["COMP", "INFO"],
+            "subjects": [
+              "COMP",
+              "INFO"
+            ],
             "min_level": 2
           }
         }
@@ -517,7 +786,16 @@
         {
           "type": "all_credits_from",
           "description": "Complete all Level 1 core courses for CS with Management",
-          "list": ["ACCT 1002", "COMP 1600", "COMP 1601", "ECON 1001", "ACCT 1003", "COMP 1602", "COMP 1603", "ECON 1002"]
+          "list": [
+            "ACCT 1002",
+            "COMP 1600",
+            "COMP 1601",
+            "ECON 1001",
+            "ACCT 1003",
+            "COMP 1602",
+            "COMP 1603",
+            "ECON 1002"
+          ]
         }
       ]
     },
@@ -530,7 +808,18 @@
         {
           "type": "all_credits_from",
           "description": "Complete all advanced core courses",
-          "list": ["COMP 2601", "COMP 2602", "COMP 2605", "COMP 2611", "MGMT 2021", "COMP 2603", "COMP 2604", "MGMT 2008", "MGMT 2032", "MKTG 2001"]
+          "list": [
+            "COMP 2601",
+            "COMP 2602",
+            "COMP 2605",
+            "COMP 2611",
+            "MGMT 2021",
+            "COMP 2603",
+            "COMP 2604",
+            "MGMT 2008",
+            "MGMT 2032",
+            "MKTG 2001"
+          ]
         }
       ]
     },
@@ -544,7 +833,12 @@
           "type": "min_credits_from",
           "credits": 3,
           "description": "Select from specified management courses",
-          "list": ["ACCT 2017", "MGMT 2012", "MGMT 2023", "MKTG 3000"]
+          "list": [
+            "ACCT 2017",
+            "MGMT 2012",
+            "MGMT 2023",
+            "MKTG 3000"
+          ]
         }
       ]
     },
@@ -558,7 +852,33 @@
           "type": "min_credits_from",
           "credits": 12,
           "description": "Select from specified COMP/INFO courses",
-          "list": ["COMP 3602", "COMP 3603", "COMP 3605", "COMP 3606", "COMP 3607", "COMP 3612", "INFO 2602", "INFO 2604", "INFO 3606", "INFO 3607", "INFO 3611", "INFO 3609", "INFO 3610"]
+          "list": [
+            "COMP 2606",
+            "COMP 3601",
+            "COMP 3602",
+            "COMP 3603",
+            "COMP 3605",
+            "COMP 3606",
+            "COMP 3607",
+            "COMP 3608",
+            "COMP 3609",
+            "COMP 3610",
+            "COMP 3611",
+            "COMP 3612",
+            "INFO 2602",
+            "INFO 2604",
+            "INFO 2605",
+            "INFO 3600",
+            "INFO 3604",
+            "INFO 3605",
+            "INFO 3608",
+            "INFO 3606",
+            "INFO 3607",
+            "INFO 3611",
+            "INFO 3609",
+            "INFO 3610",
+            "MATH 2250"
+          ]
         }
       ]
     },
@@ -573,7 +893,13 @@
           "credits": 15,
           "description": "Advanced courses in specified subjects",
           "filter": {
-            "subjects": ["COMP", "ECON", "INFO", "MATH", "MGMT"],
+            "subjects": [
+              "COMP",
+              "ECON",
+              "INFO",
+              "MATH",
+              "MGMT"
+            ],
             "min_level": 2
           }
         }
@@ -588,7 +914,12 @@
         {
           "type": "all_credits_from",
           "description": "Complete all Level 1 IT core courses",
-          "list": ["COMP 1601", "COMP 1602", "INFO 1600", "INFO 1601"]
+          "list": [
+            "COMP 1601",
+            "COMP 1602",
+            "INFO 1600",
+            "INFO 1601"
+          ]
         }
       ]
     },
@@ -601,7 +932,9 @@
         {
           "type": "all_credits_from",
           "description": "Complete MATH 1115",
-          "list": ["MATH 1115"]
+          "list": [
+            "MATH 1115"
+          ]
         }
       ]
     },
@@ -618,7 +951,12 @@
           "filter": {
             "min_level": 1,
             "max_level": 1,
-            "exclude_codes": ["COMP 1011", "FOUN 1101", "FOUN 1105", "FOUN 1301"]
+            "exclude_codes": [
+              "COMP 1011",
+              "FOUN 1101",
+              "FOUN 1105",
+              "FOUN 1301"
+            ]
           }
         }
       ]
@@ -632,24 +970,40 @@
         {
           "type": "all_credits_from",
           "description": "Complete all advanced IT core courses",
-          "list": ["COMP 2605", "INFO 2600", "INFO 2601", "INFO 2602", "INFO 2603", "INFO 2604"]
+          "list": [
+            "COMP 2605",
+            "INFO 2600",
+            "INFO 2601",
+            "INFO 2602",
+            "INFO 2603",
+            "INFO 2604"
+          ]
         }
       ]
     },
     {
       "id": "IT_GEN_COMP_INFO_MATH_ELECTIVES",
-      "name": "Information Technology COMP/INFO/MATH Electives",
+      "name": "Information Technology Advanced Electives",
       "credits_required": 12,
-      "description": "Advanced electives in COMP, INFO, or MATH",
+      "description": "Choose any 12 credits from the approved Level II/III elective list.",
       "rules": [
         {
           "type": "min_credits_from",
           "credits": 12,
-          "description": "Advanced COMP, INFO, or MATH courses",
-          "filter": {
-            "subjects": ["COMP", "INFO", "MATH"],
-            "min_level": 2
-          }
+          "description": "Approved IT Electives",
+          "list": [
+            "COMP 3605",
+            "INFO 2605",
+            "INFO 3605",
+            "MATH 2250",
+            "COMP 3610",
+            "INFO 3606",
+            "INFO 3607",
+            "INFO 3608",
+            "INFO 3611",
+            "INFO 3609",
+            "INFO 3610"
+          ]
         }
       ]
     },
@@ -678,7 +1032,15 @@
         {
           "type": "all_credits_from",
           "description": "Complete all Level 1 IT Special core courses",
-          "list": ["COMP 1600", "COMP 1601", "COMP 1602", "COMP 1603", "COMP 1604", "INFO 1600", "INFO 1601"]
+          "list": [
+            "COMP 1600",
+            "COMP 1601",
+            "COMP 1602",
+            "COMP 1603",
+            "COMP 1604",
+            "INFO 1600",
+            "INFO 1601"
+          ]
         }
       ]
     },
@@ -691,7 +1053,9 @@
         {
           "type": "all_credits_from",
           "description": "Complete MATH 1115",
-          "list": ["MATH 1115"]
+          "list": [
+            "MATH 1115"
+          ]
         }
       ]
     },
@@ -704,7 +1068,23 @@
         {
           "type": "all_credits_from",
           "description": "Complete all advanced IT Special core courses",
-          "list": ["COMP 2603", "COMP 2605", "COMP 2606", "COMP 3603", "INFO 2600", "INFO 2601", "INFO 2602", "INFO 2603", "INFO 2604", "INFO 2605", "INFO 3600", "INFO 3601", "INFO 3602", "INFO 3604", "MATH 2250"]
+          "list": [
+            "COMP 2603",
+            "COMP 2605",
+            "COMP 2606",
+            "COMP 3603",
+            "INFO 2600",
+            "INFO 2601",
+            "INFO 2602",
+            "INFO 2603",
+            "INFO 2604",
+            "INFO 2605",
+            "INFO 3600",
+            "INFO 3601",
+            "INFO 3602",
+            "INFO 3604",
+            "MATH 2250"
+          ]
         }
       ]
     },
@@ -719,7 +1099,10 @@
           "credits": 15,
           "description": "Advanced COMP or INFO courses",
           "filter": {
-            "subjects": ["COMP", "INFO"],
+            "subjects": [
+              "COMP",
+              "INFO"
+            ],
             "min_level": 2
           }
         }
@@ -734,7 +1117,13 @@
         {
           "type": "all_credits_from",
           "description": "Complete all Level 1 Math core courses",
-          "list": ["MATH 1142", "MATH 1152", "MATH 1194", "MATH 1141", "MATH 1151"]
+          "list": [
+            "MATH 1142",
+            "MATH 1152",
+            "MATH 1194",
+            "MATH 1141",
+            "MATH 1151"
+          ]
         }
       ]
     },
@@ -742,16 +1131,26 @@
       "id": "MATH_LEVEL1_ELECTIVES",
       "name": "Mathematics Level 1 Electives",
       "credits_required": 11,
-      "description": "Level 1 elective courses (excluding foundations)",
+      "description": "Level 1 elective courses (excluding foundations and departmental restrictions)",
       "rules": [
         {
           "type": "min_credits_from",
           "credits": 11,
-          "description": "Any Level 1 courses excluding foundations",
+          "description": "Any Level 1 courses excluding foundations and departmental overlaps",
           "filter": {
             "min_level": 1,
             "max_level": 1,
-            "exclude_codes": ["FOUN 1101", "FOUN 1105", "FOUN 1301"]
+            "exclude_codes": [
+              "FOUN 1101",
+              "FOUN 1105",
+              "FOUN 1301",
+              "AGRI 1003",
+              "ECON 1003",
+              "ECON 1004",
+              "ECON 1005",
+              "HUEC 1005",
+              "SOCI 1005"
+            ]
           }
         }
       ]
@@ -765,7 +1164,16 @@
         {
           "type": "all_credits_from",
           "description": "Complete all advanced Math core courses",
-          "list": ["MATH 2270", "MATH 2273", "MATH 2274", "MATH 2276", "MATH 2271", "MATH 2272", "MATH 2275", "MATH 2277"]
+          "list": [
+            "MATH 2270",
+            "MATH 2273",
+            "MATH 2274",
+            "MATH 2276",
+            "MATH 2271",
+            "MATH 2272",
+            "MATH 2275",
+            "MATH 2277"
+          ]
         }
       ]
     },
@@ -780,7 +1188,9 @@
           "credits": 6,
           "description": "Any Level 3 MATH courses",
           "filter": {
-            "subjects": ["MATH"],
+            "subjects": [
+              "MATH"
+            ],
             "min_level": 3,
             "max_level": 3
           }
@@ -791,14 +1201,35 @@
       "id": "MATH_OTHER_ADVANCED_ELECTIVES",
       "name": "Mathematics Other Advanced Electives",
       "credits_required": 30,
-      "description": "Any other advanced level courses",
+      "description": "Any other advanced level courses, excluding departmental overlap restrictions.",
       "rules": [
         {
           "type": "min_credits_from",
           "credits": 30,
-          "description": "Any advanced level courses",
+          "max_one_from": [
+            "ECON 3049",
+            "STAT 3000",
+            "STAT 3010"
+          ],
+          "description": "Any advanced level courses, excluding overlaps in AGRI, AGBU, BIOL, ECON, MGMT, PSYC, MATH 2250.",
           "filter": {
-            "min_level": 2
+            "min_level": 2,
+            "exclude_codes": [
+              "AGRI 2003",
+              "AGBU 2003",
+              "AGBU 3005",
+              "BIOL 2163",
+              "ECON 2015",
+              "ECON 2016",
+              "ECON 2025",
+              "MGMT 2012",
+              "MGMT 2032",
+              "MGMT 3050",
+              "MGMT 3055",
+              "MGMT 3085",
+              "PSYC 2010",
+              "MATH 2250"
+            ]
           }
         }
       ]
@@ -812,7 +1243,11 @@
         {
           "type": "all_credits_from",
           "description": "Complete all Semester 1 core courses",
-          "list": ["COMP 6501", "COMP 6925", "STAT 6105"]
+          "list": [
+            "COMP 6501",
+            "COMP 6925",
+            "STAT 6105"
+          ]
         }
       ]
     },
@@ -825,7 +1260,11 @@
         {
           "type": "all_credits_from",
           "description": "Complete all Semester 2 core courses",
-          "list": ["STAT 6106", "COMP 6930", "COMP 6940"]
+          "list": [
+            "STAT 6106",
+            "COMP 6930",
+            "COMP 6940"
+          ]
         }
       ]
     },
@@ -839,7 +1278,16 @@
           "type": "min_credits_from",
           "credits": 12,
           "description": "Select from specified Data Science electives",
-          "list": ["COMP 6300", "COMP 6401", "COMP 6802", "COMP 6905", "STAT 6160", "STAT 6170", "STAT 6181", "STAT 6182"]
+          "list": [
+            "COMP 6300",
+            "COMP 6401",
+            "COMP 6802",
+            "COMP 6905",
+            "STAT 6160",
+            "STAT 6170",
+            "STAT 6181",
+            "STAT 6182"
+          ]
         }
       ]
     },
@@ -852,7 +1300,945 @@
         {
           "type": "all_credits_from",
           "description": "Complete the Data Science project",
-          "list": ["STAT 6005"]
+          "list": [
+            "STAT 6005"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CHEM_MAJOR_LEVEL1_CORE",
+      "name": "Chemistry Level I Core",
+      "credits_required": 12,
+      "description": "Core introductory chemistry courses including the yearlong lab (CHEM 1066, 1067, 1068, 1070).",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level I Chemistry core courses",
+          "list": [
+            "CHEM 1066",
+            "CHEM 1067",
+            "CHEM 1068",
+            "CHEM 1070"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CHEM_MAJOR_LEVEL1_ELECTIVES",
+      "name": "Chemistry Level I Electives",
+      "credits_required": 12,
+      "description": "Additional Level I credits from any department to meet the 24 Level I credit minimum required to advance to Level II.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 12,
+          "description": "Any Level I courses not already consumed",
+          "filter": {
+            "min_level": 1,
+            "max_level": 1,
+            "exclude_codes": [
+              "FOUN 1101",
+              "FOUN 1105",
+              "FOUN 1301"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "CHEM_MAJOR_ADVANCED_CORE",
+      "name": "Chemistry Advanced Core (Levels II & III)",
+      "credits_required": 30,
+      "description": "The 10 mandatory advanced courses that constitute the Chemistry Major. All must be passed to satisfy the major.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level II and Level III Chemistry core courses",
+          "list": [
+            "CHEM 2170",
+            "CHEM 2270",
+            "CHEM 2370",
+            "CHEM 2470",
+            "CHEM 2672",
+            "CHEM 2673",
+            "CHEM 3170",
+            "CHEM 3270",
+            "CHEM 3370",
+            "CHEM 3670"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CHEM_MAJOR_ADVANCED_ELECTIVES",
+      "name": "Chemistry Advanced Electives",
+      "credits_required": 30,
+      "description": "30 additional advanced credits needed to reach the BSc minimum of 60 advanced credits. Can come from a second major, minors, or approved electives.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 30,
+          "description": "Any Level II or III courses not already consumed",
+          "filter": {
+            "min_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "CHEM_MINOR_IND_CHEM_CORE",
+      "name": "Industrial Chemistry Minor Core",
+      "credits_required": 15,
+      "description": "The 5 specific courses that constitute the Industrial Chemistry Minor.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Industrial Chemistry minor core courses",
+          "list": [
+            "CHEM 3563",
+            "CHEM 3564",
+            "CHEM 3575",
+            "CHEM 3577",
+            "CHEM 3579"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CHEM_MINOR_ANAL_CHEM_CORE",
+      "name": "Analytical Chemistry Minor Core",
+      "credits_required": 12,
+      "description": "The 4 mandatory courses that form the core of the Analytical Chemistry Minor.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Analytical Chemistry minor core courses",
+          "list": [
+            "CHEM 2471",
+            "CHEM 2472",
+            "CHEM 3470",
+            "CHEM 3471"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CHEM_MINOR_ANAL_CHEM_ELECTIVE",
+      "name": "Analytical Chemistry Minor Elective",
+      "credits_required": 3,
+      "description": "One 3-credit elective chosen from the approved list for the Analytical Chemistry Minor.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 3,
+          "description": "Complete one approved elective",
+          "list": [
+            "CHEM 3570",
+            "CHEM 3564",
+            "CHEM 3563",
+            "CHEM 3575",
+            "CHEM 3579",
+            "CHEM 3870",
+            "CHEM 3871",
+            "AGBU 2003"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CHEM_MINOR_CHEM_BIO_CORE",
+      "name": "Chemical Biology Minor Core",
+      "credits_required": 12,
+      "description": "The 4 mandatory courses that form the core of the Chemical Biology Minor.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Chemical Biology minor core courses",
+          "list": [
+            "CHEM 2471",
+            "CHEM 3564",
+            "CHEM 3870",
+            "CHEM 3871"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CHEM_MINOR_CHEM_BIO_ELECTIVE",
+      "name": "Chemical Biology Minor Elective",
+      "credits_required": 3,
+      "description": "One 3-credit elective chosen from the approved list for the Chemical Biology Minor.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 3,
+          "description": "Complete one approved elective",
+          "list": [
+            "CHEM 3162",
+            "CHEM 3273",
+            "CHEM 3570",
+            "CHEM 3373",
+            "CHEM 3573",
+            "CHEM 3577",
+            "BIOL 2061",
+            "BIOL 2163",
+            "BIOL 3263",
+            "BIOL 3363",
+            "BIOC 3162"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CHEM_MINOR_MAT_CHEM_CORE",
+      "name": "Materials Chemistry Minor Core",
+      "credits_required": 12,
+      "description": "The 4 mandatory courses that form the core of the Materials Chemistry Minor (cross-departmental: includes PHYS 2165).",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Materials Chemistry minor core courses",
+          "list": [
+            "CHEM 3162",
+            "CHEM 3564",
+            "PHYS 2165",
+            "CHEM 3163"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CHEM_MINOR_MAT_CHEM_ELECTIVE",
+      "name": "Materials Chemistry Minor Elective",
+      "credits_required": 3,
+      "description": "One 3-credit elective chosen from the approved list for the Materials Chemistry Minor.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 3,
+          "description": "Complete one approved elective (CHEM 3578 or CHEM 3563)",
+          "list": [
+            "CHEM 3578",
+            "CHEM 3563"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MATH_MINOR_CORE",
+      "name": "Mathematics Minor Core",
+      "credits_required": 6,
+      "description": "Mandatory Level II courses for the Mathematics Minor.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete both Multivariable Calculus and Linear Algebra I",
+          "list": [
+            "MATH 2270",
+            "MATH 2273"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MATH_MINOR_CORE_CHOICE",
+      "name": "Mathematics Minor Core Choice",
+      "credits_required": 3,
+      "description": "Choose at least one of Abstract Algebra I or Introduction to Real Analysis I.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 3,
+          "description": "Complete MATH 2272 or MATH 2277",
+          "list": [
+            "MATH 2272",
+            "MATH 2277"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MATH_MINOR_ELECTIVES",
+      "name": "Mathematics Minor Electives",
+      "credits_required": 6,
+      "description": "Any Level II/III MATH courses to reach 15 credits. MATH 2250 is strictly prohibited.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 6,
+          "description": "Level II/III MATH courses (Excluding MATH 2250)",
+          "filter": {
+            "subjects": [
+              "MATH"
+            ],
+            "min_level": 2,
+            "exclude_codes": [
+              "MATH 2250"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "STAT_MINOR_REGRESSION_CHOICE",
+      "name": "Statistics Minor: Regression Core",
+      "credits_required": 3,
+      "description": "Choose exactly one regression course. Taking more than one will not grant additional credit towards the minor.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 3,
+          "description": "ECON 3049, STAT 3000, or STAT 3010",
+          "list": [
+            "ECON 3049",
+            "STAT 3000",
+            "STAT 3010"
+          ],
+          "max_one_from": [
+            "ECON 3049",
+            "STAT 3000",
+            "STAT 3010"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STAT_MINOR_CORE",
+      "name": "Statistics Minor: Core Requirements",
+      "credits_required": 9,
+      "description": "Mandatory Level II/III Statistics core courses.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete Statistics I, Statistical Inference, and Experimental Design",
+          "list": [
+            "MATH 2275",
+            "MATH 3465",
+            "STAT 3001"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "STAT_MINOR_ELECTIVE",
+      "name": "Statistics Minor: Advanced Elective",
+      "credits_required": 3,
+      "description": "One 3-credit advanced Statistics elective.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 3,
+          "description": "Choose an approved Level III STAT/MATH/ECON course",
+          "filter": {
+            "subjects": [
+              "STAT"
+            ],
+            "min_level": 3
+          },
+          "list": [
+            "STAT 3012",
+            "MATH 3278",
+            "ECON 3050"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PHYS_MAJOR_LEVEL1_CORE",
+      "name": "Physics Level I Core",
+      "credits_required": 12,
+      "description": "The 4 mandatory Level I Physics courses (Mechanics, Optics/Waves, E&M, Thermo/Modern).",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level I Physics core courses",
+          "list": [
+            "PHYS 1221",
+            "PHYS 1222",
+            "PHYS 1223",
+            "PHYS 1224"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PHYS_MAJOR_LEVEL1_ELECTIVES",
+      "name": "Physics Level I Electives",
+      "credits_required": 12,
+      "description": "Additional 12 Level I credits from any discipline to meet the 24 Level I minimum required to advance to Level II. Excludes foundation courses.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 12,
+          "description": "Any Level I courses excluding foundations",
+          "filter": {
+            "min_level": 1,
+            "max_level": 1,
+            "exclude_codes": [
+              "FOUN 1101",
+              "FOUN 1105",
+              "FOUN 1301"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "PHYS_MAJOR_ADVANCED_CORE",
+      "name": "Physics Advanced Core (Levels II & III)",
+      "credits_required": 30,
+      "description": "The 10 mandatory advanced courses that constitute the Physics Major, including year-long laboratories and the research project.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level II and Level III Physics core courses",
+          "list": [
+            "PHYS 2150",
+            "PHYS 2151",
+            "PHYS 2152",
+            "PHYS 2153",
+            "PHYS 2155",
+            "PHYS 3150",
+            "PHYS 3151",
+            "PHYS 3152",
+            "PHYS 3153",
+            "PHYS 3155"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PHYS_MAJOR_ADVANCED_ELECTIVES",
+      "name": "Physics Advanced Electives",
+      "credits_required": 30,
+      "description": "30 additional advanced credits needed to reach the BSc minimum of 60 advanced credits. Can come from a second major, minors, or approved electives. Students pursuing the Major in Physics should not read ESST 1000 or ESST 2004.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 30,
+          "description": "Any Level II or III courses not already consumed, excluding ESST 1000 and ESST 2004",
+          "filter": {
+            "min_level": 2,
+            "exclude_codes": [
+              "ESST 1000",
+              "ESST 2004"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "ELEC_MAJOR_LEVEL1_CORE",
+      "name": "Electronics Level I Core",
+      "credits_required": 12,
+      "description": "The 4 mandatory Level I courses for the Electronics Major: COMP 1601, MATH 1142, MATH 1141, and PHYS 1223.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level I Electronics core courses",
+          "list": [
+            "COMP 1601",
+            "MATH 1142",
+            "MATH 1141",
+            "PHYS 1223"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ELEC_MAJOR_LEVEL1_ELECTIVES",
+      "name": "Electronics Level I Electives",
+      "credits_required": 12,
+      "description": "Additional 12 Level I credits from any discipline to meet the 24 Level I minimum. Strongly recommended: MATH 1194, ECNG 1016, ENGR 1180. Others recommended: PHYS 1221, PHYS 1222, PHYS 1224.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 12,
+          "description": "Any Level I courses excluding foundations",
+          "filter": {
+            "min_level": 1,
+            "max_level": 1,
+            "exclude_codes": [
+              "FOUN 1101",
+              "FOUN 1105",
+              "FOUN 1301"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "ELEC_MAJOR_ADVANCED_CORE",
+      "name": "Electronics Advanced Core (Levels II & III)",
+      "credits_required": 27,
+      "description": "The 9 mandatory advanced courses for the Electronics Major, including the year-long Practical Electronics I lab (PHYS 3202, registered Semester 1, credits in Semester 2).",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level II and Level III Electronics core courses",
+          "list": [
+            "PHYS 2150",
+            "PHYS 2401",
+            "ECNG 2001",
+            "PHYS 2402",
+            "ECNG 3001",
+            "PHYS 3201",
+            "PHYS 3202",
+            "PHYS 3203",
+            "PHYS 3204"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ELEC_MAJOR_DEPT_ELECTIVE",
+      "name": "Electronics Departmental Elective",
+      "credits_required": 3,
+      "description": "Choose at least one 3-credit elective from the approved Electronics elective list.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 3,
+          "description": "Choose from ECNG 3002, ECNG 3003, ECNG 3019, ECNG 3025, or PHYS 3168",
+          "list": [
+            "ECNG 3002",
+            "ECNG 3003",
+            "ECNG 3019",
+            "ECNG 3025",
+            "PHYS 3168"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ELEC_MAJOR_ADVANCED_ELECTIVES",
+      "name": "Electronics Advanced Electives",
+      "credits_required": 30,
+      "description": "30 additional advanced credits needed to reach the BSc minimum of 60 advanced credits. Can come from a second major, minors, or approved electives.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 30,
+          "description": "Any Level II or III courses not already consumed",
+          "filter": {
+            "min_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ELEC_MINOR_CORE",
+      "name": "Electronics Minor Core",
+      "credits_required": 15,
+      "description": "The 5 mandatory courses for the Minor in Electronics. Students must register for the year-long lab PHYS 3202 (not PHYS 3163).",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Electronics minor core courses",
+          "list": [
+            "PHYS 2401",
+            "PHYS 2402",
+            "PHYS 3201",
+            "PHYS 3202",
+            "PHYS 3203"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ENV_PHYS_MINOR_CORE",
+      "name": "Environmental Physics Minor Core",
+      "credits_required": 3,
+      "description": "The mandatory year-long Environmental Physics Laboratory (PHYS 3159). Register in Semester 1; credits assigned in Semester 2.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete the Environmental Physics Laboratory",
+          "list": [
+            "PHYS 3159"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ENV_PHYS_MINOR_ELECTIVES",
+      "name": "Environmental Physics Minor Electives",
+      "credits_required": 12,
+      "description": "Choose 4 courses (12 credits) from the approved Environmental Physics elective list.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 12,
+          "description": "Select 4 from PHYS 2156, 2157, 3156, 3157, 3158",
+          "list": [
+            "PHYS 2156",
+            "PHYS 2157",
+            "PHYS 3156",
+            "PHYS 3157",
+            "PHYS 3158"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "MAT_SCI_MINOR_CORE",
+      "name": "Materials Science Minor Core",
+      "credits_required": 15,
+      "description": "The 5 mandatory courses for the Minor in Materials Science. Includes year-long Materials Science Laboratory (PHYS 3166, register Semester 1, credits in Semester 2). Note: PHYS 2165 and PHYS 3165 are not offered in 2025/2026.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Materials Science minor core courses",
+          "list": [
+            "PHYS 2165",
+            "PHYS 2166",
+            "PHYS 3164",
+            "PHYS 3165",
+            "PHYS 3166"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BIOC_MAJOR_LEVEL1_CORE",
+      "name": "Biochemistry Level I Core",
+      "credits_required": 21,
+      "description": "The 7 mandatory Level I courses for the Biochemistry Major. MATH 1115 is required unless exempt via CAPE Pure Mathematics.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level I Biochemistry core courses",
+          "list": [
+            "BIOL 1262",
+            "BIOL 1263",
+            "CHEM 1066",
+            "MATH 1115",
+            "BIOL 1362",
+            "BIOL 1364",
+            "CHEM 1067"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BIOC_MAJOR_LEVEL1_ELECTIVES",
+      "name": "Biochemistry Level I Electives",
+      "credits_required": 3,
+      "description": "Additional Level I credits to reach 24. Recommended: CHEM 1070 (Introductory Chemistry Laboratory) and CHEM 1068 (Introduction to Chemistry III).",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 3,
+          "description": "Any Level I courses excluding foundations",
+          "filter": {
+            "min_level": 1,
+            "max_level": 1,
+            "exclude_codes": [
+              "FOUN 1101",
+              "FOUN 1105",
+              "FOUN 1301"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BIOC_MAJOR_ADVANCED_CORE",
+      "name": "Biochemistry Advanced Core (Levels II & III)",
+      "credits_required": 24,
+      "description": "The 9 mandatory advanced courses for the Biochemistry Major, including two 1.5-credit practical skill courses.",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Level II and Level III Biochemistry core courses",
+          "list": [
+            "BIOC 2061",
+            "BIOC 2069",
+            "BIOC 2161",
+            "BIOC 2162",
+            "BIOC 2169",
+            "BIOC 2262",
+            "BIOC 3062",
+            "BIOC 3162",
+            "BIOC 3364"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BIOC_MAJOR_ADVANCED_ELECTIVES",
+      "name": "Biochemistry Advanced Electives",
+      "credits_required": 6,
+      "description": "Choose 6 credits from the approved Biochemistry elective list. BIOC 3069 requires GPA >= 3.0.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 6,
+          "description": "Select from approved Biochemistry electives",
+          "list": [
+            "BIOC 3069",
+            "BIOC 3262",
+            "BIOC 3500",
+            "BIOL 3162",
+            "CHEM 2470"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BIOC_MAJOR_OTHER_ADVANCED_ELECTIVES",
+      "name": "Biochemistry Other Advanced Electives",
+      "credits_required": 30,
+      "description": "30 additional advanced credits to reach the BSc minimum of 60 advanced credits. Can come from a second major, minors, or approved electives.",
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "credits": 30,
+          "description": "Any Level II or III courses not already consumed",
+          "filter": {
+            "min_level": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "MED_PHYS_MINOR_CORE",
+      "name": "Medical Physics & Bioengineering Minor Core",
+      "credits_required": 15,
+      "description": "The 5 mandatory courses for the Minor in Medical Physics & Bioengineering. Includes year-long Medical Physics & Bioengineering Laboratory (PHYS 3160, register Semester 1, credits in Semester 2).",
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Medical Physics & Bioengineering minor core courses",
+          "list": [
+            "BMET 2001",
+            "BMET 2002",
+            "PHYS 3160",
+            "PHYS 3167",
+            "PHYS 3168"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BIOL_MAJOR_LEVEL1_CORE",
+      "name": "Biology Major – Level I Core",
+      "credits_required": 15,
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Biology Level I core courses",
+          "list": [
+            "BIOL 1262",
+            "BIOL 1263",
+            "BIOL 1362",
+            "BIOL 1364",
+            "MATH 1115"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BIOL_MAJOR_LEVEL1_ELECTIVES",
+      "name": "Biology Major – Level I Electives",
+      "credits_required": 9,
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "description": "Complete 9 credits of Level I electives",
+          "credits": 9,
+          "filter": {
+            "subjects": "ANY",
+            "min_level": 1,
+            "max_level": 1,
+            "exclude_codes": ["FOUN 1101", "FOUN 1105", "FOUN 1301"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BIOL_MAJOR_ADVANCED_CORE",
+      "name": "Biology Major – Advanced Core",
+      "credits_required": 30,
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Biology advanced core courses",
+          "list": [
+            "BIOL 2061",
+            "BIOL 2163",
+            "BIOL 2164",
+            "BIOL 2165",
+            "BIOL 2262",
+            "BIOL 2265",
+            "BIOL 2360",
+            "BIOL 2464",
+            "BIOL 2764",
+            "BIOL 2867"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BIOL_MAJOR_ADVANCED_ELECTIVES",
+      "name": "Biology Major – Advanced Electives",
+      "credits_required": 30,
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "description": "Complete 30 credits of advanced elective courses",
+          "credits": 30,
+          "filter": {
+            "subjects": "ANY",
+            "min_level": 2,
+            "max_level": 3,
+            "exclude_codes": ["ESST 1000", "ESST 2004"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "ESST_MAJOR_LEVEL1_CORE",
+      "name": "Environmental Science Major \u2013 Level I Core",
+      "credits_required": 15,
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Environmental Science Level I core courses",
+          "list": [
+            "ESST 1000",
+            "ESST 1001",
+            "ESST 1002",
+            "ESST 1006",
+            "MATH 1115"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ESST_MAJOR_LEVEL1_ELECTIVES",
+      "name": "Environmental Science Major \u2013 Level I Electives",
+      "credits_required": 9,
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "description": "Complete 9 credits of Level I electives",
+          "credits": 9,
+          "filter": {
+            "subjects": "ANY",
+            "min_level": 1,
+            "max_level": 1,
+            "exclude_codes": ["FOUN 1101", "FOUN 1105", "FOUN 1301"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "ESST_MAJOR_ADVANCED_CORE",
+      "name": "Environmental Science Major \u2013 Advanced Core",
+      "credits_required": 30,
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Environmental Science advanced core courses",
+          "list": [
+            "BIOL 2163",
+            "BIOL 2464",
+            "ESST 2001",
+            "ESST 2004",
+            "ESST 2006",
+            "ESST 3001",
+            "ESST 3002",
+            "ESST 3003",
+            "ESST 3102",
+            "ESST 3103"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ESST_MAJOR_ADVANCED_ELECTIVES",
+      "name": "Environmental Science Major \u2013 Advanced Electives",
+      "credits_required": 30,
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "description": "Complete 30 credits of advanced elective courses",
+          "credits": 30,
+          "filter": {
+            "subjects": "ANY",
+            "min_level": 2,
+            "max_level": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "BIOC_MINOR_CORE",
+      "name": "Biochemistry Minor \u2013 Core",
+      "credits_required": 9,
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Biochemistry minor core courses",
+          "list": [
+            "BIOC 2061",
+            "BIOC 2069",
+            "BIOC 2161",
+            "BIOC 2169"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BIOC_MINOR_ELECTIVES",
+      "name": "Biochemistry Minor \u2013 Electives",
+      "credits_required": 6,
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "description": "Complete 6 credits from Biochemistry electives",
+          "credits": 6,
+          "list": [
+            "BIOC 2162",
+            "BIOC 2262",
+            "BIOC 3062",
+            "BIOC 3262",
+            "BIOC 3364"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BIOL_MINOR_CORE",
+      "name": "Biology Minor \u2013 Core",
+      "credits_required": 6,
+      "rules": [
+        {
+          "type": "all_credits_from",
+          "description": "Complete all Biology minor core courses",
+          "list": [
+            "BIOL 2061",
+            "BIOL 2262"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BIOL_MINOR_ELECTIVES",
+      "name": "Biology Minor \u2013 Electives",
+      "credits_required": 9,
+      "rules": [
+        {
+          "type": "min_credits_from",
+          "description": "Complete 9 credits from Biology Level II/III electives",
+          "credits": 9,
+          "filter": {
+            "subjects": ["BIOL"],
+            "min_level": 2,
+            "max_level": 3
+          }
         }
       ]
     }

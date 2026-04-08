@@ -445,6 +445,34 @@ section {
     margin-left: var(--space-md);
 }
 
+.next-steps-section {
+    margin-bottom: var(--space-md);
+}
+
+.next-steps-section:last-child {
+    margin-bottom: 0;
+}
+
+.next-steps-heading {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: var(--space-xs, 0.25rem);
+    color: var(--dark);
+}
+
+.next-steps-prompt {
+    font-size: 0.9rem;
+    color: var(--neutral-600, #555);
+    margin-bottom: var(--space-xs, 0.25rem);
+    font-style: italic;
+}
+
+.next-steps-note {
+    font-size: 0.9rem;
+    color: var(--neutral-600, #555);
+    padding: var(--space-sm) 0;
+}
+
 
 /* ----- RESPONSIVE ----- */
 

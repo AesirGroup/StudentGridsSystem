@@ -1,4 +1,183 @@
 {
+  "ACTS": {
+    "level1": [],
+    "level2": [],
+    "level3": [
+      { "code": "ACTS 3000", "title": "Actuarial Science Project", "credits": 3 },
+      { "code": "ACTS 3001", "title": "Life Contingencies II", "credits": 3 },
+      { "code": "ACTS 3003", "title": "Loss Models I", "credits": 3 },
+      { "code": "ACTS 3004", "title": "Asset and Liability Management I", "credits": 3 },
+      { "code": "ACTS 3011", "title": "Life Contingencies III (not offered in 2025/2026)", "credits": 3 },
+      { "code": "ACTS 3013", "title": "Loss Models II", "credits": 3 },
+      { "code": "ACTS 3014", "title": "Asset and Liability Management II (not offered in 2025/2026)", "credits": 3 }
+    ]
+  },
+  "AGBU": {
+    "level1": [],
+    "level2": [
+      { "code": "AGBU 2003", "title": "Applied Statistics", "credits": 3 }
+    ],
+    "level3": [
+      { "code": "AGBU 3005", "title": "Introduction to Quantitative Methods in Economics", "credits": 3 }
+    ]
+  },
+  "AGCP": {
+    "level1": [],
+    "level2": [
+      { "code": "AGCP 2001", "title": "Crop Science (Prerequisite for BIOL 3769)", "credits": 3 }
+    ],
+    "level3": []
+  },
+  "AGRI": {
+    "level1": [
+      { "code": "AGRI 1003", "title": "Mathematics for Scientists", "credits": 3 }
+    ],
+    "level2": [
+      { "code": "AGRI 2003", "title": "Fundamentals of Applied Statistics", "credits": 3 }
+    ],
+    "level3": [
+      { "code": "AGRI 3020", "title": "Food Microbiology", "credits": 3 }
+    ]
+  },
+  "BIOC": {
+    "level1": [],
+    "level2": [
+      { "code": "BIOC 2061", "title": "Bioenergetics", "credits": 3 },
+      { "code": "BIOC 2069", "title": "Practical Skills in Biochemistry I", "credits": 1.5 },
+      { "code": "BIOC 2161", "title": "Primary Metabolism", "credits": 3 },
+      { "code": "BIOC 2162", "title": "Circulatory and Secretory Systems", "credits": 3 },
+      { "code": "BIOC 2169", "title": "Practical Skills in Biochemistry II", "credits": 1.5 },
+      { "code": "BIOC 2262", "title": "Gene Expression", "credits": 3 }
+    ],
+    "level3": [
+      { "code": "BIOC 3062", "title": "Cellular and Molecular Defence Systems", "credits": 3 },
+      { "code": "BIOC 3069", "title": "Biochemistry Research Project", "credits": 3 },
+      { "code": "BIOC 3162", "title": "Experimental Biochemistry and Molecular Biology", "credits": 3 },
+      { "code": "BIOC 3262", "title": "Medical Biochemistry", "credits": 3 },
+      { "code": "BIOC 3364", "title": "Biochemical Basis of Disease", "credits": 3 },
+      { "code": "BIOC 3500", "title": "Molecular Virology", "credits": 3 }
+    ]
+  },
+  "BIOL": {
+    "level1": [
+      { "code": "BIOL 1262", "title": "Living Organisms I", "credits": 3 },
+      { "code": "BIOL 1263", "title": "Living Organisms II", "credits": 3 },
+      { "code": "BIOL 1362", "title": "Biochemistry I", "credits": 3 },
+      { "code": "BIOL 1364", "title": "Genetics I", "credits": 3 }
+    ],
+    "level2": [
+      { "code": "BIOL 2061", "title": "Cell and Developmental Biology", "credits": 3 },
+      { "code": "BIOL 2163", "title": "Biostatistics", "credits": 3 },
+      { "code": "BIOL 2164", "title": "Principles of Molecular Biology", "credits": 3 },
+      { "code": "BIOL 2165", "title": "Genetics II", "credits": 3 },
+      { "code": "BIOL 2262", "title": "Evolutionary Biology", "credits": 3 },
+      { "code": "BIOL 2265", "title": "Fundamentals of Microbiology", "credits": 3 },
+      { "code": "BIOL 2360", "title": "Biochemistry II A", "credits": 3 },
+      { "code": "BIOL 2464", "title": "Fundamentals of Ecology", "credits": 3 },
+      { "code": "BIOL 2764", "title": "Physiology of Plants", "credits": 3 },
+      { "code": "BIOL 2867", "title": "Physiology of Animals", "credits": 3 }
+    ],
+    "level3": [
+      { "code": "BIOL 3063", "title": "Marine Ecology and Oceanography", "credits": 3 },
+      { "code": "BIOL 3069", "title": "Research Project", "credits": 4 },
+      { "code": "BIOL 3070", "title": "Caribbean Island Ecology and Biogeography", "credits": 3 },
+      { "code": "BIOL 3162", "title": "Principles of Microbial Biotechnology", "credits": 3 },
+      { "code": "BIOL 3263", "title": "Introduction to Bioinformatics", "credits": 3 },
+      { "code": "BIOL 3363", "title": "Medical Biotechnology", "credits": 3 },
+      { "code": "BIOL 3366", "title": "Plant Biotechnology and Genetic Engineering", "credits": 3 },
+      { "code": "BIOL 3369", "title": "Laboratory Skills in Biotechnology (Year-long)*", "credits": 3 },
+      { "code": "BIOL 3409", "title": "Caribbean Coral Reefs", "credits": 3 },
+      { "code": "BIOL 3462", "title": "The Ecology of Freshwaters", "credits": 3 },
+      { "code": "BIOL 3465", "title": "Tropical Forest Ecology and Use", "credits": 3 },
+      { "code": "BIOL 3466", "title": "Coastal Ecosystems & Resource Management", "credits": 3 },
+      { "code": "BIOL 3468", "title": "Biodiversity and Conservation", "credits": 3 },
+      { "code": "BIOL 3469", "title": "Research and Practical Skills in Environmental Biology", "credits": 3 },
+      { "code": "BIOL 3768", "title": "Plant Diversity & Systematics", "credits": 3 },
+      { "code": "BIOL 3769", "title": "Plant Genetic Improvement", "credits": 3 },
+      { "code": "BIOL 3770", "title": "Plant Pathogens", "credits": 3 },
+      { "code": "BIOL 3771", "title": "Environmental Plant Physiology", "credits": 3 },
+      { "code": "BIOL 3772", "title": "Plant Development", "credits": 3 },
+      { "code": "BIOL 3773", "title": "Plant Anatomy", "credits": 3 },
+      { "code": "BIOL 3866", "title": "Parasite Biology", "credits": 3 },
+      { "code": "BIOL 3867", "title": "Biology of Animal Behaviour", "credits": 3 },
+      { "code": "BIOL 3868", "title": "The Ecology of Humans", "credits": 3 },
+      { "code": "BIOL 3870", "title": "Insect Biology", "credits": 3 },
+      { "code": "BIOL 3960", "title": "Environmental Microbiology", "credits": 3 },
+      { "code": "BIOL 3961", "title": "Principles of Medical Microbiology", "credits": 3 },
+      { "code": "BIOL 3970", "title": "Aquaculture", "credits": 3 },
+      { "code": "BIOL 3971", "title": "Fisheries Management", "credits": 3 }
+    ]
+  },
+  "BMET": {
+    "level1": [
+      { "code": "BMET 1004", "title": "Introductory Human Anatomy & Physiology I", "credits": 3 },
+      { "code": "BMET 1005", "title": "Introductory Human Anatomy & Physiology II", "credits": 3 }
+    ],
+    "level2": [
+      { "code": "BMET 2001", "title": "Bioengineering", "credits": 3 },
+      { "code": "BMET 2002", "title": "Introduction to Medical Physics", "credits": 3 }
+    ],
+    "level3": [
+      { "code": "BMET 3000", "title": "Biomedical Technology Project (Year-long)", "credits": 6 },
+      { "code": "BMET 3001", "title": "Laboratory Management and Practice", "credits": 3 },
+      { "code": "BMET 3002", "title": "Light & Optics in Medicine", "credits": 3 },
+      { "code": "BMET 3003", "title": "Biomedical Technology Laboratory", "credits": 3 },
+      { "code": "BMET 3004", "title": "Metrology & Regulatory Standards", "credits": 3 }
+    ]
+  },
+  "CHNG": {
+    "level1": [
+      { "code": "CHNG 1003", "title": "Science of Materials", "credits": 3 }
+    ],
+    "level2": [],
+    "level3": []
+  },
+  "CHEM": {
+    "level1": [
+      { "code": "CHEM 1062", "title": "Basic Chemistry for Life Sciences", "credits": 3 },
+      { "code": "CHEM 1066", "title": "Introduction to Chemistry I", "credits": 3 },
+      { "code": "CHEM 1067", "title": "Introduction to Chemistry II", "credits": 3 },
+      { "code": "CHEM 1068", "title": "Introduction to Chemistry III", "credits": 3 },
+      { "code": "CHEM 1070", "title": "Introductory Chemistry Laboratory (Yearlong)", "credits": 3 }
+    ],
+    "level2": [
+      { "code": "CHEM 2170", "title": "Fundamentals of Inorganic Chemistry I", "credits": 3 },
+      { "code": "CHEM 2270", "title": "Organic Chemistry I", "credits": 3 },
+      { "code": "CHEM 2370", "title": "Physical Chemistry I", "credits": 3 },
+      { "code": "CHEM 2470", "title": "Introduction to Analytical Chemistry", "credits": 3 },
+      { "code": "CHEM 2471", "title": "Analytical Methods in Chemistry (Elective)", "credits": 3 },
+      { "code": "CHEM 2472", "title": "Analytical Chemistry Laboratory (Elective)", "credits": 3 },
+      { "code": "CHEM 2672", "title": "Core Chemistry Laboratory I", "credits": 3 },
+      { "code": "CHEM 2673", "title": "Core Chemistry Laboratory II", "credits": 3 },
+      { "code": "CHEM 2770", "title": "Introduction into Research in Chemistry Learning (Elective)*", "credits": 3 }
+    ],
+    "level3": [
+      { "code": "CHEM 3162", "title": "Chemistry of Metal-Catalysed Transformations (Elective)*", "credits": 3 },
+      { "code": "CHEM 3163", "title": "Chemistry of Technologically Important Materials (Elective)", "credits": 3 },
+      { "code": "CHEM 3170", "title": "Fundamentals of Inorganic Chemistry II", "credits": 3 },
+      { "code": "CHEM 3172", "title": "Advanced Inorganic Chemistry*", "credits": 3 },
+      { "code": "CHEM 3268", "title": "Chemistry of Natural Products (Elective)", "credits": 3 },
+      { "code": "CHEM 3270", "title": "Organic Chemistry II", "credits": 3 },
+      { "code": "CHEM 3273", "title": "Synthesis of Blockbuster Drugs*", "credits": 3 },
+      { "code": "CHEM 3370", "title": "Physical Chemistry II", "credits": 3 },
+      { "code": "CHEM 3373", "title": "Advanced Topics in Physical Chemistry*", "credits": 3 },
+      { "code": "CHEM 3470", "title": "Analytical Methods in Chemistry II (Elective)", "credits": 3 },
+      { "code": "CHEM 3471", "title": "Quality Assurance for Laboratories", "credits": 3 },
+      { "code": "CHEM 3563", "title": "Environmental Degradation of Materials (Elective)", "credits": 3 },
+      { "code": "CHEM 3564", "title": "Principles of Polymer Chemistry (Elective)", "credits": 3 },
+      { "code": "CHEM 3570", "title": "Chemistry of the Environment (Elective)", "credits": 3 },
+      { "code": "CHEM 3573", "title": "Contemporary Chemistry", "credits": 3 },
+      { "code": "CHEM 3575", "title": "Chemistry and Industry I (Elective)", "credits": 3 },
+      { "code": "CHEM 3576", "title": "Chemistry of Medicines (Elective)", "credits": 3 },
+      { "code": "CHEM 3577", "title": "Green Chemistry (Elective)", "credits": 3 },
+      { "code": "CHEM 3578", "title": "Energy for a Sustainable Future (Elective)", "credits": 3 },
+      { "code": "CHEM 3579", "title": "Chemistry and Industry II (Elective)", "credits": 3 },
+      { "code": "CHEM 3670", "title": "Research Project for Chemistry Majors", "credits": 3 },
+      { "code": "CHEM 3671", "title": "Research Project for BSc Chemistry (Yearlong)", "credits": 6 },
+      { "code": "CHEM 3870", "title": "Principles of Chemical Biology (Elective)", "credits": 3 },
+      { "code": "CHEM 3871", "title": "Methods in Chemical Biology (Elective)", "credits": 3 }
+    ]
+  },
   "COMP": {
     "level1": [
       { "code": "COMP 1011", "title": "Introduction to Information Technology", "credits": 3 },
@@ -30,6 +209,65 @@
       { "code": "COMP 3613", "title": "Software Engineering II", "credits": 3 }
     ]
   },
+  "ECNG": {
+    "level1": [
+      { "code": "ECNG 1016", "title": "Introduction to Electrical Energy Systems", "credits": 1 }
+    ],
+    "level2": [
+      { "code": "ECNG 2001", "title": "Communication Systems I", "credits": 3 }
+    ],
+    "level3": [
+      { "code": "ECNG 3001", "title": "Communication Systems II", "credits": 3 },
+      { "code": "ECNG 3002", "title": "Telecommunications Engineering", "credits": 3 },
+      { "code": "ECNG 3003", "title": "Radio and Satellite Communications", "credits": 3 },
+      { "code": "ECNG 3019", "title": "Instrumentation and Control", "credits": 3 },
+      { "code": "ECNG 3025", "title": "Electronic Design", "credits": 3 }
+    ]
+  },
+  "ENGR": {
+    "level1": [
+      { "code": "ENGR 1180", "title": "Engineering Graphics", "credits": 3 }
+    ],
+    "level2": [],
+    "level3": []
+  },
+  "ESST": {
+    "level1": [
+      { "code": "ESST 1000", "title": "Physics for Environmental Sciences", "credits": 3 },
+      { "code": "ESST 1001", "title": "Biology for Environmental Sciences", "credits": 3 },
+      { "code": "ESST 1002", "title": "Chemistry for Environmental Sciences", "credits": 3 },
+      { "code": "ESST 1004", "title": "Science Communication", "credits": 3 },
+      { "code": "ESST 1005", "title": "Information Technology Fundamentals", "credits": 3 },
+      { "code": "ESST 1006", "title": "Human Impact on the Environment", "credits": 3 }
+    ],
+    "level2": [
+      { "code": "ESST 2001", "title": "Principles of Environmental Chemistry", "credits": 3 },
+      { "code": "ESST 2002", "title": "Environmental Technology", "credits": 3 },
+      { "code": "ESST 2003", "title": "Data Management for Environmental Science", "credits": 3 },
+      { "code": "ESST 2004", "title": "Physics for Environmental Sciences II", "credits": 3 },
+      { "code": "ESST 2005", "title": "Pollution Management and Abatement Technologies", "credits": 3 },
+      { "code": "ESST 2006", "title": "Pollution Biology", "credits": 3 }
+    ],
+    "level3": [
+      { "code": "ESST 3000", "title": "Environmental Toxicology", "credits": 3 },
+      { "code": "ESST 3001", "title": "Environmental Fate and Transport", "credits": 3 },
+      { "code": "ESST 3002", "title": "Environmental Modelling", "credits": 3 },
+      { "code": "ESST 3003", "title": "Environmental Monitoring and Assessment", "credits": 3 },
+      { "code": "ESST 3004", "title": "Capstone Project", "credits": 3 },
+      { "code": "ESST 3006", "title": "Fundamentals of Geographic Information Systems", "credits": 3 },
+      { "code": "ESST 3007", "title": "Environmental Management Information Systems", "credits": 3 },
+      { "code": "ESST 3102", "title": "Environmental Impact Assessment", "credits": 3 },
+      { "code": "ESST 3103", "title": "Environmental Health", "credits": 3 },
+      { "code": "ESST 3104", "title": "Climate Change and Abatement Technology", "credits": 3 }
+    ]
+  },
+  "HUEC": {
+    "level1": [
+      { "code": "HUEC 1005", "title": "Introduction to Biostatistics", "credits": 3 }
+    ],
+    "level2": [],
+    "level3": []
+  },
   "INFO": {
     "level1": [
       { "code": "INFO 1600", "title": "Introduction to Information Technology Concepts", "credits": 3 },
@@ -55,6 +293,107 @@
       { "code": "INFO 3609", "title": "Internship I", "credits": 3 },
       { "code": "INFO 3610", "title": "Internship II", "credits": 6 },
       { "code": "INFO 3611", "title": "Database Administration", "credits": 3 }
+    ]
+  },
+  "MATH": {
+    "level1": [
+      { "code": "MATH 1115", "title": "Fundamental Mathematics for the General Sciences I", "credits": 3 },
+      { "code": "MATH 1125", "title": "Fundamental Mathematics for the General Sciences II", "credits": 3 },
+      { "code": "MATH 1141", "title": "Introductory Linear Algebra & Analytical Geometry", "credits": 3 },
+      { "code": "MATH 1142", "title": "Calculus I", "credits": 3 },
+      { "code": "MATH 1151", "title": "Calculus II", "credits": 3 },
+      { "code": "MATH 1152", "title": "Set and Number Systems", "credits": 3 },
+      { "code": "MATH 1192", "title": "Mathematical Software I (Excel)", "credits": 1 },
+      { "code": "MATH 1194", "title": "Mathematical Software III (MATLAB)", "credits": 1 },
+      { "code": "MATH 1201", "title": "Applied Mathematics I", "credits": 3 },
+      { "code": "MATH 1202", "title": "Applied Mathematics II", "credits": 3 }
+    ],
+    "level2": [
+      { "code": "MATH 2115", "title": "Life Contingencies I", "credits": 3 },
+      { "code": "MATH 2211", "title": "Mathematics of Finance I", "credits": 3 },
+      { "code": "MATH 2212", "title": "Mathematics of Finance II", "credits": 3 },
+      { "code": "MATH 2270", "title": "Multivariable Calculus", "credits": 3 },
+      { "code": "MATH 2271", "title": "Ordinary Differential Equations", "credits": 3 },
+      { "code": "MATH 2272", "title": "Abstract Algebra I", "credits": 3 },
+      { "code": "MATH 2273", "title": "Linear Algebra I", "credits": 3 },
+      { "code": "MATH 2274", "title": "Probability Theory I", "credits": 3 },
+      { "code": "MATH 2275", "title": "Statistics I", "credits": 3 },
+      { "code": "MATH 2276", "title": "Discrete Mathematics", "credits": 3 },
+      { "code": "MATH 2277", "title": "Introduction to Real Analysis I", "credits": 3 },
+      { "code": "MATH 2400", "title": "Elementary Number Theory", "credits": 3 },
+      { "code": "MATH 2410", "title": "Combinatorics I (not offered in 2025/2026)", "credits": 3 },
+      { "code": "MATH 2420", "title": "Introduction to Graph Theory and Optimization (not offered in 2025/2026)", "credits": 3 }
+    ],
+    "level3": [
+      { "code": "MATH 3272", "title": "Abstract Algebra II", "credits": 3 },
+      { "code": "MATH 3273", "title": "Linear Algebra II", "credits": 3 },
+      { "code": "MATH 3274", "title": "Set Theory", "credits": 3 },
+      { "code": "MATH 3275", "title": "Introduction to Complex Analysis", "credits": 3 },
+      { "code": "MATH 3277", "title": "Introduction to Real Analysis II", "credits": 3 },
+      { "code": "MATH 3278", "title": "Probability Theory II", "credits": 3 },
+      { "code": "MATH 3401", "title": "Mathematical Modelling", "credits": 3 },
+      { "code": "MATH 3402", "title": "Introduction to Partial Differential Equations", "credits": 3 },
+      { "code": "MATH 3465", "title": "Statistical Inference", "credits": 3 },
+      { "code": "MATH 3540", "title": "Introduction to Fluid Dynamics", "credits": 3 },
+      { "code": "MATH 3610", "title": "Combinatorics II (not offered in 2025/2026)", "credits": 3 },
+      { "code": "MATH 3615", "title": "Graph Theory and Applications (not offered in 2025/2026)", "credits": 3 }
+    ]
+  },
+  "PHYS": {
+    "level1": [
+      { "code": "PHYS 1001", "title": "Introduction to Astronomy", "credits": 3 },
+      { "code": "PHYS 1002", "title": "Introduction to Astrobiology", "credits": 3 },
+      { "code": "PHYS 1221", "title": "Introduction to Mechanics", "credits": 3 },
+      { "code": "PHYS 1222", "title": "Introduction to Optics, Oscillations & Waves", "credits": 3 },
+      { "code": "PHYS 1223", "title": "Introduction to Electricity & Magnetism", "credits": 3 },
+      { "code": "PHYS 1224", "title": "Introduction to Thermodynamics & Modern Physics", "credits": 3 }
+    ],
+    "level2": [
+      { "code": "PHYS 2150", "title": "Mathematics for Physicists", "credits": 3 },
+      { "code": "PHYS 2151", "title": "Classical and Statistical Mechanics", "credits": 3 },
+      { "code": "PHYS 2152", "title": "Vibrations, Waves and Optics", "credits": 3 },
+      { "code": "PHYS 2153", "title": "Astrophysics", "credits": 3 },
+      { "code": "PHYS 2154", "title": "Fundamentals of Atomic and Nuclear Physics", "credits": 3 },
+      { "code": "PHYS 2155", "title": "Physics Major Laboratory Level II (Year-long)", "credits": 3 },
+      { "code": "PHYS 2156", "title": "Meteorology and Climatology", "credits": 3 },
+      { "code": "PHYS 2157", "title": "Solid Earth Geophysics", "credits": 3 },
+      { "code": "PHYS 2165", "title": "Materials Science I (not offered in 2025/2026)", "credits": 3 },
+      { "code": "PHYS 2166", "title": "Technological Materials", "credits": 3 },
+      { "code": "PHYS 2401", "title": "Optoelectronics", "credits": 3 },
+      { "code": "PHYS 2402", "title": "Digital Circuits and Logic Design", "credits": 3 }
+    ],
+    "level3": [
+      { "code": "PHYS 3150", "title": "Electromagnetism", "credits": 3 },
+      { "code": "PHYS 3151", "title": "Quantum Mechanics", "credits": 3 },
+      { "code": "PHYS 3152", "title": "Advanced Thermodynamics and Solid-State Physics", "credits": 3 },
+      { "code": "PHYS 3153", "title": "Physics Major Research Project", "credits": 3 },
+      { "code": "PHYS 3155", "title": "Physics Major Laboratory Level III (Year-long)", "credits": 3 },
+      { "code": "PHYS 3156", "title": "Principles of Physical Oceanography and Geohydrology (not offered in 2025/2026)", "credits": 3 },
+      { "code": "PHYS 3157", "title": "Earth Science (not offered in 2025/2026)", "credits": 3 },
+      { "code": "PHYS 3158", "title": "Fundamentals of Renewable Energy", "credits": 3 },
+      { "code": "PHYS 3159", "title": "Environmental Physics Laboratory (Year-long)", "credits": 3 },
+      { "code": "PHYS 3160", "title": "Medical Physics & Bioengineering Laboratory (Year-long)", "credits": 3 },
+      { "code": "PHYS 3163", "title": "Electronics Laboratory (Year-Long)", "credits": 3 },
+      { "code": "PHYS 3164", "title": "Ceramics Science", "credits": 3 },
+      { "code": "PHYS 3165", "title": "Materials Science II (not offered in 2025/2026)", "credits": 3 },
+      { "code": "PHYS 3166", "title": "Materials Science Laboratory (Year-long)", "credits": 3 },
+      { "code": "PHYS 3167", "title": "Radiation Biophysics and Medicine", "credits": 3 },
+      { "code": "PHYS 3168", "title": "Medical Instrumentation", "credits": 3 },
+      { "code": "PHYS 3201", "title": "Advance Electronics and Control Theory", "credits": 3 },
+      { "code": "PHYS 3202", "title": "Practical Electronics I (Year-long)", "credits": 3 },
+      { "code": "PHYS 3203", "title": "Microprocessor and Modern Digital Design", "credits": 3 },
+      { "code": "PHYS 3204", "title": "Practical Electronics II", "credits": 3 }
+    ]
+  },
+  "STAT": {
+    "level1": [],
+    "level2": [],
+    "level3": [
+      { "code": "STAT 3000", "title": "Regression with Time Series", "credits": 3 },
+      { "code": "STAT 3001", "title": "Experimental Design & Sampling Theory", "credits": 3 },
+      { "code": "STAT 3010", "title": "Regression Analysis (not offered in 2025/2026)", "credits": 3 },
+      { "code": "STAT 3011", "title": "Design of Experiments (not offered in 2025/2026)", "credits": 3 },
+      { "code": "STAT 3012", "title": "Applied Multivariate Statistics", "credits": 3 }
     ]
   }
 }
