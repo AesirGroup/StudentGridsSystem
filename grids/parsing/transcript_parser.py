@@ -84,7 +84,8 @@ def _extract_curriculum_blocks_data(text: str) -> List[Dict[str, str]]:
             "campus": r"Campus:\s*(.*)",
             "department": r"Department:\s*(.*)",
             "major": r"Major:\s*(.*)",
-            "degree_gpa": r"Degree GPA:\s*([0-9.]+)", 
+            "minor": r"Minor:\s*(.*)",
+            "degree_gpa": r"Degree GPA:\s*([0-9.]+)",
         }
         
         for key, pattern in fields.items():
@@ -318,6 +319,7 @@ def parse_transcripts(raw: str) -> List[StudentData]:
                     faculty=curr.get("faculty", ""),
                     department=curr.get("department", ""),
                     major=curr.get("major", ""),
+                    minor=curr.get("minor", "") or None,
                     degree_gpa=degree_gpa_val,
                 ),
                 terms=[],

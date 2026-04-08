@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 import logging
 
 logger = logging.getLogger(__name__)
-from ..models import Bucket, Major, Degree, StudentData, StudentCourse, Course
+from ..models import Bucket, Major, Minor, Degree, StudentData, StudentCourse, Course
 from ..models.evaluation import BUCKETS
 from .filters import CourseFilter
 
@@ -186,6 +186,19 @@ def _evaluate_min_credits_from(
             if subject_credits[course.subject] + course.credits <= max_per_subject:
                 filtered_courses.append(course)
                 subject_credits[course.subject] += course.credits
+        eligible_courses = filtered_courses
+
+    max_one_from = rule_data.get("max_one_from")
+    if max_one_from:
+        has_one = False
+        filtered_courses = []
+        for course in eligible_courses:
+            if course.course_code in max_one_from:
+                if not has_one:
+                    filtered_courses.append(course)
+                    has_one = True
+            else:
+                filtered_courses.append(course)
         eligible_courses = filtered_courses
 
     credits_earned = 0.0
@@ -557,6 +570,16 @@ def _list_unmet_requirements(result) -> List[str]:
                 required_val = req_data.get('required', 'N/A')
                 unmet.append(f"Graduation: {req_name} (need {required_val})")
 
+    # Report incomplete minors (informational — not blocking graduation)
+    for minor_result in getattr(result, 'minor_results', []):
+        if not minor_result.is_met:
+            for bucket in minor_result.bucket_results:
+                if not bucket.is_met:
+                    unmet.append(
+                        f"Minor ({minor_result.component_name}): "
+                        f"{bucket.bucket_name} ({getattr(bucket, 'overall_progress', 'Incomplete')})"
+                    )
+
     return unmet
 
 
@@ -599,6 +622,18 @@ def _suggest_next_steps(result) -> List[str]:
     if result.overall_gpa < 2.0:
         suggestions.append("Improve overall GPA to meet minimum 2.0 requirement")
 
+    # 4. Minor completion suggestions (informational)
+    for minor_result in getattr(result, 'minor_results', []):
+        if not minor_result.is_met:
+            for bucket in minor_result.bucket_results:
+                if not bucket.is_met:
+                    for rule in getattr(bucket, 'rule_results', []):
+                        if not rule.is_met and getattr(rule, 'courses_needed', None):
+                            suggestions.append(
+                                f"Minor ({minor_result.component_name}): "
+                                f"Take required courses: {', '.join(rule.courses_needed)}"
+                            )
+
     # Deduplicate suggestions (in case multiple rules triggered the same course suggestion)
     unique_suggestions = list(dict.fromkeys(suggestions))
 
@@ -629,25 +664,82 @@ class RequirementEvaluator:
             overall_gpa=student.overall_gpa or 0.0,
         )
 
-        used_courses = set()
+        global_used_courses = set()
 
-        # Evaluate general requirements (FLR) first so that foreign-language
+        # Pass 0: Evaluate general requirements (FLR) first so that foreign-language
         # courses are added to used_courses before major/elective buckets run.
         for bucket in degree.general_requirements:
-            bucket_result = self._evaluate_bucket(student, bucket, used_courses)
+            bucket_result = self._evaluate_bucket(student, bucket, global_used_courses)
             result.general_requirements.append(bucket_result)
 
+        # Initialize components and gather all buckets
+        all_buckets_to_evaluate = []
+        
         for major in degree.majors:
-            major_result = self._evaluate_major(student, major, used_courses)
+            major_result = ComponentResult(
+                component_name=major.name,
+                component_type="major",
+                is_met=False,
+                total_credits_earned=0,
+                total_credits_required=major.total_credits,
+            )
             result.major_results.append(major_result)
+            for bucket in major.buckets:
+                all_buckets_to_evaluate.append({"component": major_result, "bucket": bucket})
+
+        for minor in degree.minors:
+            minor_result = ComponentResult(
+                component_name=minor.name,
+                component_type="minor",
+                is_met=False,
+                total_credits_earned=0,
+                total_credits_required=minor.total_credits,
+            )
+            result.minor_results.append(minor_result)
+            for bucket in minor.buckets:
+                all_buckets_to_evaluate.append({"component": minor_result, "bucket": bucket})
+
+        def is_strict_core_bucket(bucket: Bucket) -> bool:
+            return all(rule.get("type", "") == "all_credits_from" for rule in bucket.rules)
+
+        bucket_results_map = {}
+
+        # Pass 1: Strict Core Lock-in
+        for item in all_buckets_to_evaluate:
+            bucket = item["bucket"]
+            if is_strict_core_bucket(bucket):
+                bucket_result = self._evaluate_bucket(student, bucket, global_used_courses)
+                bucket_results_map[bucket.id] = bucket_result
+
+        # Pass 2: Flexible Electives
+        for item in all_buckets_to_evaluate:
+            bucket = item["bucket"]
+            if not is_strict_core_bucket(bucket):
+                bucket_result = self._evaluate_bucket(student, bucket, global_used_courses)
+                bucket_results_map[bucket.id] = bucket_result
+
+        # Finalize component results (preserving order, summing up credits and met status)
+        for major, major_result in zip(degree.majors, result.major_results):
+            major_result.bucket_results = [bucket_results_map[b.id] for b in major.buckets]
+            major_result.total_credits_earned = sum(b.credits_earned for b in major_result.bucket_results)
+            major_result.is_met = all(b.is_met for b in major_result.bucket_results) if major_result.bucket_results else True
+
+        for minor, minor_result in zip(degree.minors, result.minor_results):
+            minor_result.bucket_results = [bucket_results_map[b.id] for b in minor.buckets]
+            minor_result.total_credits_earned = sum(b.credits_earned for b in minor_result.bucket_results)
+            minor_result.is_met = all(b.is_met for b in minor_result.bucket_results) if minor_result.bucket_results else True
 
         # Map EX exemptions to replacement courses after all buckets evaluated
         all_bucket_results = []
         for major_result in result.major_results:
             all_bucket_results.extend(major_result.bucket_results)
         all_bucket_results.extend(result.general_requirements)
+        
+        # Include minor buckets in mapping too now that they are using the global pool
+        for minor_result in result.minor_results:
+            all_bucket_results.extend(minor_result.bucket_results)
 
-        self._map_exemptions(student, all_bucket_results, used_courses)
+        self._map_exemptions(student, all_bucket_results, global_used_courses)
 
         # Determine if degree is complete
         result.is_complete = _check_degree_completion(result)
@@ -656,25 +748,6 @@ class RequirementEvaluator:
         result.overall_progress = _generate_progress_summary(result)
         result.unmet_requirements = _list_unmet_requirements(result)
         result.next_steps = _suggest_next_steps(result)
-
-        return result
-
-    def _evaluate_major(
-        self, student: StudentData, major: Major, used_courses: Set[str]
-    ) -> ComponentResult:
-        """Evaluate major requirements"""
-        result = ComponentResult(
-            component_name=major.name,
-            component_type="major",
-            is_met=False,
-            total_credits_earned=0,
-            total_credits_required=major.total_credits,
-        )
-
-        for bucket in major.buckets:
-            bucket_result = self._evaluate_bucket(student, bucket, used_courses)
-            result.bucket_results.append(bucket_result)
-            result.total_credits_earned += bucket_result.credits_earned
 
         return result
 

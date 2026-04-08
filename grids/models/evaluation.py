@@ -92,6 +92,49 @@ class Major(BaseModel):
         return self
 
 
+class Minor(BaseModel):
+    """A named minor programme with its own set of requirement buckets."""
+    id: str
+    name: str
+    faculty: Optional[str] = None
+    total_credits: float
+    description: Optional[str] = None
+    bucket_ids: List[str] = Field(default_factory=list)
+    buckets: List['Bucket'] = Field(default_factory=list)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _populate_buckets_from_ids(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return data
+        bucket_ids = data.get("bucket_ids") or []
+        if bucket_ids and not data.get("buckets"):
+            try:
+                global BUCKETS
+                registry: Dict[str, Any] = BUCKETS if isinstance(BUCKETS, dict) else {b.id: b for b in BUCKETS}
+            except NameError:
+                return data
+            dedup_ids: List[str] = list(dict.fromkeys(bucket_ids))
+            unknown = [bid for bid in dedup_ids if bid not in registry]
+            if unknown:
+                raise ValueError(
+                    f"Unknown bucket_ids for Minor '{data.get('id', '?')}': {unknown}"
+                )
+            data["bucket_ids"] = dedup_ids
+            data["buckets"] = [registry[bid] for bid in dedup_ids]
+        return data
+
+    @model_validator(mode="after")
+    def _sync_ids_from_buckets(self) -> 'Minor':
+        if self.buckets and not self.bucket_ids:
+            self.bucket_ids = [b.id for b in self.buckets]
+        self.bucket_ids = list(dict.fromkeys(self.bucket_ids))
+        if self.buckets and self.bucket_ids:
+            by_id = {b.id: b for b in self.buckets}
+            self.buckets = [by_id[b_id] for b_id in self.bucket_ids if b_id in by_id]
+        return self
+
+
 def _load_buckets(path: str) -> dict[Any, Bucket]:
     with open(path, 'r', encoding="utf-8") as f:
         data = json.load(f)
@@ -102,6 +145,12 @@ def _load_majors(path: str) -> dict[Any, Major]:
     with open(path, 'r', encoding="utf-8") as f:
         data = json.load(f)
     return {m['id']: Major(**m) for m in data['majors']}
+
+
+def _load_minors(path: str) -> dict[Any, Minor]:
+    with open(path, 'r', encoding="utf-8") as f:
+        data = json.load(f)
+    return {m['id']: Minor(**m) for m in data['minors']}
 
 
 
@@ -140,7 +189,7 @@ def _normalise_faculty(raw: str) -> Optional[str]:
 # CHANGE: Safely anchors to the project root while maintaining the Pathlib object type
 BASEDIR = settings.BASE_DIR / 'grids' / 'data'
 
-# Try to load buckets, majors, and foreign languages, but handle missing files gracefully
+# Try to load buckets, majors, and minors, but handle missing files gracefully
 try:
     BUCKETS = _load_buckets(str(BASEDIR / 'buckets.json'))
     MAJORS = _load_majors(str(BASEDIR / 'majors.json'))
@@ -149,9 +198,16 @@ except FileNotFoundError:
     BUCKETS = {}
     MAJORS = {}
 
+try:
+    MINORS = _load_minors(str(BASEDIR / 'minors.json'))
+except FileNotFoundError:
+    print("Warning: minors.json not found. Using empty dictionary.")
+    MINORS = {}
+
 
 class Degree(BaseModel):
     majors: List[Major] = Field(default_factory=list)
+    minors: List[Minor] = Field(default_factory=list)
     general_requirements: List[Bucket] = Field(default_factory=list)
     total_credits: int = Field(default_factory=int)
 
@@ -162,11 +218,21 @@ class Degree(BaseModel):
     @classmethod
     def from_programme_data(cls, programme: ProgrammeData):
         majors: List[Major] = []
+        minors: List[Minor] = []
         general_requirements: List[Bucket] = []
 
         for major in list(MAJORS.values()):
-            if programme.major == major.name:
-                majors.append(major.model_copy(deep=True))
+            if programme.major:
+                major_list = [m.strip() for m in programme.major.split(",")]
+                if major.name in major_list:
+                    majors.append(major.model_copy(deep=True))
+
+        # ── Minor detection ────────────────────────────────────────
+        if programme.minor:
+            minor_list = [m.strip() for m in programme.minor.split(",")]
+            for minor in list(MINORS.values()):
+                if minor.name in minor_list:
+                    minors.append(minor.model_copy(deep=True))
 
         # ── Faculty-based general requirements ────────────────────
         # Resolve the faculty from the matched major or the programme data.
@@ -185,10 +251,14 @@ class Degree(BaseModel):
             if "FLR_FST" in BUCKETS:
                 general_requirements.append(BUCKETS["FLR_FST"].model_copy(deep=True))
 
-        total_credits = 93
+        if majors:
+            total_credits = max([m.total_credits for m in majors])
+        else:
+            total_credits = 93
 
         return cls(
             majors=majors,
+            minors=minors,
             general_requirements=general_requirements,
             total_credits=total_credits,
         )

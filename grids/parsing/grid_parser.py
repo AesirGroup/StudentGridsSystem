@@ -440,7 +440,7 @@ def _extract_curriculum_blocks_data(text: str) -> List[Dict[str, Any]]:
 
         idx = 0
 
-        # --- NEW FIX: Skip "CURRENT PROGRAMME" header if present ---
+        # Skip "CURRENT PROGRAMME" header if present
         if idx < len(lines) and "CURRENT PROGRAMME" in lines[idx].upper():
             idx += 1
         # -----------------------------------------------------------
@@ -473,10 +473,26 @@ def _extract_curriculum_blocks_data(text: str) -> List[Dict[str, Any]]:
         if idx < len(lines):
             block["department"] = _clean_val(lines[idx])
             idx += 1
-        # 8) major
-        if idx < len(lines):
-            block["major"] = _clean_val(lines[idx])
+            
+        # 8) major(s)
+        majors = []
+        while idx < len(lines) and lines[idx].upper().startswith("MAJOR:"):
+            # Strip out " (Double Major)" tags if they exist to match majors.json cleanly
+            clean_major = _clean_val(lines[idx]).replace(" (Double Major)", "").strip()
+            if clean_major:
+                majors.append(clean_major)
             idx += 1
+        if majors:
+            block["major"] = " and ".join(majors) 
+            
+        # 8.5) minor(s)
+        minors = []
+        while idx < len(lines) and lines[idx].upper().startswith("MINOR:"):
+            minors.append(_clean_val(lines[idx]))
+            idx += 1
+        if minors:
+            block["minor"] = ", ".join(minors)
+
         # 9) degree GPA
         for ln in lines[idx : idx + 3]:
             m = _gpa_pat.search(ln)
@@ -876,6 +892,7 @@ def parse_grids(raw: str) -> List[StudentData]:
                     faculty=curr_blocks[i]["faculty"],
                     department=curr_blocks[i]["department"],
                     major=curr_blocks[i]["major"],
+                    minor=curr_blocks[i].get("minor"),
                     degree_gpa=curr_blocks[i]["degree_gpa"],
                 ),
                 terms=[],
