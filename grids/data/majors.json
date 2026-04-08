@@ -99,10 +99,28 @@
       "bucket_ids": [
         "MATH_LEVEL1_CORE",
         "FOUNDATIONS_FST",
+        "FLR_FST",
         "MATH_LEVEL1_ELECTIVES",
         "MATH_ADVANCED_CORE",
         "MATH_ADVANCED_LEVEL3_CORE",
         "MATH_OTHER_ADVANCED_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MAJOR_COMP_SCI_MATH",
+      "name": "Computer Science and Mathematics",
+      "faculty": "FST",
+      "total_credits": 94,
+      "description": "Composite degree capturing the Double Major in Computer Science and Mathematics.",
+      "bucket_ids": [
+        "CS_GEN_LEVEL1_CORE",
+        "MATH_LEVEL1_CORE",
+        "FOUNDATIONS_FST",
+        "FLR_FST",
+        "CS_GEN_ADVANCED_COMP_CORE",
+        "MATH_ADVANCED_CORE",
+        "MATH_ADVANCED_LEVEL3_CORE",
+        "CS_COMP_MATH_DOUBLE_ELECTIVES"
       ]
     },
     {
@@ -116,6 +134,97 @@
         "DS_SEM2_CORE",
         "DS_ELECTIVES",
         "DS_PROJECT"
+      ]
+    },
+    {
+      "id": "MAJOR_CHEMISTRY",
+      "name": "Chemistry",
+      "faculty": "FST",
+      "total_credits": 93,
+      "description": "BSc degree with a Major in Chemistry. Requires 12 Level I core credits, 12 Level I elective credits, 30 advanced core chemistry credits, and 30 advanced elective credits.",
+      "bucket_ids": [
+        "CHEM_MAJOR_LEVEL1_CORE",
+        "CHEM_MAJOR_LEVEL1_ELECTIVES",
+        "FOUNDATIONS_FST",
+        "CHEM_MAJOR_ADVANCED_CORE",
+        "CHEM_MAJOR_ADVANCED_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MAJOR_PHYSICS",
+      "name": "Physics",
+      "faculty": "FST",
+      "total_credits": 93,
+      "description": "BSc degree with a Major in Physics. Requires 12 Level I core credits (PHYS 1221-1224), 12 Level I elective credits, 30 advanced core credits (10 courses including labs and research project), and 30 advanced elective credits. Students should not read ESST 1000 or ESST 2004.",
+      "bucket_ids": [
+        "PHYS_MAJOR_LEVEL1_CORE",
+        "PHYS_MAJOR_LEVEL1_ELECTIVES",
+        "FOUNDATIONS_FST",
+        "FLR_FST",
+        "PHYS_MAJOR_ADVANCED_CORE",
+        "PHYS_MAJOR_ADVANCED_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MAJOR_ELECTRONICS",
+      "name": "Electronics",
+      "faculty": "FST",
+      "total_credits": 93,
+      "description": "BSc degree with a Major in Electronics from the Department of Physics. Requires 12 Level I core credits (COMP 1601, MATH 1141, MATH 1142, PHYS 1223), 12 Level I electives, 27 advanced core credits, 3 departmental elective credits, and 30 advanced elective credits. Students must register for year-long PHYS 3202 (not PHYS 3163).",
+      "bucket_ids": [
+        "ELEC_MAJOR_LEVEL1_CORE",
+        "ELEC_MAJOR_LEVEL1_ELECTIVES",
+        "FOUNDATIONS_FST",
+        "FLR_FST",
+        "ELEC_MAJOR_ADVANCED_CORE",
+        "ELEC_MAJOR_DEPT_ELECTIVE",
+        "ELEC_MAJOR_ADVANCED_ELECTIVES"
+      ]
+    }
+    ,{
+      "id": "MAJOR_BIOCHEMISTRY",
+      "name": "Biochemistry",
+      "faculty": "FST",
+      "total_credits": 93,
+      "description": "BSc degree with a Major in Biochemistry from the Department of Life Sciences. Requires 21 Level I core credits, 3 Level I elective credits, 24 advanced core credits (including 1.5-credit practicals), 6 advanced elective credits, and 30 other advanced credits. MATH 1115 required unless exempt via CAPE Pure Mathematics.",
+      "bucket_ids": [
+        "BIOC_MAJOR_LEVEL1_CORE",
+        "BIOC_MAJOR_LEVEL1_ELECTIVES",
+        "FOUNDATIONS_FST",
+        "FLR_FST",
+        "BIOC_MAJOR_ADVANCED_CORE",
+        "BIOC_MAJOR_ADVANCED_ELECTIVES",
+        "BIOC_MAJOR_OTHER_ADVANCED_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MAJOR_BIOLOGY",
+      "name": "Biology",
+      "faculty": "FST",
+      "total_credits": 93,
+      "description": "BSc degree with a Major in Biology from the Department of Life Sciences. Requires 15 Level I core credits (including MATH 1115), 9 Level I elective credits, 30 advanced core credits (10 BIOL courses), and 30 advanced elective credits. CHEM 1062 required for students without CAPE Chemistry. Joint Biochemistry/Biology majors must not read BIOL 2164 and BIOL 2360. Students with Math/Stats major/minor should not read BIOL 2163.",
+      "bucket_ids": [
+        "BIOL_MAJOR_LEVEL1_CORE",
+        "BIOL_MAJOR_LEVEL1_ELECTIVES",
+        "FOUNDATIONS_FST",
+        "FLR_FST",
+        "BIOL_MAJOR_ADVANCED_CORE",
+        "BIOL_MAJOR_ADVANCED_ELECTIVES"
+      ]
+    },
+    {
+      "id": "MAJOR_ENV_SCIENCE",
+      "name": "Environmental Science",
+      "faculty": "FST",
+      "total_credits": 93,
+      "description": "BSc degree with a Major in Environmental Science from the Department of Life Sciences. Requires 15 Level I core credits (ESST 1000, 1001, 1002, 1006, MATH 1115), 9 Level I elective credits, 30 advanced core credits, and 30 advanced elective credits. Joint Biology/EnvSci majors should read both BIOL 2464 and ESST 3000. Non-joint students read BIOL 2464 instead of ESST 3000. Joint Biology or Math major students should not read BIOL 2163.",
+      "bucket_ids": [
+        "ESST_MAJOR_LEVEL1_CORE",
+        "ESST_MAJOR_LEVEL1_ELECTIVES",
+        "FOUNDATIONS_FST",
+        "FLR_FST",
+        "ESST_MAJOR_ADVANCED_CORE",
+        "ESST_MAJOR_ADVANCED_ELECTIVES"
       ]
     }
   ]
