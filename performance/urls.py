@@ -26,7 +26,6 @@ urlpatterns = [
     # --- NO-DB PREVIEW ROUTES ---
     path('transcript/', TranscriptGridView.as_view(), name='transcript_grid'),
     path('transcript/<int:student_number>/', TranscriptStudentDetailView.as_view(), name='transcript_student_detail'),
-    path('student/<int:student_number>/', StudentDetailView.as_view(), name='report_student_detail'),
 
     # --- STUDENT ACTIONS ---
     path('<int:student_number>/toggle-flr/', ToggleFLRExemptionView.as_view(), name='toggle_flr_exemption'),

@@ -893,7 +893,7 @@ def build_bucket_dict(component_name, b_result, student):
     }
 
 
-class TranscriptGridView(LoginRequiredMixin, View):
+class TranscriptGridView(View):
     """
     Upload and evaluate a student grid or transcript without persisting
     anything to the database. Results are stored in the session only.
@@ -1113,7 +1113,7 @@ class TranscriptGridView(LoginRequiredMixin, View):
             )
 
 
-class TranscriptStudentDetailView(LoginRequiredMixin, View):
+class TranscriptStudentDetailView(View):
     """
     Renders the student detail page using session data only.
     No StudentProfile, AuditRecord, or BucketResult DB reads.

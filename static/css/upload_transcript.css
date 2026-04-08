@@ -1,8 +1,5 @@
+/* ----- MAIN CONTENT ----- */
 
-
-/* ================================================================
-   MAIN CONTENT
-================================================================ */
 main {
     max-width: 1000px;
     margin: var(--space-2xl) auto;
@@ -12,9 +9,8 @@ main {
 }
 
 
-/* ================================================================
-   BACK LINK  (SVG version matching upload_grid style)
-================================================================ */
+/* ----- BACK LINK ----- */
+
 .back-btn {
     display: inline-flex;
     align-items: center;
@@ -26,13 +22,18 @@ main {
     white-space: nowrap;
 }
 
-.back-btn:hover { color: var(--clr-primary); }
-.back-btn svg { width: 14px; height: 14px; }
+.back-btn:hover {
+    color: var(--clr-primary);
+}
+
+.back-btn svg {
+    width: 14px;
+    height: 14px;
+}
 
 
-/* ================================================================
-   HEADER
-================================================================ */
+/* ----- HEADER ----- */
+
 header .img-container {
     width: 56px;
     height: 56px;
@@ -64,9 +65,8 @@ header p {
 }
 
 
-/* ================================================================
-   ALERT
-================================================================ */
+/* ----- ALERT ----- */
+
 .app-alert {
     display: flex;
     align-items: flex-start;
@@ -107,17 +107,15 @@ header p {
 }
 
 
-/* ================================================================
-   UPLOAD SECTION
-================================================================ */
+/* ----- UPLOAD SECTION ----- */
+
 #upload-section {
     margin-bottom: var(--space-lg);
 }
 
 
-/* ================================================================
-   PROGRESS UI
-================================================================ */
+/* ----- PROGRESS UI ----- */
+
 .processing-ui {
     background-color: var(--card-bg);
     border: 1px solid var(--clr-border);
@@ -149,9 +147,8 @@ header p {
 }
 
 
-/* ================================================================
-   DROP ZONE
-================================================================ */
+/* ----- DROP ZONE ----- */
+
 .drop-zone {
     background-color: var(--card-bg);
     border: 2px dashed var(--clr-border);
@@ -188,7 +185,6 @@ header p {
     object-fit: cover;
 }
 
-/* Primary label (filename or default prompt) */
 .drop-zone p:first-of-type,
 #dropLabel {
     color: var(--text-primary);
@@ -197,7 +193,6 @@ header p {
     text-align: center;
 }
 
-/* Sub-label (file types / max size) */
 .drop-sub {
     color: var(--text-secondary);
     font-size: var(--fs-2xs);
@@ -206,9 +201,8 @@ header p {
 }
 
 
-/* ================================================================
-   SECTION DIVIDER
-================================================================ */
+/* ----- SECTION DIVIDER ----- */
+
 .section-divider {
     display: flex;
     align-items: center;
@@ -227,9 +221,8 @@ header p {
 }
 
 
-/* ================================================================
-   BROWSE BUTTON
-================================================================ */
+/* ----- BROWSE BUTTON ----- */
+
 .browse-btn {
     display: inline-block;
     background-color: var(--clr-primary);
@@ -248,17 +241,15 @@ header p {
 }
 
 
-/* ================================================================
-   UTILITY
-================================================================ */
+/* ----- UTILITIES ----- */
+
 .d-none {
     display: none !important;
 }
 
 
-/* ================================================================
-   STATS GRID
-================================================================ */
+/* ----- STATS GRID ----- */
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -319,9 +310,8 @@ header p {
 }
 
 
-/* ================================================================
-   SEARCH BAR
-================================================================ */
+/* ----- SEARCH BAR ----- */
+
 .search-bar {
     display: flex;
     align-items: center;
@@ -353,9 +343,8 @@ header p {
 }
 
 
-/* ================================================================
-   FILTER DROPDOWNS
-================================================================ */
+/* ----- FILTER DROPDOWNS ----- */
+
 .filters {
     display: flex;
     gap: var(--space-sm);
@@ -440,9 +429,8 @@ header p {
 }
 
 
-/* ================================================================
-   STUDENT CARD GRID
-================================================================ */
+/* ----- STUDENT CARD GRID ----- */
+
 .student-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -566,9 +554,8 @@ header p {
 }
 
 
-/* ================================================================
-   PAGINATION
-================================================================ */
+/* ----- PAGINATION ----- */
+
 .pagination {
     display: flex;
     align-items: center;
@@ -620,10 +607,10 @@ header p {
 }
 
 
-/* ================================================================
-   MEDIA QUERIES
-================================================================ */
+/* ----- MEDIA QUERIES ----- */
+
 @media (max-width: 768px) {
+
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -635,7 +622,6 @@ header p {
 
 @media (max-width: 570px) {
 
-    /* NAV */
     nav.banner > .nav-container {
         padding: var(--space-sm) var(--space-md);
     }
@@ -691,7 +677,6 @@ header p {
         box-sizing: border-box;
     }
 
-    /* MAIN */
     main {
         margin: var(--space-xl) auto;
         padding: 0 var(--space-sm);
@@ -714,12 +699,10 @@ header p {
         height: 40px;
     }
 
-    /* STATS */
     .stats-grid {
         grid-template-columns: 1fr;
     }
 
-    /* FILTERS */
     .filters {
         flex-direction: column;
     }
@@ -728,12 +711,10 @@ header p {
         min-width: 100%;
     }
 
-    /* CARDS */
     .student-grid {
         grid-template-columns: 1fr;
     }
 
-    /* PAGINATION */
     .pag-btn span,
     .pag-btn svg {
         display: none;
