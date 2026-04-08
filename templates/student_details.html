@@ -23,10 +23,15 @@
                     <img src="{% static 'img/student_details/back-arrow-icon.svg' %}" alt="Back to Report">
                     <span>Back to Report</span>
                 </a>
+            {% elif request.GET.from == 'transcript' %}
+                <a href="{% url 'transcript_grid' %}">
+                    <img src="{% static 'img/student_details/back-arrow-icon.svg' %}" alt="Back to Students">
+                    <span>Back to Transcript</span>
+                </a>
             {% else %}
                 <a href="{% url 'upload_grid' %}?origin={{ request.GET.origin }}">
                     <img src="{% static 'img/student_details/back-arrow-icon.svg' %}" alt="Back to Students">
-                    <span>Back to Students</span>
+                    <span>Back to Grid</span>
                 </a>
             {% endif %}
 
@@ -99,7 +104,11 @@
                         {% endif %}
                     </p>
                 </div>
-                <form method="post" action="{% url 'toggle_flr_exemption' student.student_number %}">
+                {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'toggle_flr_exemption' student.student_number %}?from={{ request.GET.from }}">
+                {% else %}
+                    <form method="post" action="{% url 'toggle_transcript_flr' student.student_number %}">
+                {% endif %}
                     {% csrf_token %}
                     <button type="submit" class="flr-toggle-btn {% if student.flr_exempt_verified %}flr-restore{% else %}flr-revoke{% endif %}">
                         {% if student.flr_exempt_verified %}
