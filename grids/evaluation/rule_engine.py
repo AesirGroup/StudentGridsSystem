@@ -756,13 +756,10 @@ def _suggest_next_steps(result, student: StudentData) -> Dict[str, Any]:
                 if not bucket.is_met:
                     for rule in getattr(bucket, 'rule_results', []):
                         if not rule.is_met and getattr(rule, 'courses_needed', None):
-                            suggestions.append(
+                            notes.append(
                                 f"Minor ({minor_result.component_name}): "
                                 f"Take required courses: {', '.join(rule.courses_needed)}"
                             )
-
-    # Deduplicate suggestions (in case multiple rules triggered the same course suggestion)
-    unique_suggestions = list(dict.fromkeys(suggestions))
 
     return {
         "mandatory": mandatory,
@@ -878,7 +875,7 @@ class RequirementEvaluator:
         # Generate summary
         result.overall_progress = _generate_progress_summary(result)
         result.unmet_requirements = _list_unmet_requirements(result)
-        result.next_steps = _suggest_next_steps(result)
+        result.next_steps = _suggest_next_steps(result, student)
 
         return result
 
