@@ -35,9 +35,9 @@ from .models import (
     # Student
     StudentCourse, TermData, StudentData,
     # Evaluation models
-    Bucket, Major, Degree,
+    Bucket, Major, Minor, Degree,
     EvaluationRequest, EvaluationResponse,
-    BUCKETS, MAJORS,
+    BUCKETS, MAJORS, MINORS,
 )
 from .parsing import parse_text, identify_doc_type
 from .evaluation import (
@@ -61,9 +61,9 @@ __all__ = [
     # Student
     'StudentCourse', 'TermData', 'StudentData',
     # Evaluation models
-    'Bucket', 'Major', 'Degree',
+    'Bucket', 'Major', 'Minor', 'Degree',
     'EvaluationRequest', 'EvaluationResponse',
-    'BUCKETS', 'MAJORS',
+    'BUCKETS', 'MAJORS', 'MINORS',
     # Parsing
     'parse_text', 'identify_doc_type',
     # Evaluation

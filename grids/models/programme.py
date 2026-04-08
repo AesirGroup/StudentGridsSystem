@@ -10,6 +10,7 @@ class ProgrammeData(BaseModel):
     faculty: Optional[str] = None
     department: Optional[str] = None
     major: Optional[str] = None
+    minor: Optional[str] = None
     degree_gpa: Optional[float] = None
 
 

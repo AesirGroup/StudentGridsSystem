@@ -3,9 +3,9 @@ from .programme import ProgrammeData, ProgrammeSummaryItem
 from .transcript import TranscriptTotalRow, TranscriptTotals
 from .student import StudentCourse, TermData, StudentData
 from .evaluation import (
-    Bucket, Major, Degree,
+    Bucket, Major, Minor, Degree,
     EvaluationRequest, EvaluationResponse,
-    BUCKETS, MAJORS
+    BUCKETS, MAJORS, MINORS
 )
 
 __all__ = [
@@ -18,7 +18,7 @@ __all__ = [
     # Student
     'StudentCourse', 'TermData', 'StudentData',
     # Evaluation
-    'Bucket', 'Major', 'Degree',
+    'Bucket', 'Major', 'Minor', 'Degree',
     'EvaluationRequest', 'EvaluationResponse',
-    'BUCKETS', 'MAJORS',
+    'BUCKETS', 'MAJORS', 'MINORS',
 ]
