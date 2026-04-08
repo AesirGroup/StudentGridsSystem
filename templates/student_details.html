@@ -18,28 +18,25 @@
         <!-- ==================== BACK NAV ==================== -->
         <nav class="home-hero">
 
-            {% if request.resolver_match.url_name == 'report_student_detail' %}
+            {% if request.GET.from == 'report' %}
                 <a href="{% url 'report' %}">
                     <img src="{% static 'img/student_details/back-arrow-icon.svg' %}" alt="Back to Report">
                     <span>Back to Report</span>
                 </a>
-            {% elif request.resolver_match.url_name == 'transcript_student_detail' %}
-                <a href="{% url 'transcript_grid' %}">
-                    <img src="{% static 'img/student_details/back-arrow-icon.svg' %}" alt="Back to Transcript">
-                    <span>Back to Transcript</span>
-                </a>
             {% else %}
-                <a href="{% url 'upload_grid' %}">
+                <a href="{% url 'upload_grid' %}?origin={{ request.GET.origin }}">
                     <img src="{% static 'img/student_details/back-arrow-icon.svg' %}" alt="Back to Students">
                     <span>Back to Students</span>
                 </a>
             {% endif %}
 
-            <button class="add-report-btn" id="addReportBtn" data-student-id="{{ student.student_number }}">
-                <img src="{% static 'img/student_details/add-report-icon.svg' %}" alt="Add to report">
-                <span id="addReportLabel">Add to Report</span>
-            </button>
-
+            <!-- Hides on logged out users -->
+            {% if request.resolver_match.url_name != 'transcript_student_detail' %}
+                <button class="add-report-btn" id="addReportBtn" data-student-id="{{ student.student_number }}">
+                    <img src="{% static 'img/student_details/add-report-icon.svg' %}" alt="Add to report">
+                    <span id="addReportLabel">Add to Report</span>
+                </button>
+            {% endif %}
         </nav>
 
 
@@ -128,82 +125,84 @@
 
             {% for component in component_list %}
                 {% for bucket in component.list %}
+                    {% if not bucket.bucket_name|slice:":28" == "Foreign Language Requirement" %}
 
-                    <div class="bucket">
+                        <div class="bucket">
 
-                        <button class="bucket-toggle">
-                            {{ bucket.bucket_name }}
-                            <span>
-                                {{ bucket.credits_earned|default:0|floatformat:0 }} /
-                                {{ bucket.credits_required|default:0|floatformat:0 }} credits
-                            </span>
-                        </button>
+                            <button class="bucket-toggle">
+                                {{ bucket.bucket_name }}
+                                <span>
+                                    {{ bucket.credits_earned|default:0|floatformat:0 }} /
+                                    {{ bucket.credits_required|default:0|floatformat:0 }} credits
+                                </span>
+                            </button>
 
-                        <div class="bucket-content">
+                            <div class="bucket-content">
 
-                            <!-- COMPLETED COURSES -->
-                            {% if bucket.courses_completed_json %}
-                                <h3 class="bucket-heading">
-                                    <img src="{% static 'img/student_details/completed-icon.svg' %}" alt="Completed Icon" class="heading-icon">
-                                    Completed
-                                </h3>
-                                <div class="completed">
-                                    {% for course in bucket.courses_completed_json %}
-                                        <div class="app-card">
-                                            <h5 class="course-code">{{ course.code|default:"N/A" }}</h5>
-                                            <div>
-                                                <p class="credits">{{ course.credits|default:0|floatformat:0 }} credits</p>
-                                                <p class="grade">{{ course.grade|default:"N/A" }}</p>
+                                <!-- COMPLETED COURSES -->
+                                {% if bucket.courses_completed_json %}
+                                    <h3 class="bucket-heading">
+                                        <img src="{% static 'img/student_details/completed-icon.svg' %}" alt="Completed Icon" class="heading-icon">
+                                        Completed
+                                    </h3>
+                                    <div class="completed">
+                                        {% for course in bucket.courses_completed_json %}
+                                            <div class="app-card">
+                                                <h5 class="course-code">{{ course.code|default:"N/A" }}</h5>
+                                                <div>
+                                                    <p class="credits">{{ course.credits|default:0|floatformat:0 }} credits</p>
+                                                    <p class="grade">{{ course.grade|default:"N/A" }}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
 
-                            <!-- EXEMPTION MAPPINGS -->
-                            {% if bucket.exemption_mappings_json %}
-                                <h3 class="bucket-heading">
-                                    <img src="{% static 'img/student_details/completed-icon.svg' %}" alt="Exemption Icon" class="heading-icon">
-                                    Exemption Credit Replacements
-                                </h3>
-                                <div class="exemptions">
-                                    {% for m in bucket.exemption_mappings_json %}
-                                        <div class="app-card">
-                                            <div class="exemption-left">
-                                                <h5 class="course-code">{{ m.exempted_course }}</h5>
-                                                <span class="ex-badge">EX</span>
+                                <!-- EXEMPTION MAPPINGS -->
+                                {% if bucket.exemption_mappings_json %}
+                                    <h3 class="bucket-heading">
+                                        <img src="{% static 'img/student_details/completed-icon.svg' %}" alt="Exemption Icon" class="heading-icon">
+                                        Exemption Credit Replacements
+                                    </h3>
+                                    <div class="exemptions">
+                                        {% for m in bucket.exemption_mappings_json %}
+                                            <div class="app-card">
+                                                <div class="exemption-left">
+                                                    <h5 class="course-code">{{ m.exempted_course }}</h5>
+                                                    <span class="ex-badge">EX</span>
+                                                </div>
+                                                <div class="exemption-right">
+                                                    <p class="credits">{{ m.credits|floatformat:0 }} credits</p>
+                                                    <p class="replaced-by">→ {{ m.replacement_course }}</p>
+                                                </div>
                                             </div>
-                                            <div class="exemption-right">
-                                                <p class="credits">{{ m.credits|floatformat:0 }} credits</p>
-                                                <p class="replaced-by">→ {{ m.replacement_course }}</p>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
 
-                            <!-- COURSES STILL NEEDED -->
-                            {% if bucket.courses_needed_json %}
-                                <h3 class="bucket-heading">
-                                    <img src="{% static 'img/student_details/uncompleted-icon.svg' %}" alt="Uncompleted Icon" class="heading-icon">
-                                    Uncompleted
-                                </h3>
-                                <div class="uncompleted">
-                                    {% for course in bucket.courses_needed_json %}
-                                        <div class="app-card">
-                                            <h5 class="course-code">{{ course }}</h5>
-                                            <div>
-                                                <p class="credits">3 credits</p>
-                                                <p class="req">Required</p>
+                                <!-- COURSES STILL NEEDED -->
+                                {% if bucket.courses_needed_json %}
+                                    <h3 class="bucket-heading">
+                                        <img src="{% static 'img/student_details/uncompleted-icon.svg' %}" alt="Uncompleted Icon" class="heading-icon">
+                                        Uncompleted
+                                    </h3>
+                                    <div class="uncompleted">
+                                        {% for course in bucket.courses_needed_json %}
+                                            <div class="app-card">
+                                                <h5 class="course-code">{{ course }}</h5>
+                                                <div>
+                                                    <p class="credits">3 credits</p>
+                                                    <p class="req">Required</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
 
+                            </div>
                         </div>
-                    </div>
 
+                    {% endif %}
                 {% endfor %}
             {% endfor %}
 

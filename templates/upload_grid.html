@@ -20,12 +20,21 @@
     <main>
 
         <!-- BACK BUTTON -->
-        <a href="{% url 'home' %}" class="back-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M19 12H5M12 5l-7 7 7 7" />
-            </svg>
-            Back to Dashboard
-        </a>
+        {% if request.GET.origin == 'report' %}
+            <a href="{% url 'report' %}" class="back-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M19 12H5M12 5l-7 7 7 7" />
+                </svg>
+                Back to Report
+            </a>
+        {% else %}
+            <a href="{% url 'home' %}" class="back-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M19 12H5M12 5l-7 7 7 7" />
+                </svg>
+                Back to Dashboard
+            </a>
+        {% endif %}
 
         <h1>Upload Grid</h1>
 
@@ -693,7 +702,7 @@
                 .join(' ');
 
             return `
-                <a href="${STUDENT_URL}${r.student_number}/" class="student-card ${ok ? 'eligible' : 'not-eligible'}">
+                <a href="${STUDENT_URL}${r.student_number}/?from=upload_grid&origin=${new URLSearchParams(window.location.search).get('origin') || ''}" class="student-card ${ok ? 'eligible' : 'not-eligible'}">
                     <div class="student-card-top">
                         <h3>${titleCaseName}</h3>
                         <p class="student-id">${r.student_number || '—'}</p>

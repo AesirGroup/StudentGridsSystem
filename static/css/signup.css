@@ -226,6 +226,11 @@ form label {
     transform: translateY(-1px);
 }
 
+.create-card button:focus {
+  outline: 2px solid var(--clr-primary);
+  outline-offset: 2px;
+}
+
 
 
 /* ----- LOGIN BUTTON ----- */

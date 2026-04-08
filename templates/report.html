@@ -190,7 +190,7 @@
             </button>
 
             <!-- BUTTON 2: Add Student -->
-            <a href="{% url 'upload_grid' %}" class="generate-btn generate-btn--secondary">
+            <a href="{% url 'upload_grid' %}?from=report&origin=report" class="generate-btn generate-btn--secondary">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -483,7 +483,7 @@
                     </div>
                     <p class="empty-state__title">No students queued</p>
                     <p class="empty-state__sub">Browse to any student's details page and click <strong>"Add to Report"</strong> to add them here.</p>
-                    <a href="{% url 'upload_grid' %}" class="generate-btn generate-btn--secondary" style="margin-top: var(--space-sm);">
+                    <a href="{% url 'upload_grid' %}?from=report&origin=report" class="generate-btn generate-btn--secondary" style="margin-top: var(--space-sm);">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="12" y1="5" x2="12" y2="19"/>
                             <line x1="5" y1="12" x2="19" y2="12"/>
@@ -510,7 +510,7 @@
                 .join(' ');
 
             return `
-                <a href="${STUDENT_URL}${r.student_number}/" class="student-card ${ok ? 'eligible' : 'not-eligible'}">
+                <a href="${STUDENT_URL}${r.student_number}/?from=report" class="student-card ${ok ? 'eligible' : 'not-eligible'}">
                     <div class="student-card-top">
                         <h3>${titleCaseName}</h3>
                         <p class="student-id">${r.student_number || '—'}</p>

@@ -1,4 +1,5 @@
-/* ============ PAGE ACTIONS ============ */
+/* ----- PAGE ACTIONS ----- */
+
 .home-hero {
     display: flex;
     justify-content: space-between;
@@ -45,11 +46,12 @@
     width: 18px;
 }
 
-/* "Remove from Report" state */
 .home-hero button.in-report {
     background-color: var(--clr-danger);
 }
 
+
+/* ----- HEADINGS & LAYOUT ----- */
 
 h1 {
     font-size: var(--fs-2xl);
@@ -72,7 +74,8 @@ section {
 }
 
 
-/* ============ STUDENT OVERVIEW ============ */
+/* ----- STUDENT OVERVIEW ----- */
+
 .student-info {
     border: 1px solid var(--clr-border);
     border-radius: var(--radius-md);
@@ -124,7 +127,8 @@ section {
 }
 
 
-/* ============ FLR OVERRIDE CARD ============ */
+/* ----- FLR OVERRIDE CARD ----- */
+
 .flr-card {
     border: 1px solid var(--clr-border);
     border-radius: var(--radius-md);
@@ -165,7 +169,6 @@ section {
     color: var(--clr-danger);
 }
 
-/* small pill badges next to the status text */
 .flr-verified-badge,
 .flr-default-badge {
     font-size: var(--fs-3xs);
@@ -185,7 +188,6 @@ section {
     color: var(--clr-primary);
 }
 
-/* toggle button */
 .flr-toggle-btn {
     display: inline-flex;
     align-items: center;
@@ -225,7 +227,8 @@ section {
 }
 
 
-/* ============ BUCKETS TOGGLE BUTTON ============ */
+/* ----- BUCKET TOGGLE BUTTON ----- */
+
 .bucket-toggle {
     appearance: none;
     border: none;
@@ -274,7 +277,8 @@ section {
 }
 
 
-/* ============ BUCKET HEADER SPAN ============ */
+/* ----- BUCKET HEADER SPAN ----- */
+
 .bucket-toggle span {
     color: var(--clr-primary);
     font-size: var(--fs-2xs);
@@ -286,7 +290,8 @@ section {
 }
 
 
-/* ============ BUCKET CONTENT ============ */
+/* ----- BUCKET CONTENT ----- */
+
 .bucket-content {
     overflow: hidden;
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
@@ -320,7 +325,8 @@ section {
 }
 
 
-/* ============ CARDS INSIDE BUCKET ============ */
+/* ----- CARDS INSIDE BUCKET ----- */
+
 .bucket-content h3 {
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
@@ -390,7 +396,8 @@ section {
 }
 
 
-/* ============ EXEMPTION CARDS ============ */
+/* ----- EXEMPTION CARDS ----- */
+
 .exemption-left {
     display: flex;
     align-items: center;
@@ -403,7 +410,6 @@ section {
     gap: var(--space-sm);
 }
 
-/* EX badge on exempted course */
 .ex-badge {
     font-size: var(--fs-3xs);
     font-weight: var(--fw-bold);
@@ -413,7 +419,6 @@ section {
     padding: 2px var(--space-sm);
 }
 
-/* replacement course arrow label */
 .replaced-by {
     font-size: var(--fs-2xs);
     font-weight: var(--fw-semibold);
@@ -425,9 +430,8 @@ section {
 }
 
 
+/* ----- UNMET REQUIREMENTS & NEXT STEPS ----- */
 
-
-/* ============ UNMET REQUIREMENTS & NEXT STEPS ============ */
 .unmet-container ul,
 .suggested-container ul {
     padding: var(--space-sm) 0;
@@ -442,8 +446,10 @@ section {
 }
 
 
-/* ================= RESPONSIVE ================= */
+/* ----- RESPONSIVE ----- */
+
 @media (max-width: 1024px) {
+
     .student-details-container {
         grid-template-columns: repeat(3, max-content);
     }
@@ -456,6 +462,7 @@ section {
 }
 
 @media (max-width: 768px) {
+
     .student-details-container {
         grid-template-columns: repeat(2, max-content);
     }
@@ -479,6 +486,7 @@ section {
 }
 
 @media (max-width: 480px) {
+
     .student-details-container {
         grid-template-columns: repeat(1, max-content);
     }

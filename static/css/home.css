@@ -207,3 +207,29 @@ main {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
     transform: translateY(-6px) scale(1.03);
 }
+
+
+/* ----- TRANSCRIPT BUTTON ----- */
+
+#transcript {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+
+    color: var(--text-tertiary);
+
+    background-color: var(--clr-primary);
+    border: 2px solid var(--clr-border);
+
+    padding: var(--space-sm) var(--space-md);
+    margin-top: var(--space-lg);
+    width: fit-content;
+}
+
+
+#transcript svg {
+    stroke: var(--text-tertiary);
+    width: 24px;
+    height: 24px;
+}
+
