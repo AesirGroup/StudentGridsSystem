@@ -249,15 +249,38 @@
 
 
         <!-- ==================== SUGGESTED NEXT STEPS ==================== -->
-        {% if audit.next_steps_json %}
+        {% if audit.next_steps_json.mandatory or audit.next_steps_json.elective_groups or audit.next_steps_json.notes %}
         <section class="suggested-container bucket">
             <button class="bucket-toggle">Suggested Next Steps</button>
             <div class="bucket-content">
-                <ul>
-                    {% for step in audit.next_steps_json %}
-                    <li>{{ step }}</li>
-                    {% endfor %}
-                </ul>
+
+                {% if audit.next_steps_json.mandatory %}
+                    <div class="next-steps-section">
+                        <h4 class="next-steps-heading">Mandatory Courses</h4>
+                        <ul>
+                            {% for course in audit.next_steps_json.mandatory %}
+                                <li>{{ course }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% for group in audit.next_steps_json.elective_groups %}
+                    <div class="next-steps-section">
+                        <h4 class="next-steps-heading">{{ group.bucket_name }}</h4>
+                        <p class="next-steps-prompt">Pick {{ group.num_courses }} course{{ group.num_courses|pluralize }} to make up {{ group.credits_needed|floatformat:1 }} credits</p>
+                        <ul>
+                            {% for course in group.courses %}
+                                <li>{{ course }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+
+                {% for note in audit.next_steps_json.notes %}
+                    <p class="next-steps-note">{{ note }}</p>
+                {% endfor %}
+
             </div>
         </section>
         {% endif %}
