@@ -51,7 +51,7 @@ def extract_text_from_grid_pdf(file_obj):
                 if text_right:
                     all_text.append(text_right)
             except Exception as e:
-                print(f"Error on PDF extraction: {e}")
+                logger.error(f"PDF page extraction failed: {e}", exc_info=True)
 
     return "\n".join(all_text)
 
@@ -197,10 +197,10 @@ class ExtractTextChunkView(View):
         if not chunk_file:
             return JsonResponse({"error": "No file chunk provided."}, status=400)
 
-        chunk_index = int(request.POST.get("chunk_index", 0))
-        is_transcript_override = request.POST.get("is_transcript") == "true"
 
         try:
+            chunk_index = int(request.POST.get("chunk_index", 0))
+            is_transcript_override = request.POST.get("is_transcript") == "true"
             pdf_io = io.BytesIO(chunk_file.read())
             is_transcript = is_transcript_override
 
@@ -227,7 +227,7 @@ class ExtractTextChunkView(View):
             )
 
         except Exception as e:
-            logger.error(f"Chunk extraction failed: {str(e)}")
+            logger.error(f"Chunk extraction failed: {str(e)}", exc_info=True)
             return JsonResponse({"error": "Failed to parse PDF chunk."}, status=500)
 
 
@@ -491,14 +491,17 @@ class UploadGridView(LoginRequiredMixin, View):
 
             return JsonResponse({"summary": summary, "results": results})
 
+        except ValueError as e:
+            logger.warning(f"Document parsing rejected: {str(e)}")
+            return JsonResponse({
+                "error": str(e)
+            }, status=422)
+        
         except Exception as e:
-            logger.error(f"CRITICAL PARSE ERROR: {str(e)}", exc_info=True)
-            return JsonResponse(
-                {
-                    "error": "An unexpected system error occurred while processing the document. Please ensure the file is a valid format."
-                },
-                status=500,
-            )
+            logger.error(f"CRITICAL SYSTEM ERROR: {str(e)}", exc_info=True)
+            return JsonResponse({
+                "error": "An unexpected system error occurred while evaluating this document. Please contact support."
+            }, status=500)
 
 
 class StudentDetailView(LoginRequiredMixin, View):
@@ -681,15 +684,16 @@ class EphemeralEvaluationView(View):
             return JsonResponse({"results": results})
 
         except ValueError as e:
-            return JsonResponse({"error": str(e)}, status=400)
+            logger.warning(f"Ephemeral evaluation rejected: {str(e)}")
+            return JsonResponse({
+                "error": "We couldn't process this document. Please ensure it is an official, "
+                         "digitally downloaded PDF and not a scanned image or screenshot."
+            }, status=422)
         except Exception as e:
             logger.error(f"Stateless evaluation failed: {e}", exc_info=True)
-            return JsonResponse(
-                {
-                    "error": "Unable to process transcript. Please ensure it is an official, unmodified document."
-                },
-                status=500,
-            )
+            return JsonResponse({
+                "error": "Unable to process transcript. Please ensure it is an official, unmodified document."
+            }, status=500)
 
 
 class ToggleFLRExemptionView(LoginRequiredMixin, View):

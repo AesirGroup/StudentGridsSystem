@@ -2,7 +2,10 @@
 # Extracts student info, curriculum data, terms, and courses from grid PDF text
 
 import re
+import logging
 from typing import Any, Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
 
 from ..models import (
     StudentData,
@@ -841,6 +844,22 @@ def parse_grids(raw: str) -> List[StudentData]:
     overall_gpas = _extract_overall_gpas(raw)
     programme_summary_data = _extract_programme_summary_data(raw)
 
+    # Length Validation Guardrail
+    lengths = {
+        "student_numbers": len(student_numbers),
+        "names": len(names),
+        "curriculum_blocks": len(curr_blocks),
+        "overall_gpas": len(overall_gpas),
+        "programme_summaries": len(programme_summary_data),
+    }
+    if len(set(lengths.values())) > 1:
+        logger.error(f"CRITICAL PARSE MISMATCH. Extracted list lengths: {lengths}")
+        raise ValueError(
+            "Corrupted PDF extraction: Could not align student data across sections. "
+            "Please ensure the document is a clean, digitally downloaded PDF "
+            "and not a scanned image or screenshot."
+        )
+
     students = []
     for i in range(len(student_numbers)):
         students.append(
@@ -873,6 +892,19 @@ def parse_grids(raw: str) -> List[StudentData]:
         )
 
     docs = split_grid_documents(raw)
+
+    # Document Split Guardrail 
+    if len(docs) != len(students):
+        logger.error(
+            f"CRITICAL PARSE MISMATCH. Students: {len(students)}, "
+            f"Document splits: {len(docs)}"
+        )
+        raise ValueError(
+            "Corrupted PDF extraction: Could not align student documents. "
+            "Please ensure the document is a clean, digitally downloaded PDF "
+            "and not a scanned image or screenshot."
+        )
+
     for i in range(len(students)):
         terms = _extract_term_blocks(docs[i])
         term_data = [_extract_term_block_data(t) for t in terms]
