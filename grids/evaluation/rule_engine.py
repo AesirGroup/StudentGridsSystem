@@ -6,6 +6,8 @@ from grids.evaluation.equivalencies import get_equivalent_codes
 from typing import Dict, Set, Any, Optional, List
 from collections import defaultdict
 from pydantic import BaseModel, Field
+from pathlib import Path
+import json
 import logging
 
 logger = logging.getLogger(__name__)
@@ -84,7 +86,7 @@ class DegreeEvaluationResult(BaseModel):
 
     # Summary of unmet requirements
     unmet_requirements: List[str] = Field(default_factory=list)
-    next_steps: List[str] = Field(default_factory=list)
+    next_steps: Dict[str, Any] = Field(default_factory=dict)
 
 
 # ── Rule Evaluators ───────────────────────────────
@@ -560,49 +562,178 @@ def _list_unmet_requirements(result) -> List[str]:
     return unmet
 
 
-def _suggest_next_steps(result) -> List[str]:
-    """Suggest all necessary next steps for degree completion"""
-    suggestions = []
-    
-    missing_credits_total = 0.0
+def _load_course_catalog() -> Dict[str, Dict[str, Any]]:
+    """Load course_listing.json and return a flat dict keyed by course code.
 
-    # 1. Find missing required courses AND calculate actual credit deficits
+    Returns:
+        {"COMP 1601": {"title": "Computer Programming I", "credits": 3, "subject": "COMP", "level": 1}, ...}
+    """
+    catalog_path = Path(__file__).resolve().parent.parent / "data" / "course_listing.json"
+    if not catalog_path.exists():
+        return {}
+    with open(catalog_path, "r", encoding="utf-8") as f:
+        raw = json.load(f)
+
+    catalog: Dict[str, Dict[str, Any]] = {}
+    for subject, levels in raw.items():
+        for level_key, courses in levels.items():
+            # level_key is e.g. "level1" -> extract the digit
+            level_num = int(level_key.replace("level", "")) if level_key.startswith("level") else 0
+            for entry in courses:
+                code = entry.get("code", "")
+                if code:
+                    catalog[code] = {
+                        "title": entry.get("title", ""),
+                        "credits": entry.get("credits", 0),
+                        "subject": subject,
+                        "level": level_num,
+                    }
+    return catalog
+
+
+def _suggest_next_steps(result, student: StudentData) -> Dict[str, Any]:
+    """Suggest actionable next steps by comparing the course catalog against
+    the student's completed/used courses.
+
+    Returns a dict with:
+      - mandatory: list of course strings the student must take
+      - elective_groups: list of dicts, each with bucket_name, credits_needed,
+        num_courses, and courses (all available options)
+      - notes: list of general advisory strings (e.g. GPA warning)
+    """
+    mandatory: List[str] = []
+    elective_groups: List[Dict[str, Any]] = []
+    notes: List[str] = []
+
+    # -- Build lookup structures ------------------------------------------------
+    catalog = _load_course_catalog()
+
+    # All course codes the student has already passed (regardless of bucket usage)
+    student_passed_codes: Set[str] = set()
+    for term in student.terms:
+        for c in term.courses:
+            code = c.course_code
+            if code:
+                student_passed_codes.add(code)
+
+    # All courses consumed by the evaluation (across every bucket)
+    used_in_eval: Set[str] = set()
+    all_buckets: List[BucketResult] = []
+    for major in result.major_results:
+        all_buckets.extend(major.bucket_results)
+    if getattr(result, "general_requirements", None):
+        all_buckets.extend(result.general_requirements)
+
+    for bucket in all_buckets:
+        for rule in getattr(bucket, "rule_results", []):
+            for code in getattr(rule, "courses_used", []):
+                used_in_eval.add(code)
+
+    # Courses the student has taken or used — these are NOT available
+    taken_codes = student_passed_codes | used_in_eval
+
+    # Available catalog courses the student has NOT taken
+    available_courses = {code: info for code, info in catalog.items() if code not in taken_codes}
+
+    # -- Analyse each unmet bucket -----------------------------------------------
+    def _process_unmet_bucket(bucket: BucketResult) -> None:
+
+        if bucket.is_met:
+            return
+
+        earned = getattr(bucket, "credits_earned", 0.0)
+        required = getattr(bucket, "credits_required", 0.0)
+        shortfall = max(required - earned, 0.0)
+
+        # Collect subjects and levels from courses already used in this bucket
+        # to infer what subject/level area the bucket targets.
+        bucket_subjects: Set[str] = set()
+        bucket_levels: Set[int] = set()
+        for rule in getattr(bucket, "rule_results", []):
+            for code in getattr(rule, "courses_used", []):
+                info = catalog.get(code)
+                if info:
+                    bucket_subjects.add(info["subject"])
+                    bucket_levels.add(info["level"])
+
+            # Also infer from courses_needed (these are explicit required courses)
+            for code in getattr(rule, "courses_needed", []):
+                info = catalog.get(code)
+                if info:
+                    bucket_subjects.add(info["subject"])
+                    bucket_levels.add(info["level"])
+
+        # 1. Specific missing required courses (from all_credits_from rules)
+        required_credits_suggested = 0.0
+        for rule in getattr(bucket, "rule_results", []):
+            if not rule.is_met and getattr(rule, "courses_needed", None):
+                for code in rule.courses_needed:
+                    info = catalog.get(code)
+                    if info:
+                        mandatory.append(
+                            f"{code} – {info['title']} ({info['credits']} cr)"
+                        )
+                        required_credits_suggested += info["credits"]
+                    else:
+                        mandatory.append(code)
+
+        # 2. For remaining credit shortfall, list ALL available catalog courses
+        #    that match the bucket's subject/level area so the student can choose.
+        shortfall_remaining = shortfall - required_credits_suggested
+        if shortfall_remaining > 0 and bucket_subjects:
+            candidates = [
+                (code, info)
+                for code, info in available_courses.items()
+                if info["subject"] in bucket_subjects
+                and (not bucket_levels or info["level"] in bucket_levels)
+            ]
+            # Sort by level then code for stable ordering
+            candidates.sort(key=lambda x: (x[1]["level"], x[0]))
+
+            # Filter out courses already in mandatory list
+            mandatory_codes = {m.split(" – ")[0].strip() for m in mandatory}
+            candidates = [(c, i) for c, i in candidates if c not in mandatory_codes]
+
+            if candidates:
+                # Figure out how many 3-credit courses they'd need
+                # (use ceiling of shortfall / typical credit weight)
+                typical_credits = candidates[0][1]["credits"] if candidates else 3
+                num_courses_needed = int(
+                    -(-shortfall_remaining // typical_credits)  # ceiling division
+                )
+
+                course_list = [
+                    f"{code} – {info['title']} ({info['credits']} cr)"
+                    for code, info in candidates
+                ]
+
+                elective_groups.append({
+                    "bucket_name": bucket.bucket_name,
+                    "credits_needed": shortfall_remaining,
+                    "num_courses": num_courses_needed,
+                    "courses": course_list,
+                })
+
     for major in result.major_results:
         for bucket in major.bucket_results:
-            if not bucket.is_met:
-                # Add specific missing courses
-                for rule in getattr(bucket, 'rule_results', []):
-                    if not rule.is_met and getattr(rule, 'courses_needed', None):
-                        suggestions.append(f"Take required courses: {', '.join(rule.courses_needed)}")
-                        # Removed the break statement here so we catch all rules
-                
-                # Aggregate credit deficits at the bucket level instead of gross totals
-                earned = getattr(bucket, 'credits_earned', 0.0)
-                required = getattr(bucket, 'credits_required', 0.0)
-                if earned < required:
-                    missing_credits_total += (required - earned)
+            _process_unmet_bucket(bucket)
 
-    # Do the same for general requirements
-    if getattr(result, 'general_requirements', None):
+    if getattr(result, "general_requirements", None):
         for req in result.general_requirements:
-            if not req.is_met:
-                earned = getattr(req, 'credits_earned', 0.0)
-                required = getattr(req, 'credits_required', 0.0)
-                if earned < required:
-                    missing_credits_total += (required - earned)
+            _process_unmet_bucket(req)
 
-    # 2. Append accurate credit shortfall
-    if missing_credits_total > 0:
-        suggestions.append(f"Need {missing_credits_total:.1f} more applicable credits across unmet buckets")
-
-    # 3. Check GPA requirements
+    # -- GPA check ---------------------------------------------------------------
     if result.overall_gpa < 2.0:
-        suggestions.append("Improve overall GPA to meet minimum 2.0 requirement")
+        notes.append("Improve overall GPA to meet minimum 2.0 requirement")
 
-    # Deduplicate suggestions (in case multiple rules triggered the same course suggestion)
-    unique_suggestions = list(dict.fromkeys(suggestions))
+    # Deduplicate mandatory
+    mandatory = list(dict.fromkeys(mandatory))
 
-    return unique_suggestions
+    return {
+        "mandatory": mandatory,
+        "elective_groups": elective_groups,
+        "notes": notes,
+    }
 
 
 class RequirementEvaluator:
@@ -655,7 +786,7 @@ class RequirementEvaluator:
         # Generate summary
         result.overall_progress = _generate_progress_summary(result)
         result.unmet_requirements = _list_unmet_requirements(result)
-        result.next_steps = _suggest_next_steps(result)
+        result.next_steps = _suggest_next_steps(result, student)
 
         return result
 
