@@ -8,6 +8,7 @@ class StudentProfile(models.Model):
     name = models.CharField(max_length=255)
     programme = models.CharField(max_length=255, blank=True, default="")
     major = models.CharField(max_length=255, blank=True, default="")
+    minor = models.CharField(max_length=255, blank=True, default="")
     overall_gpa = models.FloatField(null=True, blank=True)
     
 
@@ -33,6 +34,7 @@ class AuditRecord(models.Model):
     # Context Preservation: What were they studying on the day this was run?
     evaluated_programme = models.CharField(max_length=255, blank=True, default="")
     evaluated_major = models.CharField(max_length=255, blank=True, default="")
+    evaluated_minor = models.CharField(max_length=255, blank=True, default="")
 
     can_graduate = models.BooleanField(default=False)
     total_credits_earned = models.FloatField(default=0.0)
@@ -56,6 +58,7 @@ class BucketResult(models.Model):
 
     # E.g., "Computer Science" or "General Requirements"
     component_name = models.CharField(max_length=255, default="General")
+    component_type = models.CharField(max_length=50, default="Major")
     bucket_name = models.CharField(max_length=255)
 
     is_met = models.BooleanField(default=False)

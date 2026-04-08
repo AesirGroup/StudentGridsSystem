@@ -122,12 +122,14 @@ def build_student_result_dict(
     credits_earned=0,
     credits_required=0,
     overall_progress="",
+    minor="",
 ):
     return {
         "student_number": student_number,
         "name": name,
         "programme": programme,
         "major": major,
+        "minor": minor,
         "gpa": gpa,
         "can_graduate": can_graduate,
         "credits_earned": credits_earned,
@@ -137,7 +139,7 @@ def build_student_result_dict(
     }
 
 
-def save_bucket_to_db(audit, component_name, b_result, student):
+def save_bucket_to_db(audit, component_name, b_result, student, component_type="Major"):
     """Extracted from post() to improve readability and testing"""
     completed_courses = []
     courses_needed = []
@@ -175,6 +177,7 @@ def save_bucket_to_db(audit, component_name, b_result, student):
     BucketResult.objects.create(
         audit=audit,
         component_name=component_name,
+        component_type=component_type,
         bucket_name=b_result.bucket_name,
         is_met=b_result.is_met,
         credits_earned=b_result.credits_earned,
@@ -427,8 +430,9 @@ class UploadGridView(LoginRequiredMixin, View):
                 else:
                     cannot_graduate_count += 1
 
-                prog_name = student.programme.programme if student.programme else ""
-                major_name = student.programme.major if student.programme else ""
+                prog_name = (student.programme.programme or "") if student.programme else ""
+                major_name = (student.programme.major or "") if student.programme else ""
+                minor_name = (student.programme.minor or "") if student.programme else ""
 
                 # Atomic Transaction ensures no orphaned records if a crash occurs mid-save
                 with transaction.atomic():
@@ -439,6 +443,7 @@ class UploadGridView(LoginRequiredMixin, View):
                             "name": student.name,
                             "programme": prog_name,
                             "major": major_name,
+                            "minor": minor_name,
                             "overall_gpa": student.overall_gpa,
                         },
                     )
@@ -448,6 +453,7 @@ class UploadGridView(LoginRequiredMixin, View):
                         student=profile,
                         evaluated_programme=prog_name,
                         evaluated_major=major_name,
+                        evaluated_minor=minor_name,
                         can_graduate=can_graduate,
                         total_credits_earned=result.total_credits_earned,
                         total_credits_required=result.total_credits_required,
@@ -460,13 +466,24 @@ class UploadGridView(LoginRequiredMixin, View):
                     for major in result.major_results:
                         for b_result in major.bucket_results:
                             save_bucket_to_db(
-                                audit, major.component_name, b_result, student
+                                audit, major.component_name, b_result, student, component_type="Major"
                             )
 
                     for g_result in result.general_requirements:
                         save_bucket_to_db(
-                            audit, "General Requirements", g_result, student
+                            audit, "General Requirements", g_result, student, component_type="General"
                         )
+
+                    # 4. Save Minor Buckets
+                    for minor_result in result.minor_results:
+                        for b_result in minor_result.bucket_results:
+                            save_bucket_to_db(
+                                audit,
+                                minor_result.component_name,
+                                b_result,
+                                student,
+                                component_type="Minor",
+                            )
 
                 # Use the dictionary helper outside the transaction
                 results.append(
@@ -480,6 +497,7 @@ class UploadGridView(LoginRequiredMixin, View):
                     credits_earned=result.total_credits_earned,
                     credits_required=result.total_credits_required,
                     overall_progress=result.overall_progress,
+                    minor=minor_name,
                 )
             )
 
@@ -659,6 +677,33 @@ class EphemeralEvaluationView(View):
                         }
                     )
 
+                minor_buckets = []
+                for minor_result in result.minor_results:
+                    for b_result in minor_result.bucket_results:
+                        completed = []
+                        for rule in b_result.rule_results:
+                            for code in rule.courses_used:
+                                sc = _find_course(student, code)
+                                if sc:
+                                    completed.append(
+                                        {
+                                            "code": sc.course_code,
+                                            "grade": sc.grade,
+                                            "credits": sc.credits,
+                                        }
+                                    )
+                        minor_buckets.append(
+                            {
+                                "component": minor_result.component_name,
+                                "component_type": "Minor",
+                                "bucket_name": b_result.bucket_name,
+                                "is_met": b_result.is_met,
+                                "credits_earned": b_result.credits_earned,
+                                "credits_required": b_result.credits_required,
+                                "completed_courses": completed,
+                            }
+                        )
+
                 # SANITIZED DICTIONARY (NO PII)
                 results.append(
                     {
@@ -670,6 +715,9 @@ class EphemeralEvaluationView(View):
                         "major": (
                             student.programme.major if student.programme else "Unknown"
                         ),
+                        "minor": (
+                            student.programme.minor if student.programme else ""
+                        ),
                         "overall_gpa": student.overall_gpa,
                         "can_graduate": len(result.unmet_requirements) == 0,
                         "total_credits_earned": result.total_credits_earned,
@@ -678,6 +726,7 @@ class EphemeralEvaluationView(View):
                         "unmet_requirements": result.unmet_requirements,
                         "major_buckets": major_buckets,
                         "general_buckets": gen_buckets,
+                        "minor_buckets": minor_buckets,
                     }
                 )
 
@@ -856,7 +905,7 @@ class StudentReportDataView(LoginRequiredMixin, View):
 # --- TRANSCRIPT VIEWS (NO DATABASE) ---
 
 
-def build_bucket_dict(component_name, b_result, student):
+def build_bucket_dict(component_name, b_result, student, component_type="Major"):
     """
     No-DB equivalent of save_bucket_to_db.
     Mirrors the BucketResult model fields as a plain dict so the
@@ -883,6 +932,7 @@ def build_bucket_dict(component_name, b_result, student):
 
     return {
         "component_name": component_name,
+        "component_type": component_type,
         "bucket_name": b_result.bucket_name,
         "is_met": b_result.is_met,
         "credits_earned": b_result.credits_earned,
@@ -1046,17 +1096,29 @@ class TranscriptGridView(View):
 
                 prog_name = student.programme.programme if student.programme else ""
                 major_name = student.programme.major if student.programme else ""
+                minor_name = student.programme.minor if student.programme else ""
 
                 buckets = []
                 for major in result.major_results:
                     for b_result in major.bucket_results:
                         buckets.append(
-                            build_bucket_dict(major.component_name, b_result, student)
+                            build_bucket_dict(major.component_name, b_result, student, component_type="Major")
                         )
                 for g_result in result.general_requirements:
                     buckets.append(
-                        build_bucket_dict("General Requirements", g_result, student)
+                        build_bucket_dict("General Requirements", g_result, student, component_type="General")
                     )
+                # Add minor buckets explicitly tagged
+                for minor_result in result.minor_results:
+                    for b_result in minor_result.bucket_results:
+                        buckets.append(
+                            build_bucket_dict(
+                                minor_result.component_name,
+                                b_result,
+                                student,
+                                component_type="Minor",
+                            )
+                        )
 
                 # Full student record stored in session for the detail view
                 preview_students[str(student.student_number)] = {
@@ -1066,6 +1128,7 @@ class TranscriptGridView(View):
                     "audit": {
                         "evaluated_programme": prog_name,
                         "evaluated_major": major_name,
+                        "evaluated_minor": minor_name,
                         "can_graduate": can_graduate,
                         "total_credits_earned": result.total_credits_earned,
                         "total_credits_required": result.total_credits_required,
