@@ -488,6 +488,8 @@ def _calculate_applicable_credits(result) -> float:
     Helper function: Calculates strictly the credits that apply toward the degree
     by capping the earned credits at the required limit for each bucket.
     This prevents excess Level I credits from masking deficits in Advanced buckets.
+    Includes minor bucket credits since minors are an official part of the
+    degree's "Advanced Part" used to determine Class of Honours.
     """
     applicable_credits = 0.0
     
@@ -503,6 +505,13 @@ def _calculate_applicable_credits(result) -> float:
         earned = getattr(general, 'credits_earned', 0.0)
         required = getattr(general, 'credits_required', 0.0)
         applicable_credits += min(earned, required)
+
+    # Sum capped credits from Minor buckets
+    for minor in getattr(result, 'minor_results', []):
+        for bucket in minor.bucket_results:
+            earned = getattr(bucket, 'credits_earned', 0.0)
+            required = getattr(bucket, 'credits_required', 0.0)
+            applicable_credits += min(earned, required)
         
     return applicable_credits
 
@@ -830,6 +839,34 @@ class RequirementEvaluator:
         def is_strict_core_bucket(bucket: Bucket) -> bool:
             return all(rule.get("type", "") == "all_credits_from" for rule in bucket.rules)
 
+        def _is_advanced_elective_bucket(bucket: Bucket) -> bool:
+            """Identify generic advanced-level elective buckets (filter-based, no
+            specific course list, min_level >= 2).  These act as "remainder"
+            buckets whose credit target should be reduced by declared minors."""
+            if len(bucket.rules) != 1:
+                return False
+            rule = bucket.rules[0]
+            if rule.get("type") != "min_credits_from":
+                return False
+            if "list" in rule:
+                return False
+            filt = rule.get("filter", {})
+            return filt.get("min_level", 0) >= 2
+
+        # ── Dynamic reduction of Advanced Electives (Rule 33 iv) ────────
+        # A BSc degree requires 60 advanced credits total.  The Major
+        # contributes 30 via its core; declared minors supply the rest.
+        # Reduce the generic Advanced Electives bucket so the system does
+        # not demand credits that minors already satisfy.
+        total_minor_credits = sum(m.total_credits for m in degree.minors)
+        for item in all_buckets_to_evaluate:
+            bucket = item["bucket"]
+            if _is_advanced_elective_bucket(bucket):
+                bucket.credits_required = max(0.0, bucket.credits_required - total_minor_credits)
+                for rule in bucket.rules:
+                    if rule.get("type") == "min_credits_from":
+                        rule["credits"] = bucket.credits_required
+
         bucket_results_map = {}
 
         # Pass 1: Strict Core Lock-in
@@ -839,12 +876,21 @@ class RequirementEvaluator:
                 bucket_result = self._evaluate_bucket(student, bucket, global_used_courses)
                 bucket_results_map[bucket.id] = bucket_result
 
-        # Pass 2: Flexible Electives
-        for item in all_buckets_to_evaluate:
+        # Pass 2: Flexible Electives — evaluate minor elective buckets
+        # before generic major elective buckets so that specific minor
+        # courses (e.g. CHEM 3570 for Analytical Minor) are not "stolen"
+        # by the catch-all Advanced Electives bucket.
+        pass2_items = [
+            item for item in all_buckets_to_evaluate
+            if not is_strict_core_bucket(item["bucket"])
+        ]
+        pass2_items.sort(
+            key=lambda item: (0 if item["component"].component_type == "minor" else 1)
+        )
+        for item in pass2_items:
             bucket = item["bucket"]
-            if not is_strict_core_bucket(bucket):
-                bucket_result = self._evaluate_bucket(student, bucket, global_used_courses)
-                bucket_results_map[bucket.id] = bucket_result
+            bucket_result = self._evaluate_bucket(student, bucket, global_used_courses)
+            bucket_results_map[bucket.id] = bucket_result
 
         # Finalize component results (preserving order, summing up credits and met status)
         for major, major_result in zip(degree.majors, result.major_results):

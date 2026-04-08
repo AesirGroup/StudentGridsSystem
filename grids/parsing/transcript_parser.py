@@ -89,8 +89,13 @@ def _extract_curriculum_blocks_data(text: str) -> List[Dict[str, str]]:
         }
         
         for key, pattern in fields.items():
-            match = re.search(pattern, doc, re.IGNORECASE)
-            block[key] = match.group(1).strip() if match else ""
+            if key == "minor":
+                # Support multiple Minor: lines (e.g. double minors)
+                matches = re.findall(pattern, doc, re.IGNORECASE)
+                block[key] = ", ".join(m.strip() for m in matches) if matches else ""
+            else:
+                match = re.search(pattern, doc, re.IGNORECASE)
+                block[key] = match.group(1).strip() if match else ""
             
         if not block["degree_gpa"]:
             block["degree_gpa"] = "0.0"
