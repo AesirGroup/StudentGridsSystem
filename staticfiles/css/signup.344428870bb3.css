@@ -1,0 +1,302 @@
+:root {
+    /* ----- COLORS ----- */
+    --clr-primary: #2ba384;
+    --clr-border: #e2e8f0;
+    --body-bg: #f5f5f5;
+    --card-bg: #ffffff;
+    --icon-bg: #e5f1ed;
+    --text-primary: #111827;
+    --text-secondary: #718096;
+    --text-tertiary: #ffffff;
+    --clr-danger: #e53e3e;
+
+    /* ----- FONTS ----- */
+    /* --ff-base: Arial, Helvetica, sans-serif; */
+    --ff-heading: "Space Grotesk", sans-serif;
+    --ff-base: "Space Grotesk", sans-serif;
+
+    /* ----- FONT SIZES ----- */
+    --fs-3xs: 0.625rem;
+    --fs-2xs: 0.75rem;
+    --fs-xs: 0.875rem;
+    --fs-sm: 1rem;
+    --fs-md: 1.125rem;
+    --fs-lg: 1.25rem;
+    --fs-xl: 1.5rem;
+    --fs-2xl: 1.875rem;
+    --fs-3xl: 2.25rem;
+    --fs-4xl: 3rem;
+
+    /* ----- FONT WEIGHTS ----- */
+    --fw-thin: 100;
+    --fw-regular: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+
+    /* ----- SPACING ----- */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+
+    /* ----- RADIUS ----- */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+
+
+    --card-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* ----- RESETS ----- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+img, svg, label {
+    display: inline-block;
+}
+
+
+li { list-style: none; }
+
+
+a { text-decoration: none; }
+
+
+/* ----- PAGE SETUP ----- */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--body-bg);
+    font-family: var(--ff-base);
+    padding: var(--space-md);
+}
+
+/* ----- CARD CONTAINER ----- */
+.create-card {
+    background-color: var(--card-bg);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    box-shadow:var(--card-shadow);
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+}
+
+
+
+/* ----- HEADER ----- */
+.card-header {
+    margin-bottom: var(--space-md);
+}
+
+
+.card-header h1 {
+    color: var(--clr-primary);
+    font-size: clamp(var(--fs-3xl), 3vw, var(--fs-4xl));
+    font-family: var(--ff-heading);
+    margin-bottom: var(--space-xs);
+}
+
+.card-header h2 {
+    color: var(--text-primary);
+    font-size: var(--fs-xl);
+    margin-bottom: var(--space-xs);
+}
+
+.card-header p {
+    color: var(--text-secondary);
+    font-weight: var(--fw-medium);
+}
+
+
+
+
+/* ----- FORM ----- */
+form {
+    margin-top: var(--space-md);
+    text-align: left;
+}
+
+
+/* ----- INPUT CONTAINER ----- */
+.input-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--clr-border);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-sm);
+    transition: 0.3s;
+}
+
+.input-container img {
+    width: 20px;
+    margin-right: 0.5rem;
+    margin-bottom: 1px;
+}
+
+.input-container input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: var(--fs-sm);
+    color: var(--text-secondary);
+    padding: 0.5rem 0;
+}
+
+
+.create-card input::placeholder {
+    color: var(--text-secondary);
+    opacity: 1; /* ensures color is not faded in some browsers */
+}
+
+
+.input-container:focus-within {
+    border: 1px solid var(--clr-primary);
+    box-shadow: 0 0 6px 1px rgba(43, 163, 132, 0.25);
+}
+
+
+
+
+
+
+/* ----- LABELS ----- */
+form label {
+    display: block;
+    margin-bottom: var(--space-sm);
+    margin-top: var(--space-md);
+    color: var(--text-primary);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-xs);
+}
+
+
+
+/* ----- FIELD HELP TEXT ----- */
+
+.field-help p, .field-help li, .field-help {
+    font-size: var(--fs-2xs);
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.field-help ul {
+    margin-top: var(--space-xs);
+    list-style: disc;
+}
+
+.field-help li {
+    margin-bottom: 2px;
+}
+
+
+
+
+
+/* ----- SUBMIT BUTTON ----- */
+.create-card button {
+    width: 100%;
+    padding: var(--space-md);
+    background-color: var(--clr-primary);
+    color: var(--text-tertiary);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: var(--space-md) 0;
+}
+
+.create-card button:hover {
+    background-color: #248a6f;
+    transform: translateY(-1px);
+}
+
+.create-card button:focus {
+  outline: 2px solid var(--clr-primary);
+  outline-offset: 2px;
+}
+
+
+
+/* ----- LOGIN BUTTON ----- */
+.have-account {
+    color: var(--text-secondary);
+    font-size: var(--fs-xs);
+}
+
+.have-account a {
+    font-size: var(--fs-xs);
+    color: var(--clr-primary);
+    font-weight: var(--fw-semibold);
+    transition: all 0.2s ease;
+    text-decoration: none;
+    margin-left: var(--space-xs);
+}
+
+.have-account a:hover, .have-account a:focus {
+    opacity: 0.8;
+    text-decoration: underline;
+    outline: none;
+}
+
+
+
+/* ----- AUTOFILL ----- */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px var(--clr-card-background) inset;
+    -webkit-text-fill-color: var(--text-secondary);
+}
+
+
+
+/* ----- ERRORS ----- */
+
+.field-error {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.field-error p {
+    color: var(--clr-danger);
+    font-size: var(--fs-2xs);
+    text-align: left;
+    font-weight: var(--fw-semibold);
+}
+
+.form-errors p {
+    color: #e53e3e;
+    font-size: var(--fs-xs);
+    margin-bottom: var(--space-sm);
+    font-weight: var(--fw-semibold);
+}
+
+
+
+/* ----- RESPONSIVE ----- */
+@media (max-width: 600px) {
+    .create-card {
+        padding: 0;
+        box-shadow: none;
+        background-color: transparent;
+    }
+    
+    body {
+        background-color: var(--card-bg); 
+    }
+}

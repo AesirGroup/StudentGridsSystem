@@ -408,106 +408,127 @@ class UploadGridView(LoginRequiredMixin, View):
 
             evaluator = RequirementEvaluator(courses=catalog_courses)
             results, can_graduate_count, cannot_graduate_count = [], 0, 0
+            skipped_students = []
 
             for student in students:
-                degree = Degree.from_student_data(student)
-
-                # Check if an advisor has previously verified the FLR exemption
-                flr_override = False
                 try:
-                    existing_profile = StudentProfile.objects.get(
-                        student_number=student.student_number
-                    )
-                    flr_override = existing_profile.flr_exempt_verified
-                except StudentProfile.DoesNotExist:
-                    pass
+                    degree = Degree.from_student_data(student)
 
-                result = evaluator.evaluate_degree(student, degree, flr_override=flr_override)
-
-                can_graduate = len(result.unmet_requirements) == 0
-                if can_graduate:
-                    can_graduate_count += 1
-                else:
-                    cannot_graduate_count += 1
-
-                prog_name = (student.programme.programme or "") if student.programme else ""
-                major_name = (student.programme.major or "") if student.programme else ""
-                minor_name = (student.programme.minor or "") if student.programme else ""
-
-                # Atomic Transaction ensures no orphaned records if a crash occurs mid-save
-                with transaction.atomic():
-                    # 1. Save Profile
-                    profile, _ = StudentProfile.objects.update_or_create(
-                        student_number=student.student_number,
-                        defaults={
-                            "name": student.name,
-                            "programme": prog_name,
-                            "major": major_name,
-                            "minor": minor_name,
-                            "overall_gpa": student.overall_gpa,
-                        },
-                    )
-
-                    # 2. Save Audit Record
-                    audit = AuditRecord.objects.create(
-                        student=profile,
-                        evaluated_programme=prog_name,
-                        evaluated_major=major_name,
-                        evaluated_minor=minor_name,
-                        can_graduate=can_graduate,
-                        total_credits_earned=result.total_credits_earned,
-                        total_credits_required=result.total_credits_required,
-                        overall_progress=result.overall_progress,
-                        unmet_requirements_json=result.unmet_requirements,
-                        next_steps_json=result.next_steps,
-                    )
-
-                    # 3. Save Buckets
-                    for major in result.major_results:
-                        for b_result in major.bucket_results:
-                            save_bucket_to_db(
-                                audit, major.component_name, b_result, student, component_type="Major"
-                            )
-
-                    for g_result in result.general_requirements:
-                        save_bucket_to_db(
-                            audit, "General Requirements", g_result, student, component_type="General"
+                    # Guard: if no majors were resolved the student's programme is not
+                    # configured in the system. Skip with a clear reason rather than
+                    # silently producing a misleading 'can graduate' result.
+                    if not degree.majors:
+                        raw_major = (student.programme.major or "Unknown") if student.programme else "Unknown"
+                        raise ValueError(
+                            f"Programme '{raw_major}' is not a recognised major in the system."
                         )
 
-                    # 4. Save Minor Buckets
-                    for minor_result in result.minor_results:
-                        for b_result in minor_result.bucket_results:
+                    # Check if an advisor has previously verified the FLR exemption
+                    flr_override = False
+                    try:
+                        existing_profile = StudentProfile.objects.get(
+                            student_number=student.student_number
+                        )
+                        flr_override = existing_profile.flr_exempt_verified
+                    except StudentProfile.DoesNotExist:
+                        pass
+
+                    result = evaluator.evaluate_degree(student, degree, flr_override=flr_override)
+
+                    can_graduate = len(result.unmet_requirements) == 0
+                    if can_graduate:
+                        can_graduate_count += 1
+                    else:
+                        cannot_graduate_count += 1
+
+                    prog_name = (student.programme.programme or "") if student.programme else ""
+                    major_name = (student.programme.major or "") if student.programme else ""
+                    minor_name = (student.programme.minor or "") if student.programme else ""
+
+                    # Atomic Transaction ensures no orphaned records if a crash occurs mid-save
+                    with transaction.atomic():
+                        # 1. Save Profile
+                        profile, _ = StudentProfile.objects.update_or_create(
+                            student_number=student.student_number,
+                            defaults={
+                                "name": student.name,
+                                "programme": prog_name,
+                                "major": major_name,
+                                "minor": minor_name,
+                                "overall_gpa": student.overall_gpa,
+                            },
+                        )
+
+                        # 2. Save Audit Record
+                        audit = AuditRecord.objects.create(
+                            student=profile,
+                            evaluated_programme=prog_name,
+                            evaluated_major=major_name,
+                            evaluated_minor=minor_name,
+                            can_graduate=can_graduate,
+                            total_credits_earned=result.total_credits_earned,
+                            total_credits_required=result.total_credits_required,
+                            overall_progress=result.overall_progress,
+                            unmet_requirements_json=result.unmet_requirements,
+                            next_steps_json=result.next_steps,
+                        )
+
+                        # 3. Save Major Buckets
+                        for major in result.major_results:
+                            for b_result in major.bucket_results:
+                                save_bucket_to_db(
+                                    audit, major.component_name, b_result, student, component_type="Major"
+                                )
+
+                        for g_result in result.general_requirements:
                             save_bucket_to_db(
-                                audit,
-                                minor_result.component_name,
-                                b_result,
-                                student,
-                                component_type="Minor",
+                                audit, "General Requirements", g_result, student, component_type="General"
                             )
 
-                # Use the dictionary helper outside the transaction
-                results.append(
-                build_student_result_dict(
-                    student.student_number,
-                    student.name,
-                    prog_name,
-                    major_name,
-                    student.overall_gpa,
-                    can_graduate,
-                    credits_earned=result.total_credits_earned,
-                    credits_required=result.total_credits_required,
-                    overall_progress=result.overall_progress,
-                    minor=minor_name,
-                )
-            )
+                        # 4. Save Minor Buckets
+                        for minor_result in result.minor_results:
+                            for b_result in minor_result.bucket_results:
+                                save_bucket_to_db(
+                                    audit,
+                                    minor_result.component_name,
+                                    b_result,
+                                    student,
+                                    component_type="Minor",
+                                )
+
+                    # Use the dictionary helper outside the transaction
+                    results.append(
+                        build_student_result_dict(
+                            student.student_number,
+                            student.name,
+                            prog_name,
+                            major_name,
+                            student.overall_gpa,
+                            can_graduate,
+                            credits_earned=result.total_credits_earned,
+                            credits_required=result.total_credits_required,
+                            overall_progress=result.overall_progress,
+                            minor=minor_name,
+                        )
+                    )
+
+                except Exception as student_exc:
+                    logger.warning(
+                        f"Skipping student {student.student_number} ({student.name}): {student_exc}"
+                    )
+                    skipped_students.append({
+                        "student_number": student.student_number,
+                        "name": student.name,
+                        "reason": str(student_exc),
+                    })
 
             summary = {
-                "total_students": len(students),
+                "total_students": len(results),
                 "can_graduate": can_graduate_count,
                 "cannot_graduate": cannot_graduate_count,
             }
 
-            return JsonResponse({"summary": summary, "results": results})
+            return JsonResponse({"summary": summary, "results": results, "skipped": skipped_students})
 
         except ValueError as e:
             logger.warning(f"Document parsing rejected: {str(e)}")
@@ -881,88 +902,107 @@ class TranscriptGridView(View):
             preview_students = {}
             can_graduate_count = 0
             cannot_graduate_count = 0
+            skipped_students = []
 
             existing_preview_students = request.session.get("preview_students", {})
-            
+
             for student in students:
-                degree = Degree.from_student_data(student)
+                try:
+                    degree = Degree.from_student_data(student)
 
-                flr_override = False
-                existing_preview = existing_preview_students.get(str(student.student_number), {})
-                if existing_preview.get("flr_exempt_verified", False):
-                    flr_override = True
-
-                result = evaluator.evaluate_degree(student, degree, flr_override=flr_override)
-
-                can_graduate = len(result.unmet_requirements) == 0
-                if can_graduate:
-                    can_graduate_count += 1
-                else:
-                    cannot_graduate_count += 1
-
-                prog_name = student.programme.programme if student.programme else ""
-                major_name = student.programme.major if student.programme else ""
-                minor_name = student.programme.minor if student.programme else ""
-
-                buckets = []
-                for major in result.major_results:
-                    for b_result in major.bucket_results:
-                        buckets.append(
-                            build_bucket_dict(major.component_name, b_result, student, component_type="Major")
+                    # Guard: skip students whose programme resolves to no known major
+                    if not degree.majors:
+                        raw_major = (student.programme.major or "Unknown") if student.programme else "Unknown"
+                        raise ValueError(
+                            f"Programme '{raw_major}' is not a recognised major in the system."
                         )
-                for g_result in result.general_requirements:
-                    buckets.append(
-                        build_bucket_dict("General Requirements", g_result, student, component_type="General")
-                    )
-                # Add minor buckets explicitly tagged
-                for minor_result in result.minor_results:
-                    for b_result in minor_result.bucket_results:
-                        buckets.append(
-                            build_bucket_dict(
-                                minor_result.component_name,
-                                b_result,
-                                student,
-                                component_type="Minor",
+
+                    flr_override = False
+                    existing_preview = existing_preview_students.get(str(student.student_number), {})
+                    if existing_preview.get("flr_exempt_verified", False):
+                        flr_override = True
+
+                    result = evaluator.evaluate_degree(student, degree, flr_override=flr_override)
+
+                    can_graduate = len(result.unmet_requirements) == 0
+                    if can_graduate:
+                        can_graduate_count += 1
+                    else:
+                        cannot_graduate_count += 1
+
+                    prog_name = student.programme.programme if student.programme else ""
+                    major_name = student.programme.major if student.programme else ""
+                    minor_name = student.programme.minor if student.programme else ""
+
+                    buckets = []
+                    for major in result.major_results:
+                        for b_result in major.bucket_results:
+                            buckets.append(
+                                build_bucket_dict(major.component_name, b_result, student, component_type="Major")
                             )
+                    for g_result in result.general_requirements:
+                        buckets.append(
+                            build_bucket_dict("General Requirements", g_result, student, component_type="General")
                         )
+                    # Add minor buckets explicitly tagged
+                    for minor_result in result.minor_results:
+                        for b_result in minor_result.bucket_results:
+                            buckets.append(
+                                build_bucket_dict(
+                                    minor_result.component_name,
+                                    b_result,
+                                    student,
+                                    component_type="Minor",
+                                )
+                            )
 
-                # Full student record stored in session for the detail view
-                preview_students[str(student.student_number)] = {
-                    "student_number": student.student_number,
-                    "name": student.name,
-                    "overall_gpa": student.overall_gpa,
-                    "flr_exempt_verified": existing_preview.get("flr_exempt_verified", False),
-                    "audit": {
-                        "evaluated_programme": prog_name,
-                        "evaluated_major": major_name,
-                        "evaluated_minor": minor_name,
-                        "can_graduate": can_graduate,
-                        "total_credits_earned": result.total_credits_earned,
-                        "total_credits_required": result.total_credits_required,
-                        "overall_progress": result.overall_progress,
-                        "unmet_requirements_json": result.unmet_requirements,
-                        "next_steps_json": result.next_steps,
-                        "bucket_results": buckets,
-                    },
-                }
+                    # Full student record stored in session for the detail view
+                    preview_students[str(student.student_number)] = {
+                        "student_number": student.student_number,
+                        "name": student.name,
+                        "overall_gpa": student.overall_gpa,
+                        "flr_exempt_verified": existing_preview.get("flr_exempt_verified", False),
+                        "audit": {
+                            "evaluated_programme": prog_name,
+                            "evaluated_major": major_name,
+                            "evaluated_minor": minor_name,
+                            "can_graduate": can_graduate,
+                            "total_credits_earned": result.total_credits_earned,
+                            "total_credits_required": result.total_credits_required,
+                            "overall_progress": result.overall_progress,
+                            "unmet_requirements_json": result.unmet_requirements,
+                            "next_steps_json": result.next_steps,
+                            "bucket_results": buckets,
+                        },
+                    }
 
-                student_dict = build_student_result_dict(
-                    student.student_number,
-                    student.name,
-                    prog_name,
-                    major_name,
-                    student.overall_gpa,
-                    can_graduate,
-                    minor=minor_name,
-                )
-                student_dict["detail_url"] = (
-                    f"/performance/transcript/{student.student_number}/"
-                )
-                student_dict["unmet_requirements"] = result.unmet_requirements
-                results.append(student_dict)
+                    student_dict = build_student_result_dict(
+                        student.student_number,
+                        student.name,
+                        prog_name,
+                        major_name,
+                        student.overall_gpa,
+                        can_graduate,
+                        minor=minor_name,
+                    )
+                    student_dict["detail_url"] = (
+                        f"/performance/transcript/{student.student_number}/"
+                    )
+                    student_dict["unmet_requirements"] = result.unmet_requirements
+                    results.append(student_dict)
+
+                except Exception as student_exc:
+                    logger.warning(
+                        f"Skipping student {student.student_number} ({student.name}): {student_exc}"
+                    )
+                    skipped_students.append({
+                        "student_number": student.student_number,
+                        "name": student.name,
+                        "reason": str(student_exc),
+                    })
 
             summary = {
-                "total_students": len(students),
+                "total_students": len(results),
                 "can_graduate": can_graduate_count,
                 "cannot_graduate": cannot_graduate_count,
             }
@@ -973,7 +1013,7 @@ class TranscriptGridView(View):
             request.session["last_summary"] = summary
             request.session["preview_students"] = preview_students
 
-            return JsonResponse({"summary": summary, "results": results})
+            return JsonResponse({"summary": summary, "results": results, "skipped": skipped_students})
 
         except Exception as e:
             logger.error("CRITICAL PARSE ERROR: %s", str(e), exc_info=True)

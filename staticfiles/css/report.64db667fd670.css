@@ -57,12 +57,6 @@ h1 {
     color: #b91c1c;
 }
 
-.app-alert--warning {
-    background-color: #fffbeb;
-    border-color: #fde68a;
-    color: #92400e;
-}
-
 .app-alert strong {
     font-weight: var(--fw-bold);
     margin-right: 0.25rem;

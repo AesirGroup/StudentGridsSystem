@@ -1,202 +1,5 @@
-:root {
-    /* ----- COLORS ----- */
-    --clr-primary: #2ba384;
-    --clr-border: #e2e8f0;
-    --body-bg: #f5f5f5;
-    --card-bg: #ffffff;
-    --icon-bg: #e5f1ed;
-    --text-primary: #111827;
-    --text-secondary: #718096;
-    --text-tertiary: #ffffff;
+/* ----- MAIN CONTENT ----- */
 
-    /* ----- FONTS ----- */
-    --ff-base: Arial, Helvetica, sans-serif;
-    --ff-heading: "Space Grotesk", sans-serif;
-
-    /* ----- FONT SIZES ----- */
-    --fs-3xs: 0.625rem;
-    --fs-2xs: 0.75rem;
-    --fs-xs: 0.875rem;
-    --fs-sm: 1rem;
-    --fs-md: 1.125rem;
-    --fs-lg: 1.25rem;
-    --fs-xl: 1.5rem;
-    --fs-2xl: 1.875rem;
-    --fs-3xl: 2.25rem;
-    --fs-4xl: 3rem;
-
-    /* ----- FONT WEIGHTS ----- */
-    --fw-thin: 100;
-    --fw-extralight: 200;
-    --fw-light: 300;
-    --fw-regular: 400;
-    --fw-medium: 500;
-    --fw-semibold: 600;
-    --fw-bold: 700;
-    --fw-black: 800;
-
-    /* ----- SPACING ----- */
-    --space-xs: 0.25rem;
-    --space-sm: 0.5rem;
-    --space-md: 1rem;
-    --space-lg: 2rem;
-    --space-xl: 3rem;
-    --space-2xl: 4rem;
-    --space-3xl: 5rem;
-
-    /* ----- RADIUS ----- */
-    --radius-sm: 0.25rem;
-    --radius-md: 0.5rem;
-    --radius-lg: 0.75rem;
-    --radius-xl: 1rem;
-}
-
-
-/* ----- RESETS ----- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-img, svg, label {
-    display: inline-block;
-}
-
-li {
-    list-style: none;
-}
-
-a {
-    text-decoration: none;
-    display: inline-block;
-}
-
-
-/* ----- BODY ----- */
-body {
-    font-family: var(--ff-base);
-    background-color: var(--body-bg);
-}
-
-
-/* ================================================================
-   NAVIGATION
-================================================================ */
-nav.banner {
-    background-color: var(--clr-primary);
-    padding: 0;
-    position: relative;
-}
-
-nav.banner > .nav-container {
-    max-width: 1800px;
-    margin: 0 auto;
-    padding: var(--space-sm) var(--space-lg);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-nav.banner .logo {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-nav.banner .logo img {
-    width: 50px;
-    margin-bottom: 3px;
-}
-
-nav.banner .logo p {
-    font-size: var(--fs-xl);
-    font-weight: var(--fw-bold);
-    color: var(--text-tertiary);
-    margin-bottom: 0;
-}
-
-nav.banner .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-}
-
-nav.banner .logout-btn,
-nav.banner .change-pw-btn {
-    display: inline-block;
-    font-weight: var(--fw-bold);
-    border-radius: var(--radius-md);
-    border: 2px solid var(--card-bg);
-    font-size: var(--fs-sm);
-    padding: var(--space-sm) var(--space-md);
-    height: 38px;
-    line-height: 1.2;
-    text-align: center;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.3s ease;
-}
-
-nav.banner .logout-btn {
-    color: var(--text-tertiary);
-    background-color: var(--clr-primary);
-}
-
-nav.banner .logout-btn:hover {
-    color: var(--clr-primary);
-    background-color: var(--card-bg);
-}
-
-nav.banner .change-pw-btn {
-    color: var(--clr-primary);
-    background-color: var(--card-bg);
-}
-
-nav.banner .change-pw-btn:hover {
-    color: var(--text-tertiary);
-    background-color: var(--clr-primary);
-}
-
-nav.banner .navbar-toggler {
-    display: none;
-    flex-direction: column;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    gap: 5px;
-}
-
-nav.banner .navbar-toggler-icon {
-    width: 25px;
-    height: 3px;
-    background-color: var(--text-tertiary);
-    transition: all 0.3s ease;
-    display: block;
-    border-radius: 2px;
-}
-
-.navbar-toggler.active .navbar-toggler-icon:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-}
-
-.navbar-toggler.active .navbar-toggler-icon:nth-child(2) {
-    opacity: 0;
-}
-
-.navbar-toggler.active .navbar-toggler-icon:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
-}
-
-nav.banner .nav-menu {
-    display: flex;
-}
-
-
-/* ================================================================
-   MAIN CONTENT
-================================================================ */
 main {
     max-width: 1000px;
     margin: var(--space-2xl) auto;
@@ -206,38 +9,31 @@ main {
 }
 
 
-/* ================================================================
-   BACK LINK  (SVG version matching upload_grid style)
-================================================================ */
-.back-link {
+/* ----- BACK LINK ----- */
+
+.back-btn {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-sm);
-    font-size: var(--fs-sm);
-    color: var(--text-secondary);
+    gap: var(--space-xs);
+    font-size: var(--fs-xs);
     font-weight: var(--fw-semibold);
-    text-decoration: none;
-    margin-bottom: var(--space-lg);
-    padding: var(--space-sm) var(--space-md);
-    border-radius: var(--radius-md);
-    transition: all 0.2s ease;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+    white-space: nowrap;
 }
 
-.back-link svg {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
+.back-btn:hover {
+    color: var(--clr-primary);
 }
 
-.back-link:hover {
-    background-color: rgba(114, 128, 150, 0.1);
-    color: var(--text-primary);
+.back-btn svg {
+    width: 14px;
+    height: 14px;
 }
 
 
-/* ================================================================
-   HEADER
-================================================================ */
+/* ----- HEADER ----- */
+
 header .img-container {
     width: 56px;
     height: 56px;
@@ -269,9 +65,8 @@ header p {
 }
 
 
-/* ================================================================
-   ALERT
-================================================================ */
+/* ----- ALERT ----- */
+
 .app-alert {
     display: flex;
     align-items: flex-start;
@@ -295,6 +90,12 @@ header p {
     color: #15803d;
 }
 
+.app-alert--warning {
+    background-color: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
+}
+
 .app-alert__close {
     margin-left: auto;
     background: none;
@@ -312,17 +113,15 @@ header p {
 }
 
 
-/* ================================================================
-   UPLOAD SECTION
-================================================================ */
+/* ----- UPLOAD SECTION ----- */
+
 #upload-section {
     margin-bottom: var(--space-lg);
 }
 
 
-/* ================================================================
-   PROGRESS UI
-================================================================ */
+/* ----- PROGRESS UI ----- */
+
 .processing-ui {
     background-color: var(--card-bg);
     border: 1px solid var(--clr-border);
@@ -354,9 +153,8 @@ header p {
 }
 
 
-/* ================================================================
-   DROP ZONE
-================================================================ */
+/* ----- DROP ZONE ----- */
+
 .drop-zone {
     background-color: var(--card-bg);
     border: 2px dashed var(--clr-border);
@@ -393,7 +191,6 @@ header p {
     object-fit: cover;
 }
 
-/* Primary label (filename or default prompt) */
 .drop-zone p:first-of-type,
 #dropLabel {
     color: var(--text-primary);
@@ -402,7 +199,6 @@ header p {
     text-align: center;
 }
 
-/* Sub-label (file types / max size) */
 .drop-sub {
     color: var(--text-secondary);
     font-size: var(--fs-2xs);
@@ -411,9 +207,8 @@ header p {
 }
 
 
-/* ================================================================
-   SECTION DIVIDER
-================================================================ */
+/* ----- SECTION DIVIDER ----- */
+
 .section-divider {
     display: flex;
     align-items: center;
@@ -432,9 +227,8 @@ header p {
 }
 
 
-/* ================================================================
-   BROWSE BUTTON
-================================================================ */
+/* ----- BROWSE BUTTON ----- */
+
 .browse-btn {
     display: inline-block;
     background-color: var(--clr-primary);
@@ -453,17 +247,15 @@ header p {
 }
 
 
-/* ================================================================
-   UTILITY
-================================================================ */
+/* ----- UTILITIES ----- */
+
 .d-none {
     display: none !important;
 }
 
 
-/* ================================================================
-   STATS GRID
-================================================================ */
+/* ----- STATS GRID ----- */
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -524,9 +316,8 @@ header p {
 }
 
 
-/* ================================================================
-   SEARCH BAR
-================================================================ */
+/* ----- SEARCH BAR ----- */
+
 .search-bar {
     display: flex;
     align-items: center;
@@ -558,9 +349,8 @@ header p {
 }
 
 
-/* ================================================================
-   FILTER DROPDOWNS
-================================================================ */
+/* ----- FILTER DROPDOWNS ----- */
+
 .filters {
     display: flex;
     gap: var(--space-sm);
@@ -645,9 +435,8 @@ header p {
 }
 
 
-/* ================================================================
-   STUDENT CARD GRID
-================================================================ */
+/* ----- STUDENT CARD GRID ----- */
+
 .student-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -771,9 +560,8 @@ header p {
 }
 
 
-/* ================================================================
-   PAGINATION
-================================================================ */
+/* ----- PAGINATION ----- */
+
 .pagination {
     display: flex;
     align-items: center;
@@ -825,10 +613,10 @@ header p {
 }
 
 
-/* ================================================================
-   MEDIA QUERIES
-================================================================ */
+/* ----- MEDIA QUERIES ----- */
+
 @media (max-width: 768px) {
+
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -840,7 +628,6 @@ header p {
 
 @media (max-width: 570px) {
 
-    /* NAV */
     nav.banner > .nav-container {
         padding: var(--space-sm) var(--space-md);
     }
@@ -896,7 +683,6 @@ header p {
         box-sizing: border-box;
     }
 
-    /* MAIN */
     main {
         margin: var(--space-xl) auto;
         padding: 0 var(--space-sm);
@@ -919,12 +705,10 @@ header p {
         height: 40px;
     }
 
-    /* STATS */
     .stats-grid {
         grid-template-columns: 1fr;
     }
 
-    /* FILTERS */
     .filters {
         flex-direction: column;
     }
@@ -933,12 +717,10 @@ header p {
         min-width: 100%;
     }
 
-    /* CARDS */
     .student-grid {
         grid-template-columns: 1fr;
     }
 
-    /* PAGINATION */
     .pag-btn span,
     .pag-btn svg {
         display: none;
