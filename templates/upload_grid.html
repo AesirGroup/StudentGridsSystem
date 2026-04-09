@@ -521,6 +521,28 @@
 
         clearAlerts();
 
+        // ── Skipped-students banner ──────────────────────────────────────
+        // If the backend soft-failed on some students, surface a persistent
+        // amber warning so the user knows exactly who was skipped and why.
+        const skipped = data.skipped || [];
+        if (skipped.length > 0) {
+            const container = $id('alert-container');
+            if (container) {
+                const rows = skipped.map(s =>
+                    `<li><strong>${s.name || 'Unknown'}</strong> (${s.student_number}) — ${s.reason}</li>`
+                ).join('');
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="app-alert app-alert--warning" id="skipped-alert">
+                        <div>
+                            <strong>⚠ ${skipped.length} student${skipped.length > 1 ? 's were' : ' was'} skipped</strong>
+                            and could not be evaluated. The remaining students were processed successfully.
+                            <ul style="margin: 0.5rem 0 0 1rem; padding: 0.2rem 0 0 0;">${rows}</ul>
+                        </div>
+                        <button class="app-alert__close" onclick="this.parentElement.remove()" aria-label="Close">&times;</button>
+                    </div>`);
+            }
+        }
+
         const newResults  = data.results || [];
         const existingMap = new Map(allResults.map(r => [r.student_number, r]));
         newResults.forEach(r => existingMap.set(r.student_number, r));

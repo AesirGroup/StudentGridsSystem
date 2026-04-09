@@ -90,12 +90,6 @@ header p {
     color: #15803d;
 }
 
-.app-alert--warning {
-    background-color: #fffbeb;
-    border-color: #fde68a;
-    color: #92400e;
-}
-
 .app-alert__close {
     margin-left: auto;
     background: none;

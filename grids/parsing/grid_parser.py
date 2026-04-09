@@ -27,9 +27,13 @@ def _extract_student_names(text: str) -> List[str]:
     names = []
     lines = text.splitlines()
 
+    # Allow for optional spaces around the colon, e.g. "Record of :" or "Record of:"
+    _RECORD_OF_RE = re.compile(r"(?i)^record\s+of\s*:")
+
     for i, line in enumerate(lines):
-        if line.strip().lower().startswith("record of:"):
-            first_part = line.split(":", 1)[1].strip()
+        if _RECORD_OF_RE.match(line.strip()):
+            # Split on the first colon only, tolerating the space-before-colon variant
+            first_part = re.split(r":\s*", line.strip(), maxsplit=1)[1] if ":" in line else ""
             collected = [first_part] if first_part else []
 
             j = i + 1
@@ -453,8 +457,14 @@ def _extract_curriculum_blocks_data(text: str) -> List[Dict[str, Any]]:
         if idx < len(lines) and _level_pat.search(lines[idx]):
             block["programme_level"] = _clean_val(lines[idx])
             idx += 1
-        # 3) degree
-        if idx < len(lines) and _degree_pat.search(lines[idx]):
+        # 3) degree — consume ANY "Degree: ..." line, including "Degree: Undeclared".
+        # Without this check, a non-standard degree value (e.g. "Undeclared") would not
+        # be consumed and every subsequent field (programme, faculty, campus, department,
+        # major) would be shifted one line up, producing entirely wrong data.
+        if idx < len(lines) and (
+            _degree_pat.search(lines[idx])
+            or lines[idx].upper().startswith("DEGREE:")
+        ):
             block["degree"] = _clean_val(lines[idx])
             idx += 1
         # 4) programme

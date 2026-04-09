@@ -311,6 +311,28 @@
 
         const results = data.results || [];
 
+        // ── Skipped-students banner ──────────────────────────────────────
+        // Surface a persistent amber warning for any student the backend
+        // could not evaluate, even before we redirect on success.
+        const skipped = data.skipped || [];
+        if (skipped.length > 0) {
+            const container = $id('alert-container');
+            if (container) {
+                const rows = skipped.map(s =>
+                    `<li><strong>${s.name || 'Unknown'}</strong> (${s.student_number}) — ${s.reason}</li>`
+                ).join('');
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="app-alert app-alert--warning" id="skipped-alert">
+                        <div>
+                            <strong>⚠ ${skipped.length} student${skipped.length > 1 ? 's were' : ' was'} skipped</strong>
+                            and could not be evaluated.
+                            <ul style="margin: 0.5rem 0 0 1rem; padding: 0.2rem 0 0 0;">${rows}</ul>
+                        </div>
+                        <button class="app-alert__close" onclick="this.parentElement.remove()" aria-label="Close">&times;</button>
+                    </div>`);
+            }
+        }
+
         if (!results.length) {
             showAlert('danger', 'No Data Found!', 'The transcript was processed but no student data could be extracted.');
             hide('processing-ui');

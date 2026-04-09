@@ -592,12 +592,12 @@
     {
       "id": "CS_GEN_LEVEL1_ELECTIVES",
       "name": "Computer Science Level 1 Electives",
-      "credits_required": 9,
+      "credits_required": 12,
       "description": "Level 1 elective courses (excluding foundations and specific exceptions)",
       "rules": [
         {
           "type": "min_credits_from",
-          "credits": 9,
+          "credits": 12,
           "description": "Any Level 1 courses excluding foundations",
           "filter": {
             "min_level": 1,
@@ -2052,7 +2052,11 @@
             "subjects": "ANY",
             "min_level": 1,
             "max_level": 1,
-            "exclude_codes": ["FOUN 1101", "FOUN 1105", "FOUN 1301"]
+            "exclude_codes": [
+              "FOUN 1101",
+              "FOUN 1105",
+              "FOUN 1301"
+            ]
           }
         }
       ]
@@ -2093,7 +2097,10 @@
             "subjects": "ANY",
             "min_level": 2,
             "max_level": 3,
-            "exclude_codes": ["ESST 1000", "ESST 2004"]
+            "exclude_codes": [
+              "ESST 1000",
+              "ESST 2004"
+            ]
           }
         }
       ]
@@ -2129,7 +2136,11 @@
             "subjects": "ANY",
             "min_level": 1,
             "max_level": 1,
-            "exclude_codes": ["FOUN 1101", "FOUN 1105", "FOUN 1301"]
+            "exclude_codes": [
+              "FOUN 1101",
+              "FOUN 1105",
+              "FOUN 1301"
+            ]
           }
         }
       ]
@@ -2235,7 +2246,9 @@
           "description": "Complete 9 credits from Biology Level II/III electives",
           "credits": 9,
           "filter": {
-            "subjects": ["BIOL"],
+            "subjects": [
+              "BIOL"
+            ],
             "min_level": 2,
             "max_level": 3
           }
