@@ -10,7 +10,7 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models import Prefetch
 from django.views import View
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -550,200 +550,6 @@ class StudentDetailView(LoginRequiredMixin, View):
         )
 
 
-class StudentPortalView(View):
-    """Completely public and unauthenticated endpoint for rendering the student UI"""
-
-    template_name = "student_portal.html"
-
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
-
-
-class EphemeralEvaluationView(View):
-    """
-    Stateless evaluation endpoint for unauthenticated users.
-    Strictly air-gapped from the database and guarantees PII sanitization.
-    """
-
-    def post(self, request, *args, **kwargs):
-        uploaded_file = request.FILES.get("file")
-        if not uploaded_file:
-            return JsonResponse({"error": "No file uploaded"}, status=400)
-
-        MAX_UPLOAD_SIZE = 50 * 1024 * 1024
-        if uploaded_file.size > MAX_UPLOAD_SIZE:
-            return JsonResponse({"error": "File size exceeds limit."}, status=400)
-
-        try:
-            filename = uploaded_file.name.lower()
-            if not filename.endswith(".txt"):
-                return JsonResponse(
-                    {"error": "This endpoint requires aggregated text."}, status=400
-                )
-
-            raw_text = uploaded_file.read().decode("utf-8")
-
-            if not is_valid_student_text(raw_text):
-                return JsonResponse(
-                    {"error": "Missing critical student data."}, status=400
-                )
-
-            detected_dtype = identify_doc_type(raw_text)
-            students = parse_text(raw_text, dtype=detected_dtype)
-
-            if (
-                len(students) > 10
-            ):  # Only allow small batches for ephemeral eval to prevent abuse
-                return JsonResponse(
-                    {
-                        "error": "Excessive student transcript counts are not supported here."
-                    },
-                    status=400,
-                )
-
-            # Virtual Catalog
-            catalog_courses = list(load_catalog_courses())
-            existing_codes = {c.code for c in catalog_courses}
-
-            for student in students:
-                for term in student.terms:
-                    for sc in term.courses:
-                        if sc.course_code not in existing_codes:
-                            virtual_course = Course(
-                                subject=sc.subject,
-                                number=sc.number,
-                                title=sc.title,
-                                credits=sc.credits,
-                                code=sc.course_code,
-                                level=sc.level,
-                            )
-                            catalog_courses.append(virtual_course)
-                            existing_codes.add(sc.course_code)
-
-            evaluator = RequirementEvaluator(courses=catalog_courses)
-            results = []
-
-            for student in students:
-                degree = Degree.from_student_data(student)
-                result = evaluator.evaluate_degree(student, degree)
-
-                major_buckets = []
-                for major in result.major_results:
-                    for b_result in major.bucket_results:
-                        completed = []
-                        for rule in b_result.rule_results:
-                            for code in rule.courses_used:
-                                sc = _find_course(student, code)
-                                if sc:
-                                    completed.append(
-                                        {
-                                            "code": sc.course_code,
-                                            "grade": sc.grade,
-                                            "credits": sc.credits,
-                                        }
-                                    )
-                        major_buckets.append(
-                            {
-                                "component": major.component_name,
-                                "bucket_name": b_result.bucket_name,
-                                "is_met": b_result.is_met,
-                                "credits_earned": b_result.credits_earned,
-                                "credits_required": b_result.credits_required,
-                                "completed_courses": completed,
-                            }
-                        )
-
-                gen_buckets = []
-                for g_result in result.general_requirements:
-                    completed = []
-                    for rule in g_result.rule_results:
-                        for code in rule.courses_used:
-                            sc = _find_course(student, code)
-                            if sc:
-                                completed.append(
-                                    {
-                                        "code": sc.course_code,
-                                        "grade": sc.grade,
-                                        "credits": sc.credits,
-                                    }
-                                )
-                    gen_buckets.append(
-                        {
-                            "bucket_name": g_result.bucket_name,
-                            "is_met": g_result.is_met,
-                            "credits_earned": g_result.credits_earned,
-                            "credits_required": g_result.credits_required,
-                            "completed_courses": completed,
-                        }
-                    )
-
-                minor_buckets = []
-                for minor_result in result.minor_results:
-                    for b_result in minor_result.bucket_results:
-                        completed = []
-                        for rule in b_result.rule_results:
-                            for code in rule.courses_used:
-                                sc = _find_course(student, code)
-                                if sc:
-                                    completed.append(
-                                        {
-                                            "code": sc.course_code,
-                                            "grade": sc.grade,
-                                            "credits": sc.credits,
-                                        }
-                                    )
-                        minor_buckets.append(
-                            {
-                                "component": minor_result.component_name,
-                                "component_type": "Minor",
-                                "bucket_name": b_result.bucket_name,
-                                "is_met": b_result.is_met,
-                                "credits_earned": b_result.credits_earned,
-                                "credits_required": b_result.credits_required,
-                                "completed_courses": completed,
-                            }
-                        )
-
-                # SANITIZED DICTIONARY (NO PII)
-                results.append(
-                    {
-                        "programme": (
-                            student.programme.programme
-                            if student.programme
-                            else "Unknown"
-                        ),
-                        "major": (
-                            student.programme.major if student.programme else "Unknown"
-                        ),
-                        "minor": (
-                            student.programme.minor if student.programme else ""
-                        ),
-                        "overall_gpa": student.overall_gpa,
-                        "can_graduate": len(result.unmet_requirements) == 0,
-                        "total_credits_earned": result.total_credits_earned,
-                        "total_credits_required": result.total_credits_required,
-                        "overall_progress": result.overall_progress,
-                        "unmet_requirements": result.unmet_requirements,
-                        "major_buckets": major_buckets,
-                        "general_buckets": gen_buckets,
-                        "minor_buckets": minor_buckets,
-                    }
-                )
-
-            return JsonResponse({"results": results})
-
-        except ValueError as e:
-            logger.warning(f"Ephemeral evaluation rejected: {str(e)}")
-            return JsonResponse({
-                "error": "We couldn't process this document. Please ensure it is an official, "
-                         "digitally downloaded PDF and not a scanned image or screenshot."
-            }, status=422)
-        except Exception as e:
-            logger.error(f"Stateless evaluation failed: {e}", exc_info=True)
-            return JsonResponse({
-                "error": "Unable to process transcript. Please ensure it is an official, unmodified document."
-            }, status=500)
-
 
 class ToggleFLRExemptionView(LoginRequiredMixin, View):
     """Admin override: toggle whether the student is eligible for the foreign language requirement."""
@@ -752,8 +558,12 @@ class ToggleFLRExemptionView(LoginRequiredMixin, View):
         profile = get_object_or_404(StudentProfile, student_number=student_number)
         profile.flr_exempt_verified = not profile.flr_exempt_verified
         profile.save(update_fields=["flr_exempt_verified"])
-        return redirect("student_detail", student_number=student_number)
+    
 
+        from_param = request.GET.get("from")
+        if from_param == "transcript":
+            return redirect(reverse("transcript_student_detail", kwargs={"student_number": student_number}))
+        return redirect("student_detail", student_number=student_number)
 
     
 # --- REPORT VIEWS ---
@@ -869,39 +679,6 @@ class StudentReportDataView(LoginRequiredMixin, View):
         )
 
 
-
-
-# class ReportStudentsView(LoginRequiredMixin, View):
-#     def get(self, request):
-#         profiles = StudentProfile.objects.prefetch_related(
-#             Prefetch("audits", queryset=AuditRecord.objects.order_by("-audit_date"))
-#         ).order_by("name")
-
-#         data = []
-#         for s in profiles:
-#             latest_audit = s.audits.first()
-#             data.append(
-#                 {
-#                     "student_number": s.student_number,
-#                     "name": s.name,
-#                     "programme": s.programme,
-#                     "major": s.major,
-#                     "gpa": s.overall_gpa,
-#                     "can_graduate": (
-#                         latest_audit.can_graduate if latest_audit else False
-#                     ),
-#                     "credits_earned": (
-#                         latest_audit.total_credits_earned if latest_audit else 0
-#                     ),
-#                     "credits_required": (
-#                         latest_audit.total_credits_required if latest_audit else 0
-#                     ),
-#                 }
-#             )
-
-#         return JsonResponse({"students": data})
-
-
 # --- TRANSCRIPT VIEWS (NO DATABASE) ---
 
 
@@ -942,6 +719,27 @@ def build_bucket_dict(component_name, b_result, student, component_type="Major")
         "courses_needed_json": courses_needed,
     }
 
+
+class ToggleTranscriptFLRView(View):
+    """Toggle FLR exemption for a session-only (no DB) transcript student."""
+
+    def post(self, request, student_number, *args, **kwargs):
+        preview_students = request.session.get("preview_students", {})
+        student_data = preview_students.get(str(student_number))
+
+        if not student_data:
+            return redirect("transcript_grid")
+
+        current = student_data.get("flr_exempt_verified", False)
+        student_data["flr_exempt_verified"] = not current
+        preview_students[str(student_number)] = student_data
+        request.session["preview_students"] = preview_students
+        request.session.modified = True
+
+        return redirect(
+            reverse("transcript_student_detail", kwargs={"student_number": student_number}) + "?from=transcript"
+        )
+    
 
 class TranscriptGridView(View):
     """
@@ -1084,9 +882,17 @@ class TranscriptGridView(View):
             can_graduate_count = 0
             cannot_graduate_count = 0
 
+            existing_preview_students = request.session.get("preview_students", {})
+            
             for student in students:
                 degree = Degree.from_student_data(student)
-                result = evaluator.evaluate_degree(student, degree)
+
+                flr_override = False
+                existing_preview = existing_preview_students.get(str(student.student_number), {})
+                if existing_preview.get("flr_exempt_verified", False):
+                    flr_override = True
+
+                result = evaluator.evaluate_degree(student, degree, flr_override=flr_override)
 
                 can_graduate = len(result.unmet_requirements) == 0
                 if can_graduate:
@@ -1125,6 +931,7 @@ class TranscriptGridView(View):
                     "student_number": student.student_number,
                     "name": student.name,
                     "overall_gpa": student.overall_gpa,
+                    "flr_exempt_verified": existing_preview.get("flr_exempt_verified", False),
                     "audit": {
                         "evaluated_programme": prog_name,
                         "evaluated_major": major_name,
@@ -1132,6 +939,7 @@ class TranscriptGridView(View):
                         "can_graduate": can_graduate,
                         "total_credits_earned": result.total_credits_earned,
                         "total_credits_required": result.total_credits_required,
+                        "overall_progress": result.overall_progress,
                         "unmet_requirements_json": result.unmet_requirements,
                         "next_steps_json": result.next_steps,
                         "bucket_results": buckets,
@@ -1145,6 +953,7 @@ class TranscriptGridView(View):
                     major_name,
                     student.overall_gpa,
                     can_graduate,
+                    minor=minor_name,
                 )
                 student_dict["detail_url"] = (
                     f"/performance/transcript/{student.student_number}/"

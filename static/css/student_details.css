@@ -457,7 +457,11 @@ section {
     font-weight: 600;
     font-size: 0.95rem;
     margin-bottom: var(--space-xs, 0.25rem);
-    color: var(--dark);
+    color: var(--dark); 
+}
+
+.next-steps-heading:nth-of-type(1) {
+    margin-top: var(--space-md);
 }
 
 .next-steps-prompt {
@@ -471,6 +475,43 @@ section {
     font-size: 0.9rem;
     color: var(--neutral-600, #555);
     padding: var(--space-sm) 0;
+}
+
+
+/* ----- COMPONENT SECTION HEADERS ----- */
+
+.component-section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--clr-border);
+}
+
+.component-badge {
+    font-size: var(--fs-3xs);
+    font-weight: var(--fw-bold);
+    border-radius: var(--radius-pill);
+    padding: 2px var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.major-badge {
+    background-color: var(--clr-primary-light);
+    color: var(--clr-primary);
+}
+
+.minor-badge {
+    background-color: rgba(245, 159, 10, 0.2);
+    color: #f59f0a;
+}
+
+.component-label {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-primary);
 }
 
 
