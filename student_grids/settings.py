@@ -29,8 +29,9 @@ SECRET_KEY = env.str("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = [".herokuapp.com", "localhost", "127.0.0.1"]
-
+# ALLOWED_HOSTS = [".herokuapp.com", "localhost", "127.0.0.1", "0.0.0.0"]
+# LOCAL defaults to testing IPs. PRODUCTION reads from Heroku config.
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1", "0.0.0.0"])
 
 # Application definition
 
@@ -175,4 +176,14 @@ Q_CLUSTER = {
     "max_attempts": 3,
 }
 
-CSRF_TRUSTED_ORIGINS = ["https://*.herokuapp.com"]
+# CSRF_TRUSTED_ORIGINS = ["https://*.herokuapp.com"]
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS", default=["https://*.herokuapp.com"]
+)
+
+# --- Security & HTTPS Enforcement ---
+# Only enforce in production so local Honcho testing still works
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
