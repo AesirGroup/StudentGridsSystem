@@ -5,7 +5,6 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "black>=26.1.0",
     "crispy-bootstrap5==2025.6",
     "dj-database-url>=3.1.2",
     "django==5.2.*",
@@ -19,4 +18,10 @@ dependencies = [
     "psycopg[binary]>=3.2,<4",
     "pydantic>=2.12.5",
     "whitenoise>=6.9,<7",
+]
+
+[dependency-groups]
+# Dev-only tools. Excluded from Docker images via `uv sync --frozen --no-group dev`.
+dev = [
+    "black>=26.1.0",
 ]

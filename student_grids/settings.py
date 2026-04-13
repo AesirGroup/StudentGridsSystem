@@ -168,7 +168,7 @@ else:
 # --- Django-Q2 Task Queue ---
 Q_CLUSTER = {
     "name": "student-grids",
-    "workers": 1,
+    "workers": env.int("Q_CLUSTER_WORKERS", default=1),
     "timeout": 60,
     "retry": 120,
     "orm": "default",  # Uses the existing database as the broker

@@ -1,10 +1,66 @@
 services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    # Only inject the three vars the Postgres image actually reads.
+    # Compose interpolates these from your .env file automatically.
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-studentgrids}
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-user} -d ${POSTGRES_DB:-studentgrids}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  migrate:
+    build: .
+    command: uv run python manage.py migrate
+    volumes:
+      - .:/app
+      - /app/.venv
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
   web:
     build: .
+    restart: unless-stopped
+    command: uv run python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     volumes:
       - .:/app
+      # Preserve the .venv created by uv sync at build time.
+      # The bind mount above overwrites /app at runtime — this anonymous
+      # volume keeps /app/.venv intact so packages remain available.
       - /app/.venv
-    environment:
-      - DEBUG=True
+    env_file:
+      - .env
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  worker:
+    build: .
+    restart: unless-stopped
+    command: uv run python manage.py qcluster
+    volumes:
+      - .:/app
+      - /app/.venv
+    env_file:
+      - .env
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  postgres_data:

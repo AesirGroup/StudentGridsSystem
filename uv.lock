@@ -887,7 +887,6 @@ name = "student-grids"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "black" },
     { name = "crispy-bootstrap5" },
     { name = "dj-database-url" },
     { name = "django" },
@@ -903,9 +902,13 @@ dependencies = [
     { name = "whitenoise" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "black" },
+]
+
 [package.metadata]
 requires-dist = [
-    { name = "black", specifier = ">=26.1.0" },
     { name = "crispy-bootstrap5", specifier = "==2025.6" },
     { name = "dj-database-url", specifier = ">=3.1.2" },
     { name = "django", specifier = "==5.2.*" },
@@ -920,6 +923,9 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.12.5" },
     { name = "whitenoise", specifier = ">=6.9,<7" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "black", specifier = ">=26.1.0" }]
 
 [[package]]
 name = "svix"
